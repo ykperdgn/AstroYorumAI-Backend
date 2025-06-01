@@ -4,7 +4,7 @@ import os
 import sys
 import datetime
 
-# AstroYorumAI Enhanced API - v2.1.1-stable deployment
+# AstroYorumAI Enhanced API - v2.1.2-stable deployment
 app = Flask(__name__)
 CORS(app)
 
@@ -13,7 +13,7 @@ CORS(app)
 def root():
     return jsonify({
         "message": "AstroYorumAI API is running",
-        "version": "2.1.1-stable", 
+        "version": "2.1.2-stable", 
         "status": "healthy",
         "python_version": sys.version.split()[0],
         "build_timestamp": datetime.datetime.now().isoformat(),
@@ -29,8 +29,8 @@ def root():
 @app.route('/health', methods=['GET'])
 def health():
     return jsonify({
-        "status": "healthy", 
-        "version": "2.1.1-stable",
+        "status": "healthy",
+        "version": "2.1.2-stable",
         "service": "AstroYorumAI API",
         "python_version": sys.version.split()[0]
     })
@@ -49,7 +49,7 @@ def test():
 @app.route('/status', methods=['GET'])  
 def status():
     return jsonify({
-        "deployment_version": "2.1.1-stable",
+        "deployment_version": "2.1.2-stable",
         "deployment_time": datetime.datetime.now().isoformat(),
         "flatlib_available": True,
         "status": "PRODUCTION_READY",
@@ -106,19 +106,19 @@ def natal():
                 "latitude": latitude,
                 "longitude": longitude
             },            "message": "Enhanced mock astrological calculation for beta testing",
-            "version": "2.1.1-stable",
+            "version": "2.1.2-stable",
             "note": "Real flatlib calculations will be available in production"
         })
         
     except Exception as e:        return jsonify({
             "error": str(e),
-            "version": "2.1.1-stable"
+            "version": "2.1.2-stable"
         }), 500
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') == 'development'
-    print(f"Starting AstroYorumAI API v2.1.1-stable...")
+    print(f"Starting AstroYorumAI API v2.1.2-stable...")
     print(f"Port: {port}")
     print(f"Debug mode: {debug}")
     print(f"Python version: {sys.version}")
