@@ -1,16 +1,64 @@
-# astroyorumai
+# AstroYorumAI - Flutter Astrology App
 
-A new Flutter project.
+## Backend API
 
-## Getting Started
+This repository contains a production-ready Flask API for natal chart calculations.
 
-This project is a starting point for a Flutter application.
+### API Endpoints
 
-A few resources to get you started if this is your first Flutter project:
+- `GET /health` - Health check endpoint
+- `POST /natal` - Calculate natal chart from birth data
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Development
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+pip install -r requirements.txt
+python astro_api.py
+```
+
+### Production Deployment
+
+The API is configured for deployment on Render.com with the following files:
+- `requirements.txt` - Python dependencies
+- `Procfile` - Deployment configuration
+- `astro_api.py` - Main Flask application
+
+### Environment Variables
+
+Create a `.env` file based on `.env.example`:
+- `PORT` - Server port (default: 5000)
+- `FLASK_ENV` - Environment (development/production)
+
+### API Usage
+
+Example request to `/natal` endpoint:
+
+```json
+{
+  "date": "1990-01-15",
+  "time": "10:30",
+  "latitude": 41.0082,
+  "longitude": 28.9784
+}
+```
+
+Example response:
+
+```json
+{
+  "planets": {
+    "Sun": {"sign": "Capricorn", "deg": 24.5},
+    "Moon": {"sign": "Gemini", "deg": 12.3}
+  },
+  "ascendant": "Gemini",
+  "ascendant_deg": 68.1
+}
+```
+
+### Flutter App
+
+This is part of the AstroYorumAI Flutter application that provides:
+- Natal chart calculations
+- Astrology calendar
+- User profiles and birth information
+- Multi-language support (Turkish/English)
