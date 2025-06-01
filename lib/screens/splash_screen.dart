@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'home_screen.dart'; // Kept for now, but direct navigation might change
 import 'birth_info_screen.dart';
 import 'natal_chart_screen.dart';
+import 'api_test_screen.dart';
 import '../services/user_preferences_service.dart';
 import '../models/user_birth_info.dart';
 
@@ -71,7 +73,6 @@ class _SplashScreenState extends State<SplashScreen> {
       // );
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +96,20 @@ class _SplashScreenState extends State<SplashScreen> {
           ],
         ),
       ),
+      // Debug: API Test Button (only in debug mode)
+      floatingActionButton: kDebugMode 
+        ? FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ApiTestScreen()),
+              );
+            },
+            child: const Icon(Icons.api),
+            backgroundColor: Colors.orange,
+            tooltip: 'Test Production API',
+          )
+        : null,
     );
   }
 }
