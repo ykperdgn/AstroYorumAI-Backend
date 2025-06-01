@@ -2,12 +2,26 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AstrologyBackendService {
-  // Kendi backend sunucunuzun adresini buraya yazın
-  // Eğer emülatörde test ediyorsanız ve sunucu aynı makinede çalışıyorsa,
-  // Android emülatörü için 'http://10.0.2.2:5000/natal' kullanabilirsiniz.
-  // iOS simülatörü veya gerçek cihaz için makinenizin yerel IP adresini kullanın (örn: 'http://192.168.1.X:5000/natal')
-  // Web için ve localhost'taki sunucu için 'http://localhost:5000/natal' genellikle çalışır.
-  static const String _baseUrl = 'http://localhost:5000'; // Varsayılan olarak localhost
+  // Production URL - Update this with your actual Render.com deployment URL
+  static const String _productionUrl = 'https://astroyorumai-api.onrender.com';
+  
+  // Development URLs for local testing
+  static const String _localhostUrl = 'http://localhost:5000';
+  static const String _androidEmulatorUrl = 'http://10.0.2.2:5000';
+  
+  // Automatically detect environment and use appropriate URL
+  static String get _baseUrl {
+    // In production builds, use production URL
+    // In debug mode, use localhost for development
+    const bool isProduction = bool.fromEnvironment('dart.vm.product');
+    if (isProduction) {
+      return _productionUrl;
+    }
+    
+    // For development, try to detect platform
+    // Default to localhost for development
+    return _localhostUrl;
+  }
 
   static Future<Map<String, dynamic>?> getNatalChart({
     required String date, // 'YYYY-MM-DD'

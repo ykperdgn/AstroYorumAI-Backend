@@ -1,0 +1,6 @@
+# MANUEL ÇALIŞTIRIN: GitHub'da repository oluşturduktan sonra bu komutları çalıştırın
+
+# YOUR_USERNAME kısmını kendi GitHub kullanıcı adınızla değiştirin
+git remote add origin https://github.com/YOUR_USERNAME/AstroYorumAI-Backend.git
+git branch -M main  
+git push -u origin main
