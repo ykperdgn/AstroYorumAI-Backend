@@ -1,6 +1,6 @@
 # AstroYorumAI - Flutter Astrology App
 
-## Backend API
+## Backend API v2.1.2-stable
 
 This repository contains a production-ready Flask API for natal chart calculations.
 
