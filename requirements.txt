@@ -1,5 +1,6 @@
-Flask==3.0.0
+Flask==2.3.3
 flatlib==0.2.3
-gunicorn==21.2.0
+gunicorn==20.1.0
 flask-cors==4.0.0
 python-dotenv==1.0.0
+pyephem==4.1.5

@@ -28,6 +28,16 @@ def root():
 def health():
     return jsonify({"status": "healthy", "version": "1.0.0"})
 
+# Simple test endpoint
+@app.route('/test', methods=['GET'])
+def test():
+    import sys
+    return jsonify({
+        "message": "API test successful",
+        "python_version": sys.version,
+        "flask_working": True
+    })
+
 @app.route('/natal', methods=['POST'])
 def natal():
     try:
