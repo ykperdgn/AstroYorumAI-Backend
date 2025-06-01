@@ -11,6 +11,18 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)  # Production'da tüm origin'lere izin ver - güvenlik için daha sonra kısıtlanabilir
 
+# Root endpoint
+@app.route('/', methods=['GET'])
+def root():
+    return jsonify({
+        "message": "AstroYorumAI API is running",
+        "version": "1.0.0",
+        "endpoints": {
+            "health": "/health",
+            "natal_chart": "/natal"
+        }
+    })
+
 # Health check endpoint
 @app.route('/health', methods=['GET'])
 def health():
