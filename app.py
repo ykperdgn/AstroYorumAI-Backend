@@ -5,6 +5,7 @@ import sys
 import datetime
 
 # AstroYorumAI Enhanced API - v2.1.2-stable deployment
+# Force deployment trigger: 2025-06-02 02:25 UTC
 app = Flask(__name__)
 CORS(app)
 
