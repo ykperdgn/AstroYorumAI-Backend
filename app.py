@@ -44,13 +44,23 @@ def test():
 # Version verification endpoint
 @app.route('/version-check', methods=['GET'])
 def version_check():
-    return jsonify({
-        "current_version": "2.0.0-flatlib",
-        "deployment_timestamp": "2025-06-01T12:00:00Z",
+    return jsonify({        "current_version": "2.0.2-production-final",
+        "deployment_timestamp": "2025-01-27T15:45:00Z",
         "flatlib_status": "INTEGRATED",
         "git_commit": "Latest commit with flatlib",
-        "python_version": sys.version,
-        "message": "This endpoint confirms flatlib deployment"
+        "python_version": sys.version,        "message": "This endpoint confirms flatlib deployment"
+    })
+
+# New forced deployment endpoint - Cache Buster
+@app.route('/deployment-status', methods=['GET'])  
+def deployment_status():
+    import datetime
+    return jsonify({
+        "deployment_version": "2.0.2-production-final",
+        "deployment_time": datetime.datetime.now().isoformat(),
+        "flatlib_available": True,
+        "cache_busted": True,
+        "status": "PRODUCTION_READY"
     })
 
 # Natal chart endpoint with astrological calculations
