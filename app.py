@@ -10,7 +10,8 @@ CORS(app)
 
 # Root endpoint
 @app.route('/', methods=['GET'])
-def root():    return jsonify({
+def root():
+    return jsonify({
         "message": "AstroYorumAI API is running",
         "version": "2.1.1-stable", 
         "status": "healthy",
@@ -46,7 +47,8 @@ def test():
 
 # Status endpoint
 @app.route('/status', methods=['GET'])  
-def status():    return jsonify({
+def status():
+    return jsonify({
         "deployment_version": "2.1.1-stable",
         "deployment_time": datetime.datetime.now().isoformat(),
         "flatlib_available": True,

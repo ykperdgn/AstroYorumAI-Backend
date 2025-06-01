@@ -1,26 +1,36 @@
 {
   "project_info": {
-    "project_number": "YOUR_PROJECT_NUMBER",
-    "project_id": "your-project-id",
-    "storage_bucket": "your-project-id.appspot.com"
+    "project_number": "940276023375",
+    "project_id": "astroyorumai-production",
+    "storage_bucket": "astroyorumai-production.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:YOUR_PROJECT_NUMBER:android:YOUR_APP_ID",
+        "mobilesdk_app_id": "1:940276023375:android:1c6c54d54b7035a9536a3a",
         "android_client_info": {
-          "package_name": "com.example.astroyorumai"
+          "package_name": "com.astroyorumai.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "940276023375-0jle7quhndlue1mjspcefreoln8m8634.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "YOUR_API_KEY"
+          "current_key": "AIzaSyB-uE7JnVBMyxleoyn4y_FYUlyT2fAzZFc"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "940276023375-0jle7quhndlue1mjspcefreoln8m8634.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

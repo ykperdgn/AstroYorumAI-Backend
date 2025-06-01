@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroYorumAI Beta Test Başvurusu 🌟</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .form-container {
+            padding: 40px 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-option:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+        
+        .radio-option input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+        
+        .radio-option.checked {
+            border-color: #667eea;
+            background-color: #667eea;
+            color: white;
+        }
+        
+        .slider-container {
+            margin-top: 15px;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e1e8ed;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+        
+        .slider-value {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #74b9ff, #00cec9);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .info-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 AstroYorumAI</h1>
+            <p>Beta Test Başvurusu</p>
+        </div>
+        
+        <div class="form-container">
+            <div class="info-box">
+                <h3>🚀 Beta Test Nedir?</h3>
+                <p>AstroYorumAI'nin ilk versiyonunu test edecek, geri bildirimlerinizle uygulamayı daha da geliştirebileceğiz! Test süresi: 4 hafta.</p>
+            </div>
+            
+            <form id="betaForm">
+                <div class="form-group">
+                    <label for="name"><span class="emoji">👤</span>Adınız Soyadınız</label>
+                    <input type="text" id="name" name="name" required placeholder="Örn: Ayşe Yılmaz">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email"><span class="emoji">📧</span>E-posta Adresiniz</label>
+                    <input type="email" id="email" name="email" required placeholder="ornekmail@gmail.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="age"><span class="emoji">🎂</span>Yaş Grubunuz</label>
+                    <select id="age" name="age" required>
+                        <option value="">Seçiniz</option>
+                        <option value="18-25">18-25 yaş</option>
+                        <option value="26-35">26-35 yaş</option>
+                        <option value="36-45">36-45 yaş</option>
+                        <option value="46-55">46-55 yaş</option>
+                        <option value="55+">55+ yaş</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label><span class="emoji">⭐</span>Astroloji deneyiminizi 1-10 arası puanlayın</label>
+                    <div class="slider-container">
+                        <input type="range" id="experience" name="experience" min="1" max="10" value="5" class="slider">
+                        <div class="slider-value" id="experienceValue">5/10</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label><span class="emoji">📱</span>Hangi cihazda test edeceksiniz?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="android" name="device" value="Android" required>
+                            <label for="android">📱 Android</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="ios" name="device" value="iOS" required>
+                            <label for="ios">🍎 iPhone</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="web" name="device" value="Web" required>
+                            <label for="web">💻 Web Tarayıcı</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="interest"><span class="emoji">🔮</span>En çok hangi astroloji özelliğini merak ediyorsunuz?</label>
+                    <select id="interest" name="interest" required>
+                        <option value="">Seçiniz</option>
+                        <option value="natal">Natal Harita (Doğum Haritası)</option>
+                        <option value="daily">Günlük Burç Yorumları</option>
+                        <option value="compatibility">Uyumluluk Analizi</option>
+                        <option value="transit">Transit Analizleri</option>
+                        <option value="houses">Ev Analizleri</option>
+                        <option value="aspects">Açı (Aspect) Yorumları</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label><span class="emoji">⏰</span>Beta test için haftada kaç saat ayırabilirsiniz?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="time1" name="testTime" value="1-2 saat" required>
+                            <label for="time1">1-2 saat</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="time2" name="testTime" value="3-5 saat" required>
+                            <label for="time2">3-5 saat</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="time3" name="testTime" value="5+ saat" required>
+                            <label for="time3">5+ saat</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="feedback"><span class="emoji">💬</span>Geri bildirim vermeye istekli misiniz?</label>
+                    <select id="feedback" name="feedback" required>
+                        <option value="">Seçiniz</option>
+                        <option value="very-willing">Evet, çok istekliyim</option>
+                        <option value="willing">Evet, istekliyim</option>
+                        <option value="sometimes">Bazen veririm</option>
+                        <option value="rarely">Nadiren veririm</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="additional"><span class="emoji">✨</span>Ek yorumlarınız var mı?</label>
+                    <textarea id="additional" name="additional" placeholder="Astroloji uygulamasından beklentileriniz, önerileriniz..."></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    🚀 Beta Test Başvurusu Gönder
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Slider value update
+        const experienceSlider = document.getElementById('experience');
+        const experienceValue = document.getElementById('experienceValue');
+        
+        experienceSlider.addEventListener('input', function() {
+            experienceValue.textContent = this.value + '/10';
+        });
+        
+        // Radio button styling
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Remove checked class from all options in the same group
+                document.querySelectorAll(`input[name="${this.name}"]`).forEach(r => {
+                    r.closest('.radio-option').classList.remove('checked');
+                });
+                // Add checked class to selected option
+                this.closest('.radio-option').classList.add('checked');
+            });
+        });
+        
+        // Form submission
+        document.getElementById('betaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Here you would normally send to your backend
+            console.log('Beta başvuru verisi:', data);
+            
+            // Show success message
+            alert('🎉 Beta test başvurunuz alındı! En kısa sürede sizinle iletişime geçeceğiz.');
+            
+            // Reset form
+            this.reset();
+            experienceValue.textContent = '5/10';
+            document.querySelectorAll('.radio-option').forEach(option => {
+                option.classList.remove('checked');
+            });
+        });
+    </script>
+</body>
+</html>
