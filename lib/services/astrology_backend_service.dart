@@ -1,29 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../config/firebase_config_production.dart';
 
-class AstrologyBackendService {
-  // Production URL - Update this with your actual Render.com deployment URL
-  static const String _productionUrl = 'https://astroyorumai-api.onrender.com';
-  
-  // Development URLs for local testing
-  static const String _localhostUrl = 'http://localhost:5000';
-  static const String _androidEmulatorUrl = 'http://10.0.2.2:5000';
-    // Automatically detect environment and use appropriate URL
-  static String get _baseUrl {
-    // In production builds, use production URL
-    // In debug mode, use localhost for development
-    const bool isProduction = bool.fromEnvironment('dart.vm.product');
-    if (isProduction) {
-      return _productionUrl;
-    }
-    
-    // For development, try to detect platform
-    // Default to localhost for development
-    return _localhostUrl;
-  }
-  
-  // Helper method to manually test with production URL during development
-  static String get productionUrl => _productionUrl;
+class AstrologyBackendService {  // Use the centralized environment configuration
+  static String get _baseUrl => AppEnvironment.backendUrl;
   
   // Health check endpoint
   static Future<bool> checkHealth() async {
@@ -32,7 +12,9 @@ class AstrologyBackendService {
       final response = await http.get(url);
       return response.statusCode == 200;
     } catch (e) {
-      print('Health check failed: $e');
+      if (AppEnvironment.enableDebugLogging) {
+        print('Health check failed: $e');
+      }
       return false;
     }
   }

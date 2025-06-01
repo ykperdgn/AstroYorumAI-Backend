@@ -5,34 +5,24 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/splash_screen.dart';
 import 'services/localization_service.dart';
 import 'l10n/app_localizations.dart';
+import 'config/firebase_config_production.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize Firebase for mobile and web platforms
-  if (!kIsWeb) {
-    // Mobile platforms (Android/iOS)
-    try {
-      await Firebase.initializeApp();
-    } catch (e) {
-      print('Firebase initialization failed: $e');
+  // Initialize Firebase with environment-specific configuration
+  try {
+    await Firebase.initializeApp(
+      options: FirebaseConfigProduction.currentPlatform,
+    );
+    
+    if (AppEnvironment.enableDebugLogging) {
+      print('✅ Firebase initialized for ${AppEnvironment.environment} environment');
+      print('🌐 Backend URL: ${AppEnvironment.backendUrl}');
     }
-  } else {
-    // Web platform
-    try {
-      await Firebase.initializeApp(
-        options: const FirebaseOptions(
-          apiKey: "your-web-api-key",
-          authDomain: "your-project.firebaseapp.com",
-          projectId: "your-project-id",
-          storageBucket: "your-project.appspot.com",
-          messagingSenderId: "123456789",
-          appId: "your-web-app-id",
-        ),
-      );
-    } catch (e) {
-      print('Firebase web initialization failed: $e');
-    }
+  } catch (e) {
+    print('❌ Firebase initialization failed: $e');
+    // Continue app execution even if Firebase fails
   }
   
   runApp(AstrolojiMasterApp());

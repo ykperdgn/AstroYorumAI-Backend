@@ -11,13 +11,15 @@ CORS(app)
 def root():
     return jsonify({
         "message": "AstroYorumAI API is running",
-        "version": "2.0.0-flatlib", 
+        "version": "2.0.1-flatlib-forced", 
         "status": "healthy",
         "python_version": sys.version.split()[0],
+        "build_timestamp": "2025-06-01T14:30:00Z",
         "endpoints": {
             "health": "/health",
             "test": "/test",
-            "natal_chart": "/natal"
+            "natal_chart": "/natal",
+            "version_check": "/version-check"
         }
     })
 
