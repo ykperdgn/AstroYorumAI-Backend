@@ -26,7 +26,8 @@ def root():
 def health():
     return jsonify({
         "status": "healthy", 
-        "version": "1.0.0",
+        "version": "2.0.0-flatlib",
+        "service": "AstroYorumAI API",
         "python_version": sys.version.split()[0]
     })
 
