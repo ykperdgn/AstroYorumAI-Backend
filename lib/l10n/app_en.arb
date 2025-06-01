@@ -1,0 +1,231 @@
+{
+  "@@locale": "en",
+  "appTitle": "Astrology Master",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "home": "Home",
+  "@home": {
+    "description": "Home screen title"
+  },
+  "birthChart": "Birth Chart",
+  "@birthChart": {
+    "description": "Birth chart screen title"
+  },
+  "natalChart": "Natal Chart",
+  "@natalChart": {
+    "description": "Natal chart title"
+  },
+  "profileManagement": "Profile Management",
+  "@profileManagement": {
+    "description": "Profile management screen title"
+  },
+  "astrologyCalendar": "Astrology Calendar",
+  "@astrologyCalendar": {
+    "description": "Astrology calendar screen title"
+  },
+  "notificationSettings": "Notification Settings",
+  "@notificationSettings": {
+    "description": "Notification settings screen title"
+  },
+  "name": "Name",
+  "@name": {
+    "description": "Name field label"
+  },
+  "birthDate": "Birth Date",
+  "@birthDate": {
+    "description": "Birth date field label"
+  },
+  "birthTime": "Birth Time",
+  "@birthTime": {
+    "description": "Birth time field label"
+  },
+  "birthPlace": "Birth Place",
+  "@birthPlace": {
+    "description": "Birth place field label"
+  },
+  "sunSign": "Sun Sign",
+  "@sunSign": {
+    "description": "Sun sign label"
+  },
+  "ascendant": "Ascendant",
+  "@ascendant": {
+    "description": "Ascendant sign label"
+  },
+  "planetPositions": "Planet Positions",
+  "@planetPositions": {
+    "description": "Planet positions section title"
+  },
+  "dailyHoroscope": "Daily Horoscope",
+  "@dailyHoroscope": {
+    "description": "Daily horoscope section title"
+  },
+  "weeklyHoroscope": "Weekly Horoscope",
+  "@weeklyHoroscope": {
+    "description": "Weekly horoscope section title"
+  },
+  "monthlyHoroscope": "Monthly Horoscope",
+  "@monthlyHoroscope": {
+    "description": "Monthly horoscope section title"
+  },
+  "compatibility": "Compatibility",
+  "@compatibility": {
+    "description": "Compatibility label"
+  },
+  "mood": "Mood",
+  "@mood": {
+    "description": "Mood label"
+  },
+  "color": "Color",
+  "@color": {
+    "description": "Lucky color label"
+  },
+  "luckyNumber": "Lucky Number",
+  "@luckyNumber": {
+    "description": "Lucky number label"
+  },
+  "luckyTime": "Lucky Time",
+  "@luckyTime": {
+    "description": "Lucky time label"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Save button text"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button text"
+  },
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit button text"
+  },
+  "add": "Add",
+  "@add": {
+    "description": "Add button text"
+  },
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading indicator text"
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Error message title"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
+  },
+  "share": "Share",
+  "@share": {
+    "description": "Share button text"
+  },
+  "export": "Export",
+  "@export": {
+    "description": "Export button text"
+  },
+  "shareAsText": "Share as Text",
+  "@shareAsText": {
+    "description": "Share as text option"
+  },
+  "shareAsPdf": "Share as PDF",
+  "@shareAsPdf": {
+    "description": "Share as PDF option"
+  },
+  "shareToSocialMedia": "Social Media",
+  "@shareToSocialMedia": {
+    "description": "Share to social media option"
+  },
+  "downloadPdf": "Download PDF",
+  "@downloadPdf": {
+    "description": "Download PDF option"
+  },
+  "notificationPermissionRequired": "Notification permission is required",
+  "@notificationPermissionRequired": {
+    "description": "Notification permission required message"
+  },
+  "enableNotifications": "Enable Notifications",
+  "@enableNotifications": {
+    "description": "Enable notifications button text"
+  },
+  "dailyHoroscopeNotification": "Daily Horoscope Notification",
+  "@dailyHoroscopeNotification": {
+    "description": "Daily horoscope notification setting"
+  },
+  "weeklyHoroscopeNotification": "Weekly Horoscope Notification",
+  "@weeklyHoroscopeNotification": {
+    "description": "Weekly horoscope notification setting"
+  },
+  "celestialEventsNotification": "Celestial Events Notification",
+  "@celestialEventsNotification": {
+    "description": "Celestial events notification setting"
+  },
+  "transitAnalysis": "Transit Analysis",
+  "@transitAnalysis": {
+    "description": "Transit analysis button text"
+  },
+  "coordinates": "Coordinates",
+  "@coordinates": {
+    "description": "Coordinates label"
+  },
+  "unknown": "Unknown",
+  "@unknown": {
+    "description": "Unknown value text"
+  },
+  "activeProfile": "Active Profile",
+  "@activeProfile": {
+    "description": "Active profile label"
+  },
+  "noActiveProfile": "No Active Profile",
+  "@noActiveProfile": {
+    "description": "No active profile message"
+  },
+  "createProfile": "Create Profile",
+  "@createProfile": {
+    "description": "Create profile button text"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language setting label"
+  },
+  "turkish": "Turkish",
+  "@turkish": {
+    "description": "Turkish language option"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+  "cloudSync": "Cloud Sync",
+  "@cloudSync": {
+    "description": "Cloud sync feature title"
+  },
+  "signIn": "Sign In",
+  "@signIn": {
+    "description": "Sign in button text"
+  },
+  "signOut": "Sign Out",
+  "@signOut": {
+    "description": "Sign out button text"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Email field label"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "Password field label"
+  },
+  "backupData": "Backup Data",
+  "@backupData": {
+    "description": "Backup data button text"
+  },
+  "restoreData": "Restore Data",
+  "@restoreData": {
+    "description": "Restore data button text"
+  }
+}

@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, origins=['https://your-app-domain.com'])  # Production için güncellenecek
+CORS(app)  # Production'da tüm origin'lere izin ver - güvenlik için daha sonra kısıtlanabilir
 
 # Health check endpoint
 @app.route('/health', methods=['GET'])
@@ -18,22 +18,25 @@ def health():
 
 @app.route('/natal', methods=['POST'])
 def natal():
-    data = request.json
-    date_str = data['date']  # "YYYY-MM-DD"
-    time_str = data['time']  # "HH:MM"
-    lat = data['latitude']  # örn. 41.0082 (İstanbul için)
-    lon = data['longitude']  # örn. 28.9784
-    
-    # Türkiye için varsayılan UTC+3
-    # Flatlib saat dilimini +/-HH:MM formatında bekler, ör: "+03:00"
-    # Veya saat dilimi bilgisini kullanıcıdan alabilir veya koordinata göre belirleyebilirsiniz.
-    # Şimdilik sabit +03:00 kullanıyoruz.
-    dt = Datetime(date_str, time_str, '+03:00')
-    pos = GeoPos(str(lat), str(lon))
-    
     try:
+        data = request.json
+        date_str = data['date']  # "YYYY-MM-DD"
+        time_str = data['time']  # "HH:MM"
+        lat = data['latitude']  # örn. 41.0082 (İstanbul için)
+        lon = data['longitude']  # örn. 28.9784
+        
+        # Flatlib tarihi "/" formatında bekliyor, "-" formatını dönüştür
+        date_str_flatlib = date_str.replace('-', '/')
+        
+        # Türkiye için varsayılan UTC+3
+        # Flatlib saat dilimini +/-HH:MM formatında bekler, ör: "+03:00"
+        dt = Datetime(date_str_flatlib, time_str, '+03:00')
+        pos = GeoPos(lat, lon)
+        
         chart = Chart(dt, pos)
-        planets_to_get = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']
+        
+        # Flatlib'de geçerli planet isimleri
+        planets_to_get = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn']
         
         # Her gezegen için hem burç hem derece bilgisini döndür
         planet_positions = {}
@@ -54,6 +57,7 @@ def natal():
             "ascendant": ascendant,
             "ascendant_deg": asc_deg
         })
+        
     except Exception as e:
         # Hata durumunda daha açıklayıcı bir mesaj döndür
         return jsonify({"error": str(e)}), 500
@@ -64,6 +68,3 @@ if __name__ == '__main__':
     print(f"Starting Flask server on port {port}")
     print(f"Debug mode: {debug}")
     app.run(host='0.0.0.0', port=port, debug=debug)
-    print("Debug mode: True")
-    # Debug modunu geliştirme sırasında açabilirsiniz, ancak canlıya alırken kapatın.
-    app.run(host='0.0.0.0', port=5000, debug=True) # host='0.0.0.0' ağdaki diğer cihazların erişebilmesi için

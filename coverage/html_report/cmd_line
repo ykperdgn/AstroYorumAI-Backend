@@ -1,0 +1,1 @@
+genhtml /mnt/c/dev/AstroYorumAI/coverage/lcov.info -o /mnt/c/dev/AstroYorumAI/coverage/html_report

@@ -1,0 +1,100 @@
+import 'package:flutter/material.dart';
+import 'home_screen.dart'; // Kept for now, but direct navigation might change
+import 'birth_info_screen.dart';
+import 'natal_chart_screen.dart';
+import '../services/user_preferences_service.dart';
+import '../models/user_birth_info.dart';
+
+class SplashScreen extends StatefulWidget {
+  final Function(Locale)? onLocaleChange;
+  final UserPreferencesService? preferencesService;
+  
+  const SplashScreen({
+    Key? key, 
+    this.onLocaleChange,
+    this.preferencesService,
+  }) : super(key: key);
+  
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  late final UserPreferencesService _prefsService;
+
+  @override
+  void initState() {
+    super.initState();
+    _prefsService = widget.preferencesService ?? UserPreferencesService();
+    _checkSavedInfoAndNavigate();
+  }
+
+  Future<void> _checkSavedInfoAndNavigate() async {
+    // Wait for a couple of seconds for the splash screen to be visible
+    await Future.delayed(Duration(seconds: 2));
+
+    if (!mounted) return; // Check if the widget is still in the tree
+
+    UserBirthInfo? savedInfo = await _prefsService.loadUserBirthInfo();
+
+    if (!mounted) return; // Check again after await
+
+    if (savedInfo != null &&
+        savedInfo.name != null && // Ensure essential data is present
+        savedInfo.birthDate != null &&
+        savedInfo.latitude != null &&
+        savedInfo.longitude != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NatalChartScreen(
+            name: savedInfo.name!,
+            birthDate: savedInfo.birthDate!,
+            birthTime: savedInfo.birthTime,
+            birthPlace: savedInfo.birthPlace,
+            latitude: savedInfo.latitude!,
+            longitude: savedInfo.longitude!,
+          ),
+        ),
+      );
+    } else {
+      // If no valid info, or some essential parts are missing, go to BirthInfoScreen
+      // Pass the potentially partially loaded info so user can complete/correct it
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => BirthInfoScreen(initialBirthInfo: savedInfo)),
+      );
+      // Or, if HomeScreen is a necessary intermediate step before BirthInfoScreen:
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => HomeScreen()),
+      // );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.star_border_purple500_outlined, size: 120, color: Colors.deepPurpleAccent),
+            SizedBox(height: 24),
+            Text(
+              'AstroYorum AI', // Updated App Name
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+            ),
+            SizedBox(height: 12),
+            Text(
+              'Gökyüzü Rehberiniz', // Subtitle
+              style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+            ),
+            SizedBox(height: 30),
+            CircularProgressIndicator(color: Colors.deepPurpleAccent),
+          ],
+        ),
+      ),
+    );
+  }
+}
