@@ -10,11 +10,10 @@ CORS(app)
 @app.route('/', methods=['GET'])
 def root():
     return jsonify({
-        "message": "AstroYorumAI API is running",
-        "version": "2.0.1-flatlib-forced", 
+        "message": "AstroYorumAI API is running",        "version": "2.0.2-production-final", 
         "status": "healthy",
         "python_version": sys.version.split()[0],
-        "build_timestamp": "2025-06-01T14:30:00Z",
+        "build_timestamp": "2025-01-27T15:45:00Z",
         "endpoints": {
             "health": "/health",
             "test": "/test",
@@ -28,7 +27,7 @@ def root():
 def health():
     return jsonify({
         "status": "healthy", 
-        "version": "2.0.0-flatlib",
+        "version": "2.0.2-production-final",
         "service": "AstroYorumAI API",
         "python_version": sys.version.split()[0]
     })
