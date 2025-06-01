@@ -9,10 +9,9 @@ CORS(app)
 
 # Root endpoint
 @app.route('/', methods=['GET'])
-def root():
-    return jsonify({
+def root():    return jsonify({
         "message": "AstroYorumAI API is running",
-        "version": "2.1.0-stable", 
+        "version": "2.1.1-stable", 
         "status": "healthy",
         "python_version": sys.version.split()[0],
         "build_timestamp": datetime.datetime.now().isoformat(),
@@ -29,7 +28,7 @@ def root():
 def health():
     return jsonify({
         "status": "healthy", 
-        "version": "2.1.0-stable",
+        "version": "2.1.1-stable",
         "service": "AstroYorumAI API",
         "python_version": sys.version.split()[0]
     })
@@ -46,9 +45,8 @@ def test():
 
 # Status endpoint
 @app.route('/status', methods=['GET'])  
-def status():
-    return jsonify({
-        "deployment_version": "2.1.0-stable",
+def status():    return jsonify({
+        "deployment_version": "2.1.1-stable",
         "deployment_time": datetime.datetime.now().isoformat(),
         "flatlib_available": True,
         "status": "PRODUCTION_READY",
@@ -104,23 +102,20 @@ def natal():
                 "time": time_str,
                 "latitude": latitude,
                 "longitude": longitude
-            },
-            "message": "Enhanced mock astrological calculation for beta testing",
-            "version": "2.1.0-stable",
+            },            "message": "Enhanced mock astrological calculation for beta testing",
+            "version": "2.1.1-stable",
             "note": "Real flatlib calculations will be available in production"
         })
         
-    except Exception as e:
-        return jsonify({
+    except Exception as e:        return jsonify({
             "error": str(e),
-            "version": "2.1.0-stable"
+            "version": "2.1.1-stable"
         }), 500
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') == 'development'
-    
-    print(f"Starting AstroYorumAI API v2.1.0-stable...")
+      print(f"Starting AstroYorumAI API v2.1.1-stable...")
     print(f"Port: {port}")
     print(f"Debug mode: {debug}")
     print(f"Python version: {sys.version}")
