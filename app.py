@@ -4,6 +4,7 @@ import os
 import sys
 import datetime
 
+# AstroYorumAI Enhanced API - v2.1.1-stable deployment
 app = Flask(__name__)
 CORS(app)
 
@@ -115,7 +116,7 @@ def natal():
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') == 'development'
-      print(f"Starting AstroYorumAI API v2.1.1-stable...")
+    print(f"Starting AstroYorumAI API v2.1.1-stable...")
     print(f"Port: {port}")
     print(f"Debug mode: {debug}")
     print(f"Python version: {sys.version}")
