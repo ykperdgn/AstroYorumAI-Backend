@@ -70,19 +70,34 @@ def natal():
             from flatlib.geopos import GeoPos
             from flatlib.chart import Chart
             from flatlib import const
-            
-            # Parse input data
+              # Parse input data
             date_str = data['date']  # Format: 'YYYY-MM-DD'
             time_str = data['time']  # Format: 'HH:MM'
             latitude = float(data['latitude'])
             longitude = float(data['longitude'])
             
-            # Create datetime object
-            year, month, day = map(int, date_str.split('-'))
-            hour, minute = map(int, time_str.split(':'))
+            # Convert date format for flatlib (YYYY/MM/DD)
+            flatlib_date = date_str.replace('-', '/')
             
-            date_time = Datetime(f'{date_str} {time_str}', '+00:00')
-            pos = GeoPos(latitude, longitude)
+            # Convert coordinates to flatlib format (degrees:minutes:seconds)
+            def decimal_to_dms(decimal_degrees):
+                """Convert decimal degrees to degrees:minutes:seconds format"""
+                abs_deg = abs(decimal_degrees)
+                degrees = int(abs_deg)
+                minutes_float = (abs_deg - degrees) * 60
+                minutes = int(minutes_float)
+                seconds = int((minutes_float - minutes) * 60)
+                return f"{degrees:02d}:{minutes:02d}:{seconds:02d}"
+            
+            # Format latitude (N/S) and longitude (E/W)
+            lat_dms = decimal_to_dms(latitude)
+            lon_dms = decimal_to_dms(longitude)
+            lat_formatted = f"+{lat_dms}" if latitude >= 0 else f"-{lat_dms}"
+            lon_formatted = f"-{lon_dms}" if longitude >= 0 else f"+{lon_dms}"  # Note: longitude sign is flipped
+            
+            # Create flatlib objects
+            date_time = Datetime(flatlib_date, time_str, '+00:00')
+            pos = GeoPos(lat_formatted, lon_formatted)
             chart = Chart(date_time, pos)
             
             # Get planetary positions
@@ -140,10 +155,11 @@ def natal():
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') == 'development'
-      print(f"🚀 Starting AstroYorumAI API with Flatlib...")
-    print(f"📍 Port: {port}")
-    print(f"🔧 Debug mode: {debug}")
-    print(f"🐍 Python version: {sys.version}")
-    print(f"🌟 Flatlib integration: ENABLED")
+    
+    print(f"Starting AstroYorumAI API with Flatlib...")
+    print(f"Port: {port}")
+    print(f"Debug mode: {debug}")
+    print(f"Python version: {sys.version}")
+    print(f"Flatlib integration: ENABLED")
     
     app.run(host='0.0.0.0', port=port, debug=debug)
