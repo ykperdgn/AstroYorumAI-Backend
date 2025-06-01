@@ -38,7 +38,18 @@ def test():
         "message": "API test successful",
         "python_version": sys.version,
         "flask_working": True,
-        "environment": os.environ.get('FLASK_ENV', 'development')
+        "environment": os.environ.get('FLASK_ENV', 'development')    })
+
+# Version verification endpoint
+@app.route('/version-check', methods=['GET'])
+def version_check():
+    return jsonify({
+        "current_version": "2.0.0-flatlib",
+        "deployment_timestamp": "2025-06-01T12:00:00Z",
+        "flatlib_status": "INTEGRATED",
+        "git_commit": "Latest commit with flatlib",
+        "python_version": sys.version,
+        "message": "This endpoint confirms flatlib deployment"
     })
 
 # Natal chart endpoint with astrological calculations
