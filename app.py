@@ -8,7 +8,23 @@ import datetime
 # Force deployment trigger: 2025-06-02 02:25 UTC  
 # CRITICAL FIX: Render cache cleared - app:app enforced
 app = Flask(__name__)
-CORS(app)
+
+# Enhanced CORS configuration for Flutter web app
+CORS(app, 
+     origins=['*'],
+     allow_headers=['Content-Type', 'Authorization', 'Access-Control-Allow-Credentials'],
+     methods=['GET', 'POST', 'OPTIONS'],
+     supports_credentials=True)
+
+# Handle CORS preflight requests
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        response = jsonify({'status': 'OK'})
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add('Access-Control-Allow-Headers', "*")
+        response.headers.add('Access-Control-Allow-Methods', "*")
+        return response
 
 # Root endpoint
 @app.route('/', methods=['GET'])
