@@ -45,10 +45,9 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
     
     try {
       final allEvents = await AstrologyCalendarService.getAllEvents();
-      final upcomingEvents = await AstrologyCalendarService.getUpcomingEvents();
-      final selectedDayEvents = await AstrologyCalendarService.getEventsInRange(
+      final upcomingEvents = await AstrologyCalendarService.getUpcomingEvents();      final selectedDayEvents = await AstrologyCalendarService.getEventsInRange(
         _selectedDay,
-        _selectedDay.add(Duration(days: 1)),
+        _selectedDay.add(const Duration(days: 1)),
       );
 
       setState(() {
@@ -71,10 +70,9 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
       _selectedDay = selectedDay;
       _focusedDay = focusedDay;
     });
-    
-    final dayEvents = await AstrologyCalendarService.getEventsInRange(
+      final dayEvents = await AstrologyCalendarService.getEventsInRange(
       selectedDay,
-      selectedDay.add(Duration(days: 1)),
+      selectedDay.add(const Duration(days: 1)),
     );
     
     setState(() {
@@ -116,20 +114,19 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (_isLoading) {
+  Widget build(BuildContext context) {    if (_isLoading) {
       return Scaffold(
-        appBar: AppBar(title: Text('Astroloji Takvimi')),
-        body: Center(child: CircularProgressIndicator()),
+        appBar: AppBar(title: const Text('Astroloji Takvimi')),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Astroloji Takvimi'),
+        title: const Text('Astroloji Takvimi'),
         bottom: TabBar(
           controller: _tabController,
-          tabs: [
+          tabs: const [
             Tab(icon: Icon(Icons.calendar_month), text: 'Takvim'),
             Tab(icon: Icon(Icons.upcoming), text: 'Yaklaşan'),
             Tab(icon: Icon(Icons.search), text: 'Ara'),
@@ -167,16 +164,14 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
               color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.circular(12.0),
             ),
-            formatButtonTextStyle: TextStyle(color: Colors.white),
-          ),
-          calendarStyle: CalendarStyle(
+            formatButtonTextStyle: const TextStyle(color: Colors.white),
+          ),          calendarStyle: CalendarStyle(
             outsideDaysVisible: false,
             markersMaxCount: 3,
             markerDecoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
               shape: BoxShape.circle,
-            ),
-            todayDecoration: BoxDecoration(
+            ),            todayDecoration: const BoxDecoration(
               color: Colors.orange,
               shape: BoxShape.circle,
             ),
@@ -193,26 +188,23 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
           },
           onPageChanged: (focusedDay) {
             _focusedDay = focusedDay;
-          },
-        ),
-        Divider(),
+          },        ),
+        const Divider(),
         Expanded(
           child: _selectedDayEvents.isEmpty
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.event_busy, size: 64, color: Colors.grey),
-                      SizedBox(height: 16),
+                    children: [                      const Icon(Icons.event_busy, size: 64, color: Colors.grey),
+                      const SizedBox(height: 16),
                       Text(
                         'Seçilen günde etkinlik yok',
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                     ],
                   ),
-                )
-              : ListView.builder(
-                  padding: EdgeInsets.all(16.0),
+                )              : ListView.builder(
+                  padding: const EdgeInsets.all(16.0),
                   itemCount: _selectedDayEvents.length,
                   itemBuilder: (context, index) {
                     return _buildEventCard(_selectedDayEvents[index]);
@@ -225,13 +217,12 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
 
   Widget _buildUpcomingView() {
     return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.all(16.0),
+      children: [        Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
               Icon(Icons.upcoming, color: Theme.of(context).primaryColor),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 'Önümüzdeki 30 Gün',
                 style: Theme.of(context).textTheme.titleLarge,
@@ -244,18 +235,16 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.event_available, size: 64, color: Colors.grey),
-                      SizedBox(height: 16),
+                    children: [                      const Icon(Icons.event_available, size: 64, color: Colors.grey),
+                      const SizedBox(height: 16),
                       Text(
                         'Yaklaşan etkinlik yok',
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                     ],
                   ),
-                )
-              : ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                )              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   itemCount: _upcomingEvents.length,
                   itemBuilder: (context, index) {
                     return _buildEventCard(_upcomingEvents[index], showDate: true);
@@ -267,24 +256,22 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
   }
 
   Widget _buildSearchView() {
-    return Column(
-      children: [
+    return Column(      children: [
         Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
+                controller: _searchController,                decoration: InputDecoration(
                   hintText: 'Etkinlik ara...',
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 onChanged: _searchEvents,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -306,19 +293,17 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
           child: _filteredEvents.isEmpty
               ? Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.search_off, size: 64, color: Colors.grey),
-                      SizedBox(height: 16),
+                    mainAxisAlignment: MainAxisAlignment.center,                    children: [
+                      const Icon(Icons.search_off, size: 64, color: Colors.grey),
+                      const SizedBox(height: 16),
                       Text(
                         'Sonuç bulunamadı',
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                     ],
                   ),
-                )
-              : ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                )              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   itemCount: _filteredEvents.length,
                   itemBuilder: (context, index) {
                     return _buildEventCard(_filteredEvents[index], showDate: true);
@@ -328,10 +313,9 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
       ],
     );
   }
-
   Widget _buildFilterChip(String value, String label) {
     return Padding(
-      padding: EdgeInsets.only(right: 8.0),
+      padding: const EdgeInsets.only(right: 8.0),
       child: FilterChip(
         label: Text(label),
         selected: _selectedFilter == value,
@@ -343,53 +327,48 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
   }
 
   Widget _buildEventCard(CelestialEvent event, {bool showDate = false}) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 12.0),
+    return Card(      margin: const EdgeInsets.only(bottom: 12.0),
       child: InkWell(
         onTap: () => _showEventDetails(event),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8),
+                children: [                  Container(
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: event.getEventColor(),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
                     ),
                     child: Text(
                       event.getEventIcon(),
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                     ),
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          children: [
-                            if (event.planetInvolved != null)
+                          children: [                            if (event.planetInvolved != null)
                               Text(
                                 event.getPlanetEmoji(),
-                                style: TextStyle(fontSize: 16),
+                                style: const TextStyle(fontSize: 16),
                               ),
-                            SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
+                            const SizedBox(width: 4),
+                            Expanded(                              child: Text(
                                 event.title,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                 ),
                               ),
-                            ),
-                            if (event.isImportant)
-                              Icon(Icons.star, color: Colors.amber, size: 20),
+                            ),                            if (event.isImportant)
+                              const Icon(Icons.star, color: Colors.amber, size: 20),
                           ],
                         ),
                         if (showDate)
@@ -402,22 +381,20 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
                             ),
                           ),
                       ],
-                    ),
-                  ),
+                    ),                  ),
                 ],
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 event.description,
                 style: TextStyle(color: Colors.grey[700]),
-              ),
-              if (event.impactDescription != null) ...[
-                SizedBox(height: 8),
+              ),              if (event.impactDescription != null) ...[
+                const SizedBox(height: 8),
                 Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: event.getEventColor().withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
                   ),
                   child: Row(
                     children: [
@@ -426,7 +403,7 @@ class _AstrologyCalendarScreenState extends State<AstrologyCalendarScreen>
                         size: 16,
                         color: event.getEventColor(),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           event.impactDescription!,

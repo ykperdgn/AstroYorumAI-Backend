@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as log;
 import 'package:http/http.dart' as http;
 
 class AstrologyApiService {
@@ -9,7 +10,7 @@ class AstrologyApiService {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     }
-    print('Aztro API Error: ${response.statusCode} - ${response.body}'); // Hata durumunda loglama
+    log.log('Aztro API Error: ${response.statusCode} - ${response.body}'); // Hata durumunda loglama
     return null;
   }
 }
@@ -43,10 +44,10 @@ class AstrologyBackendService { // Yeni servis sınıfı
         // UTF-8 decode eklendi, Türkçe karakterler için önemli
         return json.decode(utf8.decode(response.bodyBytes)); 
       }
-      print('Backend API Error: ${response.statusCode} - ${response.body}');
+      log.log('Backend API Error: ${response.statusCode} - ${response.body}');
       return null;
     } catch (e) {
-      print('Error connecting to backend API: $e');
+      log.log('Error connecting to backend API: $e');
       return null;
     }
   }

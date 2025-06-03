@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_profile.dart';
+import 'dart:developer' as log;
 
 class ProfileManagementService {
   final SharedPreferences prefs;
@@ -64,10 +65,9 @@ class ProfileManagementService {
         profiles[0] = profiles[0].copyWith(isDefault: true);
         await setActiveProfile(profiles[0].id);
       }
-      
-      return await _saveAllProfiles(profiles);
+        return await _saveAllProfiles(profiles);
     } catch (e) {
-      print('Error saving profile: $e');
+      log.log('Error saving profile: $e');
       return false;
     }
   }
@@ -90,10 +90,9 @@ class ProfileManagementService {
         // Update first profile to be default
         profiles[0] = profiles[0].copyWith(isDefault: true);
       }
-      
-      return await _saveAllProfiles(profiles);
+        return await _saveAllProfiles(profiles);
     } catch (e) {
-      print('Error deleting profile: $e');
+      log.log('Error deleting profile: $e');
       return false;
     }
   }
@@ -110,10 +109,9 @@ class ProfileManagementService {
           isDefault: profiles[i].id == profileId,
         );
       }
-      
-      return await _saveAllProfiles(profiles);
+        return await _saveAllProfiles(profiles);
     } catch (e) {
-      print('Error setting active profile: $e');
+      log.log('Error setting active profile: $e');
       return false;
     }
   }
@@ -169,10 +167,9 @@ class ProfileManagementService {
   Future<bool> clearAllProfiles() async {
     try {
       await prefs.remove('user_profiles');
-      await prefs.remove('active_profile_id');
-      return true;
+      await prefs.remove('active_profile_id');    return true;
     } catch (e) {
-      print('Error clearing profiles: $e');
+      log.log('Error clearing profiles: $e');
       return false;
     }
   }
@@ -194,13 +191,64 @@ class ProfileManagementService {
     }).toList();
   }
 
+  // Pro subscription management
+  Future<bool> upgradeUserToPro(String profileId) async {
+    try {
+      final profiles = await getAllProfiles();
+      final profileIndex = profiles.indexWhere((p) => p.id == profileId);
+      
+      if (profileIndex == -1) return false;
+      
+      profiles[profileIndex] = profiles[profileIndex].copyWith(
+        isPro: true,
+        updatedAt: DateTime.now(),
+      );
+          return await _saveAllProfiles(profiles);
+    } catch (e) {
+      log.log('Error upgrading user to Pro: $e');
+      return false;
+    }
+  }
+
+  Future<bool> downgradeUserFromPro(String profileId) async {
+    try {
+      final profiles = await getAllProfiles();
+      final profileIndex = profiles.indexWhere((p) => p.id == profileId);
+      
+      if (profileIndex == -1) return false;
+      
+      profiles[profileIndex] = profiles[profileIndex].copyWith(
+        isPro: false,
+        updatedAt: DateTime.now(),
+      );
+      
+      return await _saveAllProfiles(profiles);    } catch (e) {
+      log.log('Error downgrading user from Pro: $e');
+      return false;
+    }
+  }
+
+  Future<bool> isUserPro(String profileId) async {
+    try {
+      final profiles = await getAllProfiles();
+      final profile = profiles.firstWhere((p) => p.id == profileId);
+      return profile.isPro;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> isActiveUserPro() async {
+    final activeProfile = await getActiveProfile();
+    return activeProfile?.isPro ?? false;
+  }
+
   // Private helper to save all profiles
   Future<bool> _saveAllProfiles(List<UserProfile> profiles) async {
     try {
       final profilesJson = json.encode(profiles.map((p) => p.toJson()).toList());
-      return await prefs.setString('user_profiles', profilesJson);
-    } catch (e) {
-      print('Error saving all profiles: $e');
+      return await prefs.setString('user_profiles', profilesJson);    } catch (e) {
+      log.log('Error saving all profiles: $e');
       return false;
     }
   }

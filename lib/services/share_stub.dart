@@ -1,4 +1,5 @@
 // Stub implementation for share functionality on unsupported platforms
+import 'dart:developer' as log;
 
 class XFile {
   final String path;
@@ -9,12 +10,11 @@ class Share {
   static Future<void> shareXFiles(
     List<XFile> files, {
     String? text,
-    String? subject,
-  }) async {
+    String? subject,  }) async {
     // Stub implementation - do nothing on unsupported platforms
-    print('Sharing files: ${files.map((f) => f.path).join(', ')}');
-    if (text != null) print('Text: $text');
-    if (subject != null) print('Subject: $subject');
+    log.log('Sharing files: ${files.map((f) => f.path).join(', ')}');
+    if (text != null) log.log('Text: $text');
+    if (subject != null) log.log('Subject: $subject');
   }
 
   static Future<void> share(
@@ -22,7 +22,7 @@ class Share {
     String? subject,
   }) async {
     // Stub implementation - do nothing on unsupported platforms
-    print('Sharing text: $text');
-    if (subject != null) print('Subject: $subject');
+    log.log('Sharing text: $text');
+    if (subject != null) log.log('Subject: $subject');
   }
 }

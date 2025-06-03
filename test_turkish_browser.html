@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turkish API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .result { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .loading { background: #fff3cd; border-color: #ffeaa7; color: #856404; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇹🇷 AstroYorumAI Turkish API Test</h1>
+        
+        <div class="test-section">
+            <h2>🏥 API Health Check</h2>
+            <button onclick="testHealth()">Test Health</button>
+            <div id="healthResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🌟 Natal Chart Test (Turkish Conversion)</h2>
+            <p>Test data: Birth: 1990-05-15, Time: 14:30, Location: Istanbul</p>
+            <button onclick="testNatalChart()">Test Natal Chart</button>
+            <div id="natalResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Turkish Conversion Test</h2>
+            <p>This will test the client-side Turkish conversion that the Flutter app uses</p>
+            <button onclick="testTurkishConversion()">Test Turkish Conversion</button>
+            <div id="turkishResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://astroyorumai-api.onrender.com';
+        
+        // Turkish translation mappings (matching Flutter)
+        const PLANET_NAMES_TR = {
+            'Sun': 'Güneş',
+            'Moon': 'Ay',
+            'Mercury': 'Merkür',
+            'Venus': 'Venüs',
+            'Mars': 'Mars',
+            'Jupiter': 'Jüpiter',
+            'Saturn': 'Satürn',
+        };
+        
+        const SIGN_NAMES_TR = {
+            'Aries': 'Koç',
+            'Taurus': 'Boğa',
+            'Gemini': 'İkizler',
+            'Cancer': 'Yengeç',
+            'Leo': 'Aslan',
+            'Virgo': 'Başak',
+            'Libra': 'Terazi',
+            'Scorpio': 'Akrep',
+            'Sagittarius': 'Yay',
+            'Capricorn': 'Oğlak',
+            'Aquarius': 'Kova',
+            'Pisces': 'Balık',
+        };
+
+        function convertToTurkish(apiResponse) {
+            console.log('🔄 Converting to Turkish...');
+            const converted = JSON.parse(JSON.stringify(apiResponse));
+            
+            // Convert planets
+            if (converted.planets) {
+                const originalPlanets = converted.planets;
+                const turkishPlanets = {};
+                
+                for (const [planetKey, planetData] of Object.entries(originalPlanets)) {
+                    const turkishPlanetName = PLANET_NAMES_TR[planetKey] || planetKey;
+                    
+                    if (typeof planetData === 'object' && planetData.sign) {
+                        const planetInfo = { ...planetData };
+                        planetInfo.sign = SIGN_NAMES_TR[planetData.sign] || planetData.sign;
+                        turkishPlanets[turkishPlanetName] = planetInfo;
+                    } else {
+                        turkishPlanets[turkishPlanetName] = planetData;
+                    }
+                }
+                
+                converted.planets = turkishPlanets;
+            }
+            
+            // Convert ascendant
+            if (converted.ascendant) {
+                converted.ascendant = SIGN_NAMES_TR[converted.ascendant] || converted.ascendant;
+            }
+            
+            converted.turkish_converted = true;
+            converted.conversion_method = 'client_side_js';
+            
+            return converted;
+        }
+
+        async function testHealth() {
+            const resultDiv = document.getElementById('healthResult');
+            resultDiv.innerHTML = '<div class="result loading">🔄 Testing API health...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+                            ✅ API is healthy! Status: ${response.status}
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+                            ❌ Health check failed. Status: ${response.status}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testNatalChart() {
+            const resultDiv = document.getElementById('natalResult');
+            resultDiv.innerHTML = '<div class="result loading">🔄 Testing natal chart calculation...</div>';
+            
+            const testData = {
+                birth_date: "1990-05-15",
+                birth_time: "14:30",
+                birth_location: "Istanbul"
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/calculate_natal_chart`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+                            ✅ Natal chart calculated successfully!
+                            <h4>📋 Original API Response:</h4>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+                            ❌ Natal chart calculation failed. Status: ${response.status}
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testTurkishConversion() {
+            const resultDiv = document.getElementById('turkishResult');
+            resultDiv.innerHTML = '<div class="result loading">🔄 Testing Turkish conversion...</div>';
+            
+            const testData = {
+                birth_date: "1990-05-15",
+                birth_time: "14:30",
+                birth_location: "Istanbul"
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/calculate_natal_chart`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const originalData = await response.json();
+                
+                if (response.ok) {
+                    // Apply Turkish conversion
+                    const turkishData = convertToTurkish(originalData);
+                    
+                    // Count conversions
+                    let planetConversions = 0;
+                    if (turkishData.planets) {
+                        for (const planetName of Object.keys(turkishData.planets)) {
+                            if (Object.values(PLANET_NAMES_TR).includes(planetName)) {
+                                planetConversions++;
+                            }
+                        }
+                    }
+                    
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+                            ✅ Turkish conversion completed!
+                            <p><strong>🎉 Found ${planetConversions} Turkish planet names!</strong></p>
+                            
+                            <h4>📋 Original Response (English):</h4>
+                            <pre>${JSON.stringify(originalData, null, 2)}</pre>
+                            
+                            <h4>🇹🇷 Converted Response (Turkish):</h4>
+                            <pre>${JSON.stringify(turkishData, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+                            ❌ API request failed. Status: ${response.status}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-run health test on page load
+        window.onload = () => {
+            testHealth();
+        };
+    </script>
+</body>
+</html>

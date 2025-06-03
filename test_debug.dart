@@ -7,8 +7,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:astroyorumai/screens/birth_info_screen.dart';
 import 'package:astroyorumai/services/geocoding_service.dart';
 import 'package:astroyorumai/services/user_preferences_service.dart';
+import 'test/test_helpers.dart'; // Import shared test helpers
 
-import 'test/screens/birth_info_integration_widget_test.mocks.dart';
+import 'test/screens/birth_info_screen_test.mocks.dart';
 
 // Create a test widget that mimics BirthInfoScreen behavior
 class TestFormWidget extends StatefulWidget {
@@ -69,15 +70,11 @@ void main() {
     await tester.pump(Duration(milliseconds: 100));
     print('SnackBar count after delay: ${tester.widgetList(find.byType(SnackBar)).length}');
   });
-  
   testWidgets('Debug actual BirthInfoScreen method call', (WidgetTester tester) async {
-    final mockGeocodingService = MockGeocodingService();
+    final mockGeocodingService = SharedMockGeocodingService();
     final mockPreferencesService = MockUserPreferencesService();
     
-    when(mockGeocodingService.getCoordinates(any)).thenAnswer((_) async => {
-      'lat': 41.0082,
-      'lon': 28.9784,
-    });
+    // Set up preferences service mock behavior
     when(mockPreferencesService.saveUserBirthInfo(any)).thenAnswer((_) async {});
 
     await tester.pumpWidget(

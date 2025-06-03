@@ -6,6 +6,7 @@ import '../services/geocoding_service.dart';
 import '../services/user_preferences_service.dart';
 import 'package:intl/intl.dart';
 import '../widgets/loading_indicator.dart';
+import 'dart:developer' as log;
 
 class BirthInfoScreen extends StatefulWidget {
   final UserBirthInfo? initialBirthInfo;
@@ -132,32 +133,28 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
       });
     }
   }
-
   Future<void> _handleFormSubmission() async {
-    print('=== DEBUG: _handleFormSubmission called ===');
+    log.log('=== DEBUG: _handleFormSubmission called ===');
     FocusScope.of(context).unfocus();
 
     // Basic required field checks first
     if (_nameController.text.trim().isEmpty) {
-      print('DEBUG: Name is empty');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lütfen adınızı ve soyadınızı girin.')),
+      log.log('DEBUG: Name is empty');      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Lütfen adınızı ve soyadınızı girin.')),
       );
       return;
     }
 
     if (_selectedDate == null) {
-      print('DEBUG: Date is null');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lütfen doğum tarihinizi seçin.')),
+      log.log('DEBUG: Date is null');    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Lütfen doğum tarihinizi seçin.')),
       );
       return;
     }
 
     if (_selectedTime == null) {
-      print('DEBUG: Time is null');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lütfen doğum saatinizi seçin. Astroloji haritası hesaplaması için bu bilgi gereklidir.')),
+      log.log('DEBUG: Time is null');      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Lütfen doğum saatinizi seçin. Astroloji haritası hesaplaması için bu bilgi gereklidir.')),
       );
       return;
     }
@@ -204,18 +201,15 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
           // SnackBar for success will be shown after validation below
         } else {
           // Geocoding failed to find coordinates (not an exception)
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Doğum yeri için koordinatlar bulunamadı. Lütfen yeri kontrol edin veya enlem/boylam bilgilerini manuel olarak girin.')),
+          if (mounted) {            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Doğum yeri için koordinatlar bulunamadı. Lütfen yeri kontrol edin veya enlem/boylam bilgilerini manuel olarak girin.')),
             );
           }
           // geocodingSuccess remains false
-        }
-      } catch (e) {
-        print("Geocoding error in BirthInfoScreen: $e");
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Koordinatlar alınırken bir hata oluştu. Lütfen internet bağlantınızı kontrol edin veya enlem/boylam bilgilerini manuel olarak girin.')),
+        }      } catch (e) {
+        log.log("Geocoding error in BirthInfoScreen: $e");
+        if (mounted) {          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Koordinatlar alınırken bir hata oluştu. Lütfen internet bağlantınızı kontrol edin veya enlem/boylam bilgilerini manuel olarak girin.')),
           );
         }
         // geocodingSuccess remains false
@@ -241,26 +235,23 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
       if (!_formKey.currentState!.validate()) {
         // Validation of geocoded coordinates failed. _isProcessing is false.
         // Errors are displayed by the form.
-        if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Otomatik doldurulan enlem/boylam değerleri geçersiz. Lütfen kontrol edin veya manuel olarak düzeltin.')),
+        if (mounted) {            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Otomatik doldurulan enlem/boylam değerleri geçersiz. Lütfen kontrol edin veya manuel olarak düzeltin.')),
             );
         }
         return; 
       } else {
         // Geocoded coordinates are valid. Show success message for geocoding.
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Doğum yeri koordinatları bulundu ve otomatik olarak dolduruldu. Gerekirse düzenleyebilirsiniz.')),
+        if (mounted) {          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Doğum yeri koordinatları bulundu ve otomatik olarak dolduruldu. Gerekirse düzenleyebilirsiniz.')),
           );
         }
         // Proceed to final submission steps. _isProcessing is currently false.
         // The code further down will set _isProcessing = true for the save operation.
       }
     } else if (birthPlace.isEmpty && !manualCoordsProvided) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Lütfen doğum yerini veya enlem/boylam bilgilerini girin.')),
+      if (mounted) {        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Lütfen doğum yerini veya enlem/boylam bilgilerini girin.')),
         );
       }
       return;
@@ -286,16 +277,14 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
 
     try {
       await _prefsService.saveUserBirthInfo(birthInfo); // Save the birth info
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Doğum bilgileriniz kaydedildi.')),
+      if (mounted) {        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Doğum bilgileriniz kaydedildi.')),
         );
-      }
-    } catch (e) {
-      print("Error saving birth info: $e");
+      }    } catch (e) {
+      log.log("Error saving birth info: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Doğum bilgileriniz kaydedilirken bir hata oluştu.')),
+          const SnackBar(content: Text('Doğum bilgileriniz kaydedilirken bir hata oluştu.')),
         );
       }
     }
@@ -415,10 +404,9 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
                       if (lat < -90 || lat > 90) {
                         return 'Enlem -90 ile 90 arasında olmalıdır';
                       }
-                      return null;
-                    },
+                      return null;                    },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: _longitudeController,
                     decoration: InputDecoration(labelText: 'Boylam (Longitude)', hintText: 'Örn: 32.866287'),
@@ -434,17 +422,15 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
                       if (lon < -180 || lon > 180) {
                         return 'Boylam -180 ile 180 arasında olmalıdır';
                       }
-                      return null;
-                    },
+                      return null;                    },
                   ),
-                  SizedBox(height: 30),
-                  ElevatedButton(
-                    key: const Key('submit_button'),
+                  const SizedBox(height: 30),
+                  ElevatedButton(                    key: const Key('submit_button'),
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     onPressed: _isProcessing ? null : _handleFormSubmission,
-                    child: Text('Natal Haritamı Hesapla', style: TextStyle(fontSize: 16)),
+                    child: const Text('Natal Haritamı Hesapla', style: TextStyle(fontSize: 16)),
                   ),
                 ],
               ),

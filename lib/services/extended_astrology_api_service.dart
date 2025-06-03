@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:developer' as log;
 
 class ExtendedAstrologyApiService {
   static const String _baseUrl = 'https://aztro.sameerkumar.website';
@@ -13,9 +14,8 @@ class ExtendedAstrologyApiService {
       final response = await http.post(url);
       if (response.statusCode == 200) {
         return json.decode(response.body) as Map<String, dynamic>;
-      }
-    } catch (e) {
-      print('Horoscope API error: $e');
+      }    } catch (e) {
+      log.log('Horoscope API error: $e');
     }
     return null;
   }

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Turkish Conversion Test</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h2>🧪 Turkish Conversion Test</h2>
+    <div id="output"></div>
+    
+    <script>
+        async function testTurkishConversion() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<p>Testing API...</p>';
+            
+            try {
+                const response = await fetch('https://astroyorumai-api.onrender.com/natal', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "date": "1990-06-15",
+                        "time": "14:30",
+                        "latitude": 41.0082,
+                        "longitude": 28.9784
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('API Response:', data);
+                    
+                    // Turkish mapping
+                    const planetMap = {
+                        'Sun': 'Güneş',
+                        'Moon': 'Ay',
+                        'Mercury': 'Merkür',
+                        'Venus': 'Venüs',
+                        'Mars': 'Mars',
+                        'Jupiter': 'Jüpiter',
+                        'Saturn': 'Satürn'
+                    };
+                    
+                    const signMap = {
+                        'Aries': 'Koç', 'Taurus': 'Boğa', 'Gemini': 'İkizler',
+                        'Cancer': 'Yengeç', 'Leo': 'Aslan', 'Virgo': 'Başak',
+                        'Libra': 'Terazi', 'Scorpio': 'Akrep', 'Sagittarius': 'Yay',
+                        'Capricorn': 'Oğlak', 'Aquarius': 'Kova', 'Pisces': 'Balık'
+                    };
+                    
+                    let html = '<h3>✅ API Response Success</h3>';
+                    html += '<h4>🌟 Original Planets:</h4><ul>';
+                    
+                    const planets = data.planets || {};
+                    for (const [planetName, planetData] of Object.entries(planets)) {
+                        const sign = planetData.sign || 'N/A';
+                        const deg = planetData.deg || 'N/A';
+                        html += `<li><strong>${planetName}</strong>: ${sign} (${deg}°)</li>`;
+                    }
+                    html += '</ul>';
+                    
+                    html += '<h4>🇹🇷 Turkish Converted:</h4><ul>';
+                    for (const [planetName, planetData] of Object.entries(planets)) {
+                        const turkishPlanet = planetMap[planetName] || planetName;
+                        const sign = planetData.sign || 'N/A';
+                        const turkishSign = signMap[sign] || sign;
+                        const deg = planetData.deg || 'N/A';
+                        html += `<li><strong>${turkishPlanet}</strong>: ${turkishSign} (${deg}°)</li>`;
+                    }
+                    html += '</ul>';
+                    
+                    const ascendant = data.ascendant || 'N/A';
+                    const turkishAscendant = signMap[ascendant] || ascendant;
+                    html += `<h4>🔮 Ascendant: ${ascendant} → ${turkishAscendant}</h4>`;
+                    
+                    output.innerHTML = html;
+                } else {
+                    output.innerHTML = `<p>❌ API Error: ${response.status}</p>`;
+                }
+            } catch (error) {
+                output.innerHTML = `<p>❌ Error: ${error.message}</p>`;
+                console.error('Error:', error);
+            }
+        }
+        
+        // Test on page load
+        testTurkishConversion();
+    </script>
+</body>
+</html>

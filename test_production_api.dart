@@ -1,15 +1,15 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 
 /// Test script to check if the production API is working
 void main() async {
-  print('🚀 Testing Production API on Render.com');
-  print('=====================================');
+  developer.log('🚀 Testing Production API on Render.com');
+  developer.log('=====================================');
   
   const productionUrl = 'https://astroyorumai-api.onrender.com';
-  
-  // Test 1: Health Check
-  print('\n📡 1. Testing Health Endpoint...');
+    // Test 1: Health Check
+  developer.log('\n📡 1. Testing Health Endpoint...');
   try {
     final healthUrl = Uri.parse('$productionUrl/health');
     final healthResponse = await http.get(healthUrl).timeout(
@@ -17,21 +17,20 @@ void main() async {
     );
     
     if (healthResponse.statusCode == 200) {
-      print('✅ Health Check: SUCCESS');
-      print('   Status: ${healthResponse.statusCode}');
-      print('   Response: ${healthResponse.body}');
+      developer.log('✅ Health Check: SUCCESS');
+      developer.log('   Status: ${healthResponse.statusCode}');
+      developer.log('   Response: ${healthResponse.body}');
     } else {
-      print('❌ Health Check: FAILED');
-      print('   Status: ${healthResponse.statusCode}');
-      print('   Response: ${healthResponse.body}');
+      developer.log('❌ Health Check: FAILED');
+      developer.log('   Status: ${healthResponse.statusCode}');
+      developer.log('   Response: ${healthResponse.body}');
     }
   } catch (e) {
-    print('❌ Health Check: ERROR');
-    print('   Error: $e');
+    developer.log('❌ Health Check: ERROR');
+    developer.log('   Error: $e');
   }
-  
-  // Test 2: Natal Chart Endpoint
-  print('\n🔮 2. Testing Natal Chart Endpoint...');
+    // Test 2: Natal Chart Endpoint
+  developer.log('\n🔮 2. Testing Natal Chart Endpoint...');
   try {
     final natalUrl = Uri.parse('$productionUrl/natal');
     final natalResponse = await http.post(
@@ -46,32 +45,31 @@ void main() async {
     ).timeout(const Duration(seconds: 30));
     
     if (natalResponse.statusCode == 200) {
-      print('✅ Natal Chart: SUCCESS');
-      print('   Status: ${natalResponse.statusCode}');
+      developer.log('✅ Natal Chart: SUCCESS');
+      developer.log('   Status: ${natalResponse.statusCode}');
       
       final responseData = json.decode(natalResponse.body);
-      print('   Response Keys: ${responseData.keys.toList()}');
+      developer.log('   Response Keys: ${responseData.keys.toList()}');
       
       if (responseData.containsKey('planets')) {
         final planets = responseData['planets'] as Map<String, dynamic>;
-        print('   Planets found: ${planets.keys.take(3).join(', ')}...');
+        developer.log('   Planets found: ${planets.keys.take(3).join(', ')}...');
       }
       
       if (responseData.containsKey('ascendant')) {
-        print('   Ascendant: ${responseData['ascendant']}');
+        developer.log('   Ascendant: ${responseData['ascendant']}');
       }
     } else {
-      print('❌ Natal Chart: FAILED');
-      print('   Status: ${natalResponse.statusCode}');
-      print('   Response: ${natalResponse.body}');
+      developer.log('❌ Natal Chart: FAILED');
+      developer.log('   Status: ${natalResponse.statusCode}');
+      developer.log('   Response: ${natalResponse.body}');
     }
   } catch (e) {
-    print('❌ Natal Chart: ERROR');
-    print('   Error: $e');
+    developer.log('❌ Natal Chart: ERROR');
+    developer.log('   Error: $e');
   }
-  
-  // Test 3: Response Time Check
-  print('\n⏱️  3. Testing Response Times...');
+    // Test 3: Response Time Check
+  developer.log('\n⏱️  3. Testing Response Times...');
   try {
     final stopwatch = Stopwatch()..start();
     final healthUrl = Uri.parse('$productionUrl/health');
@@ -79,21 +77,20 @@ void main() async {
     stopwatch.stop();
     
     final responseTime = stopwatch.elapsedMilliseconds;
-    print('✅ Response Time: ${responseTime}ms');
+    developer.log('✅ Response Time: ${responseTime}ms');
     
     if (responseTime < 2000) {
-      print('   Performance: EXCELLENT (< 2s)');
+      developer.log('   Performance: EXCELLENT (< 2s)');
     } else if (responseTime < 5000) {
-      print('   Performance: GOOD (< 5s)');
+      developer.log('   Performance: GOOD (< 5s)');
     } else {
-      print('   Performance: SLOW (> 5s) - Consider optimization');
-    }
-  } catch (e) {
-    print('❌ Response Time Test: ERROR');
-    print('   Error: $e');
+      developer.log('   Performance: SLOW (> 5s) - Consider optimization');
+    }} catch (e) {
+    developer.log('❌ Response Time Test: ERROR');
+    developer.log('   Error: $e');
   }
   
-  print('\n=====================================');
-  print('🏁 Production API Test Complete');
-  print('=====================================');
+  developer.log('\n=====================================');
+  developer.log('🏁 Production API Test Complete');
+  developer.log('=====================================');
 }

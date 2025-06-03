@@ -2,8 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:astroyorumai/screens/astrology_calendar_screen.dart';
-import 'package:astroyorumai/models/celestial_event.dart';
-import 'package:astroyorumai/services/astrology_calendar_service.dart';
 import '../test_helpers.dart';
 
 void main() {

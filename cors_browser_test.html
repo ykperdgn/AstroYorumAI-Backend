@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AstroYorumAI CORS Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>AstroYorumAI CORS Test</h1>
+    <p>Bu test deployed API'nin CORS configuration'ını browser'da test eder.</p>
+    
+    <button onclick="testStatus()">Test /status endpoint</button>
+    <button onclick="testHealth()">Test /health endpoint</button>
+    <button onclick="testNatalChart()">Test /natal-chart endpoint</button>
+    <button onclick="clearResults()">Clear Results</button>
+    
+    <div id="results"></div>
+
+    <script>
+        function addResult(message, success = true) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${success ? 'success' : 'error'}`;
+            div.innerHTML = `<strong>[${new Date().toLocaleTimeString()}]</strong> ${message}`;
+            results.appendChild(div);
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        async function testStatus() {
+            try {
+                addResult('Testing /status endpoint...', true);
+                const response = await fetch('https://astroyorumai-api.onrender.com/status', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`✅ /status SUCCESS: ${JSON.stringify(data)}`, true);
+                } else {
+                    addResult(`❌ /status FAILED: HTTP ${response.status} - ${response.statusText}`, false);
+                }
+            } catch (error) {
+                addResult(`❌ /status ERROR: ${error.message}`, false);
+            }
+        }
+
+        async function testHealth() {
+            try {
+                addResult('Testing /health endpoint...', true);
+                const response = await fetch('https://astroyorumai-api.onrender.com/health', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`✅ /health SUCCESS: ${JSON.stringify(data)}`, true);
+                } else {
+                    addResult(`❌ /health FAILED: HTTP ${response.status} - ${response.statusText}`, false);
+                }
+            } catch (error) {
+                addResult(`❌ /health ERROR: ${error.message}`, false);
+            }
+        }
+
+        async function testNatalChart() {
+            try {
+                addResult('Testing /natal-chart endpoint...', true);
+                const testData = {
+                    birth_date: "1990-01-15",
+                    birth_time: "14:30",
+                    latitude: 41.0082,
+                    longitude: 28.9784,
+                    timezone: "Europe/Istanbul"
+                };
+
+                const response = await fetch('https://astroyorumai-api.onrender.com/natal-chart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`✅ /natal-chart SUCCESS: Received ${Object.keys(data.planets || {}).length} planets data`, true);
+                } else {
+                    addResult(`❌ /natal-chart FAILED: HTTP ${response.status} - ${response.statusText}`, false);
+                }
+            } catch (error) {
+                addResult(`❌ /natal-chart ERROR: ${error.message}`, false);
+            }
+        }
+
+        // Test on page load
+        window.onload = function() {
+            addResult('🚀 CORS Test Page Loaded - Click buttons to test API endpoints', true);
+        };
+    </script>
+</body>
+</html>

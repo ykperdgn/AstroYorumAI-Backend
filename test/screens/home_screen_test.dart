@@ -5,7 +5,6 @@ import 'package:astroyorumai/screens/profile_management_screen.dart';
 import 'package:astroyorumai/services/profile_management_service.dart';
 import 'package:astroyorumai/models/user_profile.dart';
 import 'package:mockito/mockito.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../test_helpers.dart';
 
 class MockProfileManagementService extends Mock implements ProfileManagementService {}

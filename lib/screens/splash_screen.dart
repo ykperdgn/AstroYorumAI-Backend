@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'home_screen.dart'; // Kept for now, but direct navigation might change
 import 'birth_info_screen.dart';
 import 'natal_chart_screen.dart';
 import 'api_test_screen.dart';
@@ -30,10 +29,9 @@ class _SplashScreenState extends State<SplashScreen> {
     _prefsService = widget.preferencesService ?? UserPreferencesService();
     _checkSavedInfoAndNavigate();
   }
-
   Future<void> _checkSavedInfoAndNavigate() async {
     // Wait for a couple of seconds for the splash screen to be visible
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     if (!mounted) return; // Check if the widget is still in the tree
 
@@ -76,27 +74,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
+      body: Center(        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.star_border_purple500_outlined, size: 120, color: Colors.deepPurpleAccent),
-            SizedBox(height: 24),
-            Text(
-              'AstroYorum AI', // Updated App Name
+            const Icon(Icons.star_border_purple500_outlined, size: 120, color: Colors.deepPurpleAccent),
+            const SizedBox(height: 24),
+            const Text(              'AstroYorum AI', // Updated App Name
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.deepPurple),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Text(
               'Gökyüzü Rehberiniz', // Subtitle
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
             ),
-            SizedBox(height: 30),
-            CircularProgressIndicator(color: Colors.deepPurpleAccent),
+            const SizedBox(height: 30),
+            const CircularProgressIndicator(color: Colors.deepPurpleAccent),
           ],
         ),
-      ),
-      // Debug: API Test Button (only in debug mode)
+      ),      // Debug: API Test Button (only in debug mode)
       floatingActionButton: kDebugMode 
         ? FloatingActionButton(
             onPressed: () {
@@ -105,9 +100,9 @@ class _SplashScreenState extends State<SplashScreen> {
                 MaterialPageRoute(builder: (context) => const ApiTestScreen()),
               );
             },
-            child: const Icon(Icons.api),
             backgroundColor: Colors.orange,
             tooltip: 'Test Production API',
+            child: const Icon(Icons.api),
           )
         : null,
     );

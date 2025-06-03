@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -11,18 +10,17 @@ import '../models/celestial_event.dart';
 import 'package:intl/intl.dart';
 
 class ExportShareService {
-  // Platform-safe share methods - stub implementation for desktop
-  static Future<void> _shareFiles(List<String> filePaths, {String? text, String? subject}) async {
+  // Platform-safe share methods - stub implementation for desktop  static Future<void> _shareFiles(List<String> filePaths, {String? text, String? subject}) async {
     // Stub implementation for desktop platforms
-    print('Would share files: ${filePaths.join(', ')}');
-    if (text != null) print('Text: $text');
-    if (subject != null) print('Subject: $subject');
+    log.log('Would share files: ${filePaths.join(', ')}');
+    if (text != null) log.log('Text: $text');
+    if (subject != null) log.log('Subject: $subject');
   }
 
   static Future<void> _shareText(String text, {String? subject}) async {
     // Stub implementation for desktop platforms
-    print('Would share text: $text');
-    if (subject != null) print('Subject: $subject');
+    log.log('Would share text: $text');
+    if (subject != null) log.log('Subject: $subject');
   }// Unicode font support for Turkish characters
   static Future<pw.Font?> _getTurkishFont() async {
     try {
@@ -34,11 +32,10 @@ class ExportShareService {
       // If DejaVu Sans is not available, try Roboto
       try {
         final robotoData = await rootBundle.load('fonts/Roboto-Regular.ttf');
-        return pw.Font.ttf(robotoData);
-      } catch (e2) {
+        return pw.Font.ttf(robotoData);      } catch (e2) {
         // If no custom fonts are available, return null to use PDF default
         // The PDF package's default font should handle most Turkish characters
-        print('Custom font loading failed, using PDF default font for Turkish characters');
+        log.log('Custom font loading failed, using PDF default font for Turkish characters');
         return null;
       }
     }  }
@@ -52,16 +49,15 @@ class ExportShareService {
     final pdf = pw.Document();
     
     // Load Turkish font for Unicode support
-    pw.Font? turkishFont;
-    try {
+    pw.Font? turkishFont;    try {
       turkishFont = await _getTurkishFont();
       if (turkishFont != null) {
-        print('Successfully loaded Turkish font for PDF');
+        log.log('Successfully loaded Turkish font for PDF');
       } else {
-        print('Using PDF default font (should support basic Turkish characters)');
+        log.log('Using PDF default font (should support basic Turkish characters)');
       }
     } catch (e) {
-      print('Font loading failed, using PDF default font: $e');
+      log.log('Font loading failed, using PDF default font: $e');
       turkishFont = null;
     }
     
@@ -103,13 +99,12 @@ class ExportShareService {
     pw.Font? turkishFont;
     try {
       turkishFont = await _getTurkishFont();
-      if (turkishFont != null) {
-        print('Successfully loaded Turkish font for calendar PDF');
+      if (turkishFont != null) {        log.log('Successfully loaded Turkish font for calendar PDF');
       } else {
-        print('Using PDF default font for calendar (should support basic Turkish characters)');
+        log.log('Using PDF default font for calendar (should support basic Turkish characters)');
       }
     } catch (e) {
-      print('Font loading failed for calendar, using PDF default font: $e');
+      log.log('Font loading failed for calendar, using PDF default font: $e');
       turkishFont = null;
     }
     

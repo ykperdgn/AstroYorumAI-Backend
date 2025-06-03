@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_birth_info.dart';
+import 'dart:developer' as log;
 
 class UserPreferencesService {
   static const String _keyUserBirthInfo = 'userBirthInfo';
@@ -17,10 +18,9 @@ class UserPreferencesService {
       'birthPlace': birthInfo.birthPlace,
       'latitude': birthInfo.latitude,
       'longitude': birthInfo.longitude,
-    };
-    String jsonString = json.encode(birthInfoMap);
+    };    String jsonString = json.encode(birthInfoMap);
     await prefs.setString(_keyUserBirthInfo, jsonString);
-    print('UserBirthInfo saved: $jsonString');
+    log.log('UserBirthInfo saved: $jsonString');
   }
 
   Future<UserBirthInfo?> loadUserBirthInfo() async {
@@ -38,10 +38,9 @@ class UserPreferencesService {
         // Validate that essential fields are present and correctly typed
         if (birthDate != null &&
             birthInfoMap['birthTime'] is String &&
-            birthInfoMap['latitude'] is double &&
-            birthInfoMap['longitude'] is double) {
+            birthInfoMap['latitude'] is double &&            birthInfoMap['longitude'] is double) {
               
-          print('UserBirthInfo loaded: $birthInfoMap');
+          log.log('UserBirthInfo loaded: $birthInfoMap');
           return UserBirthInfo(
             name: birthInfoMap['name'] as String?, // Allow null name if not saved
             birthDate: birthDate,
@@ -49,26 +48,24 @@ class UserPreferencesService {
             birthPlace: birthInfoMap['birthPlace'] as String?,
             latitude: birthInfoMap['latitude'] as double,
             longitude: birthInfoMap['longitude'] as double,
-          );
-        } else {
-          print('UserBirthInfo loaded but failed validation. Data: $birthInfoMap');
+          );        } else {
+          log.log('UserBirthInfo loaded but failed validation. Data: $birthInfoMap');
           // Clear invalid data to prevent repeated load failures
           await clearUserBirthInfo();
           return null;
         }
       } catch (e) {
-        print('Error decoding UserBirthInfo: $e. Clearing invalid data.');
+        log.log('Error decoding UserBirthInfo: $e. Clearing invalid data.');
         await clearUserBirthInfo(); // Clear corrupted data
         return null;
       }
     }
-    print('No UserBirthInfo found in SharedPreferences.');
+    log.log('No UserBirthInfo found in SharedPreferences.');
     return null;
   }
-
   Future<void> clearUserBirthInfo() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_keyUserBirthInfo);
-    print('UserBirthInfo cleared from SharedPreferences.');
+    log.log('UserBirthInfo cleared from SharedPreferences.');
   }
 }

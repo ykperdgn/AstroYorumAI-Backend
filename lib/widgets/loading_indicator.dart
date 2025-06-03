@@ -8,15 +8,14 @@ class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({Key? key, this.message}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
+  Widget build(BuildContext context) {    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          CircularProgressIndicator(),
+          const CircularProgressIndicator(),
           if (message != null) ...[
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               message!,
               textAlign: TextAlign.center,

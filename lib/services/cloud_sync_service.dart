@@ -49,13 +49,11 @@ class CloudSyncService {
       };
 
       // Upload to Firestore
-      await _firestore.collection('users').doc(userId).set(userData, SetOptions(merge: true));
-
-      // Update local sync timestamp
+      await _firestore.collection('users').doc(userId).set(userData, SetOptions(merge: true));      // Update local sync timestamp
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_lastSyncKey, DateTime.now().toIso8601String());
 
-      print('Cloud sync completed successfully');
+      log.log('Cloud sync completed successfully');
     } catch (e) {
       throw Exception('Bulut senkronizasyonu başarısız: $e');
     }
@@ -71,9 +69,8 @@ class CloudSyncService {
       
       // Get data from Firestore
       final doc = await _firestore.collection('users').doc(userId).get();
-      
-      if (!doc.exists) {
-        print('No cloud data found for user');
+        if (!doc.exists) {
+        log.log('No cloud data found for user');
         return;
       }
 
@@ -105,13 +102,11 @@ class CloudSyncService {
         final prefs = await SharedPreferences.getInstance();
         final eventsJson = json.encode(events.map((e) => e.toJson()).toList());
         await prefs.setString('celestial_events', eventsJson);
-      }
-
-      // Update local sync timestamp
+      }      // Update local sync timestamp
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_lastSyncKey, DateTime.now().toIso8601String());
 
-      print('Cloud restore completed successfully');
+      log.log('Cloud restore completed successfully');
     } catch (e) {
       throw Exception('Bulut verisi geri yüklenemedi: $e');
     }
@@ -145,9 +140,8 @@ class CloudSyncService {
     try {
       if (await needsSync()) {
         await syncToCloud();
-      }
-    } catch (e) {
-      print('Auto sync failed: $e');
+      }    } catch (e) {
+      log.log('Auto sync failed: $e');
       // Don't throw error for auto sync to avoid blocking app startup
     }
   }
@@ -160,15 +154,14 @@ class CloudSyncService {
 
     try {
       final userId = _authService.currentUser!.uid;
-      
-      await _firestore
+        await _firestore
           .collection('users')
           .doc(userId)
           .collection('profiles')
           .doc(profile.id)
           .set(profile.toJson());
       
-      print('Profile backed up: ${profile.name}');
+      log.log('Profile backed up: ${profile.name}');
     } catch (e) {
       throw Exception('Profil yedeklenemedi: $e');
     }
@@ -239,12 +232,11 @@ class CloudSyncService {
           .doc(userId)
           .collection('profiles')
           .get();
-      
-      for (final doc in profilesQuery.docs) {
+        for (final doc in profilesQuery.docs) {
         await doc.reference.delete();
       }
       
-      print('All cloud data deleted');
+      log.log('All cloud data deleted');
     } catch (e) {
       throw Exception('Bulut verisi silinemedi: $e');
     }
@@ -298,10 +290,9 @@ class CloudSyncService {
 
       // Delete user document
       await _firestore.collection('users').doc(userId).delete();
-      
-      print('All cloud data deleted for user: $userId');
+          log.log('All cloud data deleted for user: $userId');
     } catch (e) {
-      print('Error deleting cloud data: $e');
+      log.log('Error deleting cloud data: $e');
       throw Exception('Failed to delete cloud data: $e');
     }
   }

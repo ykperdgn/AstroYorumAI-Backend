@@ -3,11 +3,13 @@ import '../services/auth_service.dart';
 import '../services/cloud_sync_service.dart';
 
 class AuthScreen extends StatefulWidget {
+  const AuthScreen({super.key});
+
   @override
-  _AuthScreenState createState() => _AuthScreenState();
+  AuthScreenState createState() => AuthScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class AuthScreenState extends State<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -68,9 +70,8 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Future<void> _resetPassword() async {
-    if (_emailController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+    if (_emailController.text.trim().isEmpty) {      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
           content: Text('Şifre sıfırlamak için e-posta adresini girin'),
           backgroundColor: Colors.orange,
         ),
@@ -79,9 +80,8 @@ class _AuthScreenState extends State<AuthScreen> {
     }
 
     try {
-      await AuthService.instance.sendPasswordResetEmail(_emailController.text.trim());
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      await AuthService.instance.sendPasswordResetEmail(_emailController.text.trim());      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
           content: Text('Şifre sıfırlama e-postası gönderildi'),
           backgroundColor: Colors.green,
         ),
@@ -103,9 +103,8 @@ class _AuthScreenState extends State<AuthScreen> {
         title: Text(_isSignUp ? 'Hesap Oluştur' : 'Giriş Yap'),
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
+      ),      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(

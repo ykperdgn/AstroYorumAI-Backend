@@ -138,22 +138,16 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
       });
     }
   }
-
   Future<void> _handleFormSubmission() async {
-    print('=== DEBUG: _handleFormSubmission called ===');
     FocusScope.of(context).unfocus();
 
     // Basic required field checks first
     if (_nameController.text.trim().isEmpty) {
-      print('DEBUG: Name is empty');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Lütfen adınızı ve soyadınızı girin.')),
       );
       return;
-    }
-
-    if (_selectedDate == null) {
-      print('DEBUG: Date is null');
+    }    if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Lütfen doğum tarihinizi seçin.')),
       );
@@ -161,7 +155,6 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
     }
 
     if (_selectedTime == null) {
-      print('DEBUG: Time is null');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Lütfen doğum saatinizi seçin. Astroloji haritası hesaplaması için bu bilgi gereklidir.')),
       );
@@ -214,11 +207,9 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Doğum yeri için koordinatlar bulunamadı. Lütfen yeri kontrol edin veya enlem/boylam bilgilerini manuel olarak girin.')),
             );
-          }
-          // geocodingSuccess remains false
+          }        // geocodingSuccess remains false
         }
       } catch (e) {
-        print("Geocoding error in BirthInfoScreen: $e");
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Koordinatlar alınırken bir hata oluştu. Lütfen internet bağlantınızı kontrol edin veya enlem/boylam bilgilerini manuel olarak girin.')),
@@ -296,9 +287,7 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Doğum bilgileriniz kaydedildi.')),
         );
-      }
-    } catch (e) {
-      print("Error saving birth info: $e");
+      }    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Doğum bilgileriniz kaydedilirken bir hata oluştu.')),
@@ -332,10 +321,8 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
         );
       }
     }
-  }
-  @override
+  }  @override
   Widget build(BuildContext context) {
-    print('DEBUG: build() called, _isProcessing = $_isProcessing');
     return Scaffold(
       appBar: AppBar(
         title: Text('Doğum Bilgilerini Girin'),

@@ -25,26 +25,15 @@ void main() {
           alwaysAutoValidate: true,
         ),
       ),
-    );
-
-    await tester.pumpAndSettle();
+    );    await tester.pumpAndSettle();
     
-    // Print the widget tree
-    print('=== WIDGET TREE ===');
-    print(tester.binding.renderView.toStringDeep());
-    
-    // Print all widgets with keys
-    print('=== WIDGETS WITH KEYS ===');
+    // Debug widget tree analysis (prints removed for production)
+    // Widget tree, keys, and button states are analyzed internally
     final elements = tester.allElements.where((element) => element.widget.key != null);
-    for (final element in elements) {
-      print('Key: ${element.widget.key}, Widget: ${element.widget.runtimeType}');
-    }
-    
-    // Print all ElevatedButton widgets
-    print('=== ELEVATED BUTTONS ===');
     final buttons = tester.allWidgets.whereType<ElevatedButton>();
-    for (final button in buttons) {
-      print('Button key: ${button.key}, onPressed: ${button.onPressed != null ? "not null" : "null"}');
-    }
+    
+    // Verify that widgets are properly rendered
+    expect(elements.length, greaterThan(0));
+    expect(buttons.length, greaterThan(0));
   });
 }

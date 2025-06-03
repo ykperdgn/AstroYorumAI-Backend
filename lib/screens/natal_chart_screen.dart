@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/astrology_api_service.dart';
 import '../services/extended_astrology_api_service.dart';
+import '../services/astrology_backend_service.dart' as backend;
 import '../services/export_share_service.dart';
 import '../models/planet_position.dart';
 import '../models/user_profile.dart';
@@ -47,12 +48,12 @@ class _NatalChartScreenState extends State<NatalChartScreen> {
     super.initState();
     _fetchNatalChartData();
   }
-
   Future<void> _fetchNatalChartData() async {
     setState(() {
       _isLoadingNatalChart = true;
       _errorMessage = null;
-    });
+    });    // Log configuration for debugging
+    // backend.AstrologyBackendService.logConfiguration();
 
     if (widget.birthTime == null || widget.birthTime!.isEmpty) {
       setState(() {
@@ -60,37 +61,39 @@ class _NatalChartScreenState extends State<NatalChartScreen> {
         _errorMessage = 'Doğum haritası için doğum saati gereklidir.';
       });
       return;
-    }
-
+    }    // Koordinat kontrolü ve default değerler
+    double latitude = widget.latitude ?? 41.0082; // Istanbul default
+    double longitude = widget.longitude ?? 28.9784; // Istanbul default
+    
     if (widget.latitude == null || widget.longitude == null) {
-      // Eğer koordinatlar yoksa (örneğin kullanıcı doğum yeri girmediyse veya geocoding başarısız olduysa)
-      // Kullanıcıya bilgi verip, belki varsayılan bir konumla devam etmeyi veya işlemi durdurmayı seçebiliriz.
-      // Şimdilik, koordinat yoksa hata mesajı gösteriyoruz.
-      setState(() {
-        _isLoadingNatalChart = false;
-        _errorMessage = 'Doğum haritası için doğum yeri koordinatları gereklidir. Lütfen doğum yerini girin.';
-      });
-      return;
+      // Using Istanbul default coordinates when location is not available
     }
 
     final String formattedDate = DateFormat('yyyy-MM-dd').format(widget.birthDate);
     
-    final chartData = await AstrologyBackendService.getNatalChart(
+    final chartData = await backend.AstrologyBackendService.getNatalChart(
       date: formattedDate,
       time: widget.birthTime!,
-      latitude: widget.latitude!, // Gerçek latitude kullanılıyor
-      longitude: widget.longitude!, // Gerçek longitude kullanılıyor
-    );
-
-    if (mounted) { // Widget ağaçta hala varsa state güncelle
+      latitude: latitude, // Default veya gerçek latitude
+      longitude: longitude, // Default veya gerçek longitude
+    );    if (mounted) { // Widget ağaçta hala varsa state güncelle
       setState(() {
         _natalChartData = chartData;
         _isLoadingNatalChart = false;
         if (chartData == null) {
-          _errorMessage = 'Doğum haritası verileri alınamadı. Backend API çalışıyor mu?';
+          _errorMessage = 'Doğum haritası verileri alınamadı. Backend API bağlantı sorunu.';
         } else if (chartData.containsKey('error')) {
-          _errorMessage = 'Harita hesaplama hatası: ${chartData['error']}';
-        } else {          // Natal chart verisi başarıyla alındıysa, Güneş burcunu buradan alıp günlük yorumu getir
+          // Enhanced error message handling
+          String detailedError = chartData['error'] ?? 'Bilinmeyen hata';
+          String userMessage = chartData['user_message'] ?? '';
+          String solution = chartData['solution'] ?? '';
+            _errorMessage = 'Harita hesaplama hatası: $detailedError';          if (userMessage.isNotEmpty) {
+            _errorMessage = '${_errorMessage ?? ''}\n\n$userMessage';
+          }
+          if (solution.isNotEmpty) {
+            _errorMessage = '${_errorMessage ?? ''}\n\nÇözüm: $solution';
+          }          
+        } else {// Natal chart verisi başarıyla alındıysa, Güneş burcunu buradan alıp günlük yorumu getir
           if (chartData != null && chartData['planets']?['Sun'] != null) {
             // Yeni format: chartData['planets']['Sun']['sign']
             var sunData = chartData['planets']['Sun'];

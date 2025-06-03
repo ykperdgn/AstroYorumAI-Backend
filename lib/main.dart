@@ -1,15 +1,18 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+// Firebase temporarily disabled for Windows testing
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/splash_screen.dart';
 import 'services/localization_service.dart';
 import 'l10n/app_localizations.dart';
-import 'config/firebase_config_production.dart';
+import 'dart:developer' as developer;
+// import 'config/firebase_config_production.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Temporarily disabled Firebase for testing
+  /*
   // Initialize Firebase with environment-specific configuration
   try {
     await Firebase.initializeApp(
@@ -24,16 +27,18 @@ void main() async {
     print('❌ Firebase initialization failed: $e');
     // Continue app execution even if Firebase fails
   }
-  
-  runApp(AstrolojiMasterApp());
+  */    developer.log('🚀 Starting AstroYorum AI without Firebase...');
+  developer.log('✨ Phase 1 testing mode active - UI and basic functions ready!');  developer.log('🧪 Testing mode: Hot reload ready');
+  runApp(const AstrolojiMasterApp());
 }
 
 class AstrolojiMasterApp extends StatefulWidget {
+  const AstrolojiMasterApp({super.key});
   @override
-  _AstrolojiMasterAppState createState() => _AstrolojiMasterAppState();
+  AstrolojiMasterAppState createState() => AstrolojiMasterAppState();
 }
 
-class _AstrolojiMasterAppState extends State<AstrolojiMasterApp> {
+class AstrolojiMasterAppState extends State<AstrolojiMasterApp> {
   Locale? _locale;
 
   @override
@@ -59,14 +64,12 @@ class _AstrolojiMasterAppState extends State<AstrolojiMasterApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Astroloji Master',
-      locale: _locale,
-      localizationsDelegates: [
+      locale: _locale,      localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [
+      ],supportedLocales: const [
         Locale('en', ''),
         Locale('tr', ''),
       ],
@@ -74,7 +77,7 @@ class _AstrolojiMasterAppState extends State<AstrolojiMasterApp> {
         primarySwatch: Colors.deepPurple,
         scaffoldBackgroundColor: Colors.white,
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple).copyWith(secondary: Colors.amber),
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           headlineSmall: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
           titleMedium: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
           bodyMedium: TextStyle(fontSize: 14.0),

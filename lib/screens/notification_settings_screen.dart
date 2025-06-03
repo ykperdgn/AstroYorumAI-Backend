@@ -5,6 +5,8 @@ import '../models/user_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
+  const NotificationSettingsScreen({Key? key}) : super(key: key);
+
   @override
   _NotificationSettingsScreenState createState() => _NotificationSettingsScreenState();
 }
@@ -12,11 +14,10 @@ class NotificationSettingsScreen extends StatefulWidget {
 class _NotificationSettingsScreenState extends State<NotificationSettingsScreen> {
   bool _dailyHoroscopeEnabled = false;
   bool _weeklyHoroscopeEnabled = false;
-  bool _celestialEventsEnabled = false;
-  
-  TimeOfDay _dailyTime = TimeOfDay(hour: 9, minute: 0);
+  bool _celestialEventsEnabled = false;  
+  TimeOfDay _dailyTime = const TimeOfDay(hour: 9, minute: 0);
   int _weeklyDay = 1; // Monday
-  TimeOfDay _weeklyTime = TimeOfDay(hour: 9, minute: 0);
+  TimeOfDay _weeklyTime = const TimeOfDay(hour: 9, minute: 0);
   
   UserProfile? _activeProfile;
   bool _isLoading = true;

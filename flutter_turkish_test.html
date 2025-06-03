@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroYorumAI - Türkçe Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .planet {
+            margin: 8px 0;
+            padding: 8px;
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 AstroYorumAI - Doğum Haritası (Türkçe Test)</h1>
+        
+        <form id="natalForm">
+            <div class="form-group">
+                <label for="name">İsim:</label>
+                <input type="text" id="name" value="Test Kullanıcı" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="date">Doğum Tarihi:</label>
+                <input type="date" id="date" value="1990-06-15" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="time">Doğum Saati:</label>
+                <input type="time" id="time" value="14:30" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="city">Doğum Yeri:</label>
+                <input type="text" id="city" value="İstanbul" required>
+            </div>
+            
+            <button type="submit">🔮 Doğum Haritası Oluştur</button>
+        </form>
+        
+        <div id="results" class="results" style="display: none;">
+            <h2>📊 Doğum Haritası Sonuçları</h2>
+            <div id="output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Turkish mappings
+        const planetNamesTR = {
+            'Sun': 'Güneş',
+            'Moon': 'Ay',
+            'Mercury': 'Merkür',
+            'Venus': 'Venüs',
+            'Mars': 'Mars',
+            'Jupiter': 'Jüpiter',
+            'Saturn': 'Satürn'
+        };
+
+        const signNamesTR = {
+            'Aries': 'Koç',
+            'Taurus': 'Boğa',
+            'Gemini': 'İkizler',
+            'Cancer': 'Yengeç',
+            'Leo': 'Aslan',
+            'Virgo': 'Başak',
+            'Libra': 'Terazi',
+            'Scorpio': 'Akrep',
+            'Sagittarius': 'Yay',
+            'Capricorn': 'Oğlak',
+            'Aquarius': 'Kova',
+            'Pisces': 'Balık'
+        };
+
+        // City coordinates (simplified)
+        const cityCoords = {
+            'İstanbul': { lat: 41.0082, lng: 28.9784 },
+            'Ankara': { lat: 39.9208, lng: 32.8541 },
+            'İzmir': { lat: 38.4192, lng: 27.1287 },
+            'Antalya': { lat: 36.8841, lng: 30.7056 }
+        };
+
+        function convertToTurkish(apiResponse) {
+            console.log('🔄 Converting to Turkish...', apiResponse);
+            
+            const converted = { ...apiResponse };
+            
+            // Convert planets
+            if (converted.planets) {
+                const turkishPlanets = {};
+                
+                for (const [planetName, planetData] of Object.entries(converted.planets)) {
+                    const turkishPlanetName = planetNamesTR[planetName] || planetName;
+                    
+                    if (typeof planetData === 'object' && planetData.sign) {
+                        const turkishSign = signNamesTR[planetData.sign] || planetData.sign;
+                        turkishPlanets[turkishPlanetName] = {
+                            ...planetData,
+                            sign: turkishSign,
+                            originalSign: planetData.sign
+                        };
+                    } else {
+                        turkishPlanets[turkishPlanetName] = planetData;
+                    }
+                }
+                
+                converted.planets = turkishPlanets;
+            }
+            
+            // Convert ascendant
+            if (converted.ascendant) {
+                converted.ascendant = signNamesTR[converted.ascendant] || converted.ascendant;
+            }
+            
+            converted.turkish_converted = true;
+            console.log('✅ Turkish conversion completed:', converted);
+            return converted;
+        }
+
+        async function calculateNatalChart(formData) {
+            const { date, time, city } = formData;
+            const coords = cityCoords[city] || cityCoords['İstanbul'];
+            
+            const requestData = {
+                date: date,
+                time: time,
+                latitude: coords.lat,
+                longitude: coords.lng
+            };
+            
+            console.log('🌐 API Request:', requestData);
+            
+            try {
+                const response = await fetch('https://astroyorumai-api.onrender.com/natal', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('📥 API Response:', data);
+                
+                // Convert to Turkish
+                const turkishData = convertToTurkish(data);
+                return turkishData;
+                
+            } catch (error) {
+                console.error('❌ API Error:', error);
+                throw error;
+            }
+        }
+
+        function displayResults(data, name) {
+            const output = document.getElementById('output');
+            
+            let html = `<h3>👤 ${name} için Doğum Haritası</h3>`;
+            
+            if (data.planets) {
+                html += '<h4>🌟 Gezegenler:</h4>';
+                
+                for (const [planetName, planetData] of Object.entries(data.planets)) {
+                    if (typeof planetData === 'object') {
+                        const sign = planetData.sign || 'Bilinmiyor';
+                        const deg = planetData.deg || 'N/A';
+                        const house = planetData.house || 'N/A';
+                        
+                        html += `
+                            <div class="planet">
+                                <strong>${planetName}</strong>: ${sign} (${deg}°)
+                                ${house !== 'N/A' ? ` - ${house}. Ev` : ''}
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            if (data.ascendant) {
+                html += `<h4>🔮 Yükselen Burç: ${data.ascendant}</h4>`;
+            }
+            
+            if (data.turkish_converted) {
+                html += '<p class="success">✅ Türkçe çeviri uygulandı!</p>';
+            }
+            
+            output.innerHTML = html;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        document.getElementById('natalForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const city = document.getElementById('city').value;
+            
+            const output = document.getElementById('output');
+            output.innerHTML = '<p class="loading">🔄 Doğum haritası hesaplanıyor...</p>';
+            document.getElementById('results').style.display = 'block';
+            
+            try {
+                const result = await calculateNatalChart({ date, time, city });
+                displayResults(result, name);
+            } catch (error) {
+                output.innerHTML = `
+                    <p class="error">❌ Hata: ${error.message}</p>
+                    <p>API'ye erişim sorunu olabilir. Lütfen tekrar deneyin.</p>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

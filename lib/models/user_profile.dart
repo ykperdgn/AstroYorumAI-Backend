@@ -9,7 +9,7 @@ class UserProfile {
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isDefault;
-
+  final bool isPro;
   UserProfile({
     required this.id,
     required this.name,
@@ -21,8 +21,8 @@ class UserProfile {
     required this.createdAt,
     required this.updatedAt,
     this.isDefault = false,
+    this.isPro = false,
   });
-
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -35,9 +35,9 @@ class UserProfile {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'isDefault': isDefault,
+      'isPro': isPro,
     };
   }
-
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
       id: json['id'],
@@ -50,9 +50,9 @@ class UserProfile {
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       isDefault: json['isDefault'] ?? false,
+      isPro: json['isPro'] ?? false,
     );
   }
-
   UserProfile copyWith({
     String? id,
     String? name,
@@ -64,6 +64,7 @@ class UserProfile {
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isDefault,
+    bool? isPro,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -76,12 +77,12 @@ class UserProfile {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isDefault: isDefault ?? this.isDefault,
+      isPro: isPro ?? this.isPro,
     );
   }
-
   @override
   String toString() {
-    return 'UserProfile(id: $id, name: $name, birthDate: $birthDate, isDefault: $isDefault)';
+    return 'UserProfile(id: $id, name: $name, birthDate: $birthDate, isDefault: $isDefault, isPro: $isPro)';
   }
 
   @override

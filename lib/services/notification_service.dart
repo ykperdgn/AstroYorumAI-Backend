@@ -3,7 +3,6 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'dart:io';
 import '../models/user_profile.dart';
-import 'astrology_api_service.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _notifications = 
@@ -40,11 +39,10 @@ class NotificationService {
 
     _initialized = true;
   }
-
   // Handle notification tap
   static void _onNotificationTapped(NotificationResponse response) {
     // Handle notification tap - can navigate to specific screens
-    print('Notification tapped: ${response.payload}');
+    log.log('Notification tapped: ${response.payload}');
   }
 
   // Request notification permissions
@@ -259,10 +257,9 @@ class NotificationService {
   static Future<String?> _getUserSunSign(UserProfile profile) async {
     try {
       // This would typically call your astrology API
-      // For now, we'll use a simple zodiac calculation
-      return _calculateZodiacSign(profile.birthDate);
+      // For now, we'll use a simple zodiac calculation    return _calculateZodiacSign(profile.birthDate);
     } catch (e) {
-      print('Error getting sun sign: $e');
+      log.log('Error getting sun sign: $e');
       return null;
     }
   }

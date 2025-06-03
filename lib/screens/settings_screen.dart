@@ -6,6 +6,8 @@ import 'auth_screen.dart';
 import 'package:intl/intl.dart';
 
 class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({Key? key}) : super(key: key);
+
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
@@ -29,10 +31,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _selectedLanguage = currentLocale.languageCode;
     });
   }
-
   Future<void> _signIn() async {
     final result = await Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => AuthScreen()),
+      MaterialPageRoute(builder: (context) => const AuthScreen()),
     );
     
     if (result == true) {
@@ -41,12 +42,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  Future<void> _signOut() async {
-    final confirmed = await showDialog<bool>(
+  Future<void> _signOut() async {    final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Çıkış Yap'),
-        content: Text('Hesabınızdan çıkış yapmak istediğinizden emin misiniz?'),
+        title: const Text('Çıkış Yap'),
+        content: const Text('Hesabınızdan çıkış yapmak istediğinizden emin misiniz?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
