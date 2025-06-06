@@ -161,14 +161,13 @@ def natal():
         
         # Flatlib'de geçerli planet isimleri
         planets_to_get = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn']
-        
-        # Her gezegen için hem burç hem derece bilgisini döndür
+          # Her gezegen için hem burç hem derece bilgisini döndür
         planet_positions = {}
         for p in planets_to_get:
             obj = chart.get(p)
             planet_positions[p] = {
                 'sign': obj.sign,
-                'degree': round(obj.lon, 2)  # Burç içi derece (0-30)
+                'deg': round(obj.lon, 2)  # Burç içi derece (0-30) - Flutter uyumlu field adı
             }
         
         # Yükselen için de aynı format
