@@ -8,7 +8,7 @@ import sys
 from datetime import datetime
 
 # Backend URL'leri
-PRODUCTION_URL = "https://astroyorumai-api.onrender.com"
+PRODUCTION_URL = "https://astroyorumai-backend-production.up.railway.app"
 AZTRO_API_URL = "https://aztro.sameerkumar.website"
 
 def test_health_check():

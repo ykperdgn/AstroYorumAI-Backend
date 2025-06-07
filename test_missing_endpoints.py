@@ -2,7 +2,7 @@ import requests
 import json
 
 def test_missing_endpoints():
-    base_url = "https://astroyorumai-api.onrender.com"
+    base_url = "https://astroyorumai-backend-production.up.railway.app"
     endpoints = ['/synastry', '/transit', '/solar-return', '/progression', '/horary', '/composite']
     
     print("Testing missing backend endpoints...")

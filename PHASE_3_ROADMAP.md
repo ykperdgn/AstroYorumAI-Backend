@@ -17,8 +17,8 @@
 
 ### 🏗️ **Milestone 1: Production Infrastructure (Hafta 1-2)**
 1. **🌐 Flask Backend Production Deployment**
-   - Flask app'i Render.com'a deploy edildi ✅
-   - Production URL: https://astroyorumai-api.onrender.com
+   - Flask app'i Railway.app'a deploy edildi ✅
+   - Production URL: https://astroyorumai-backend-production.up.railway.app
    - Environment variables (production config)
    - SSL certificate + domain setup
    - API endpoint güvenliği (rate limiting, auth)
@@ -83,7 +83,7 @@
 ### 🔧 **1. Backend Production Deployment**
 
 **Tech Stack:**
-- **Platform**: Render.com (önerilen - ücretsiz tier, kolay Flask CORS desteği)
+- **Platform**: Railway.app (önerilen - güvenilir, kolay Flask CORS desteği, iyi GitHub entegrasyonu)
 - **Database**: PostgreSQL (kullanıcı verileri + subscription tracking)
 - **Storage**: AWS S3 (PDF exports, user data backup)
 - **Monitoring**: Sentry (error tracking)
@@ -91,11 +91,11 @@
 **Implementation Steps:**
 ```bash
 # 1. Environment setup
-# Render.com dashboard'da yeni Web Service oluştur
+# Railway dashboard'da yeni Project oluştur
 # GitHub repository'yi bağla: AstroYorumAI-Backend
 # Auto-deploy aktif et
 
-# 2. Production config (Render Environment Variables)
+# 2. Production config (Railway Environment Variables)
 DATABASE_URL=postgresql://...
 STRIPE_SECRET_KEY=sk_live_...
 OPENAI_API_KEY=sk-...

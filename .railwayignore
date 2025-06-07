@@ -1,0 +1,11 @@
+# Railway Specific
+Dockerfile
+.dockerignore
+.git
+.gitignore
+README.md
+.env
+.env.*
+node_modules
+*.log
+*.tmp

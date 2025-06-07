@@ -48,7 +48,7 @@ health_status = {
 # Keep-alive function for free tier
 def keep_alive():
     """Keep the free tier service awake by pinging health endpoint every 14 minutes"""
-    keep_alive_url = os.environ.get('KEEP_ALIVE_URL', 'https://astroyorumai-backend.onrender.com/health')
+    keep_alive_url = os.environ.get('KEEP_ALIVE_URL', 'https://astroyorumai-backend-production.up.railway.app/health')
     while True:
         try:
             response = requests.get(keep_alive_url, timeout=30)

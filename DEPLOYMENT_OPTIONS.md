@@ -1,6 +1,6 @@
 # Quick Deployment Guide - AstroYorumAI API
 
-## Option 1: Render.com (Recommended - Free & Easy)
+## Option 1: Railway.app (Recommended - Fast & Reliable)
 
 ### 1. GitHub Repository Setup
 ```bash
@@ -15,24 +15,24 @@ git remote add origin https://github.com/YOUR_USERNAME/astroyorumai-api.git
 git push -u origin main
 ```
 
-### 2. Deploy on Render
-1. Go to [render.com](https://render.com)
+### 2. Deploy on Railway
+1. Go to [railway.app](https://railway.app)
 2. Sign up with GitHub account
-3. Click "New" → "Web Service"
+3. Click "New Project" → "Deploy from GitHub repo"
 4. Connect your GitHub repository
 5. Configure:
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `gunicorn astro_api:app`
+   - **Build Command**: Automatic (Nixpacks detects Python)
+   - **Start Command**: `gunicorn app:app`
    - **Environment**: Python 3
-   - **Plan**: Free
+   - **Plan**: Usage-based pricing
 
 ### 3. Environment Variables
-Add in Render dashboard:
+Add in Railway dashboard:
 - `FLASK_ENV=production`
-- `PORT=10000` (Render default)
+- `PORT=8080` (Railway default)
 
 ### Your API will be live at:
-`https://astroyorumai-api.onrender.com`
+`https://astroyorumai-backend-production.up.railway.app`
 
 ## Option 2: PythonAnywhere (Alternative)
 
@@ -42,7 +42,7 @@ Add in Render dashboard:
 
 ### 2. Upload Files
 - Use file manager to upload your Python files
-- Upload: astro_api.py, requirements.txt, Procfile
+- Upload: app.py, requirements.txt, Procfile
 
 ### 3. Create Web App
 - Go to Web tab
@@ -50,10 +50,10 @@ Add in Render dashboard:
 - Choose Flask
 - Configure WSGI file
 
-## Option 3: Railway (If Node.js available)
+## Option 3: Render.com (Alternative - Free Tier)
 
 ```bash
-# Install Railway CLI
+# For comparison - Render.com setup
 npm install -g @railway/cli
 
 # Deploy
