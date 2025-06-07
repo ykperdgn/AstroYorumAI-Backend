@@ -59,10 +59,10 @@ heroku create astroyorumai-api
 git push heroku main
 ```
 
-### Railway Alternative:
-1. Railway.app'e git
-2. GitHub ile bağlan
-3. Repository'yi deploy et
+### Alternative Deployment Options:
+1. Render.com (currently used) ✅
+2. Heroku (paid plans only)
+3. DigitalOcean App Platform
 
 ## Troubleshooting
 

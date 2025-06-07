@@ -58,9 +58,8 @@ services:
 # Database Configuration (Free Alternative)
 # Note: For free testing, use external free database services:
 # 1. Supabase (2 free projects)
-# 2. PlanetScale (1 free database)
-# 3. Railway PostgreSQL (temporary free tier)
-# 4. ElephantSQL (20MB free PostgreSQL)
+# 2. PlanetScale (1 free database)  
+# 3. ElephantSQL (20MB free PostgreSQL)
 
 # Uncomment when ready for paid database:
 # databases:

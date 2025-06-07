@@ -17,7 +17,8 @@
 
 ### 🏗️ **Milestone 1: Production Infrastructure (Hafta 1-2)**
 1. **🌐 Flask Backend Production Deployment**
-   - Flask app'i Render/Railway/DigitalOcean'a deploy
+   - Flask app'i Render.com'a deploy edildi ✅
+   - Production URL: https://astroyorumai-api.onrender.com
    - Environment variables (production config)
    - SSL certificate + domain setup
    - API endpoint güvenliği (rate limiting, auth)
@@ -82,7 +83,7 @@
 ### 🔧 **1. Backend Production Deployment**
 
 **Tech Stack:**
-- **Platform**: Railway.app (önerilen - kolay Flutter CORS desteği)
+- **Platform**: Render.com (önerilen - ücretsiz tier, kolay Flask CORS desteği)
 - **Database**: PostgreSQL (kullanıcı verileri + subscription tracking)
 - **Storage**: AWS S3 (PDF exports, user data backup)
 - **Monitoring**: Sentry (error tracking)
@@ -90,11 +91,11 @@
 **Implementation Steps:**
 ```bash
 # 1. Environment setup
-railway login
-railway init astroyorumai-backend
-railway add postgresql
+# Render.com dashboard'da yeni Web Service oluştur
+# GitHub repository'yi bağla: AstroYorumAI-Backend
+# Auto-deploy aktif et
 
-# 2. Production config
+# 2. Production config (Render Environment Variables)
 DATABASE_URL=postgresql://...
 STRIPE_SECRET_KEY=sk_live_...
 OPENAI_API_KEY=sk-...
@@ -182,7 +183,7 @@ class AIAstrologyService {
 
 | Kategori | Aylık Maliyet | Açıklama |
 |----------|---------------|-----------|
-| **Railway.app Hosting** | $20/month | Backend + Database |
+| **Render.com Hosting** | $7/month | Backend Web Service (Starter Plan) |
 | **Stripe Transaction Fees** | %2.9 + $0.30 | Per transaction |
 | **OpenAI API** | $50/month | ChatGPT API calls |
 | **Apple Developer** | $99/year | iOS App Store |
@@ -198,10 +199,11 @@ Hemen başlayabileceğimiz en kritik görev:
 
 ### 🚀 **ADIM 1: Backend Production Deploy**
 ```bash
-# Railway.app ile hızlı deployment
-railway login
-railway init astroyorumai-backend
-railway up
+# Render.com ile production deployment
+# 1. GitHub repository connect et: AstroYorumAI-Backend
+# 2. Web Service oluştur (Free tier)
+# 3. Auto-deploy from main branch aktif
+# 4. Production URL: https://astroyorumai-api.onrender.com
 ```
 
 Bu işlem tamamlandıktan sonra:

@@ -34,7 +34,7 @@
 2. **Alternative Deployment**: If Render continues to have issues:
    - Deploy to Heroku as backup
    - Use Vercel for serverless deployment
-   - Consider Railway.app
+   - Consider Heroku (paid)
 
 3. **Local Testing**: Verify flatlib works locally before redeploying
 
