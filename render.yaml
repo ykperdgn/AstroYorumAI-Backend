@@ -1,17 +1,67 @@
+# ========================================
+# Render.com Deployment Configuration
+# AstroYorumAI Backend Service
+# ========================================
+
 services:
   - type: web
-    name: astroyorumai-api
+    name: astroyorumai-backend
     env: python
-    plan: free
-    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
-    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app --timeout 120 --workers 1
+    region: frankfurt  # EU region for better performance
+    plan: starter  # Can upgrade to standard/pro later
+    branch: main
+    
+    # Build Configuration
+    buildCommand: |
+      pip install --upgrade pip &&
+      pip install -r requirements.txt
+    
+    # Start Configuration
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app --timeout 120 --workers 2 --worker-class gevent
+    
+    # Environment Variables
     envVars:
       - key: FLASK_ENV
         value: production
+      - key: FLASK_DEBUG
+        value: false
       - key: SECRET_KEY
         generateValue: true
+      - key: PORT
+        value: 8080
+      - key: HOST
+        value: 0.0.0.0
+      - key: WEB_CONCURRENCY
+        value: 2
+      - key: PYTHONUNBUFFERED
+        value: 1
+      - key: API_VERSION
+        value: 2.1.3
+      - key: LOG_LEVEL
+        value: INFO
       - key: CORS_ORIGINS
-        value: "*"
+        value: "https://astroyorumai.com,https://www.astroyorumai.com"
+      # Additional environment variables should be added through Render dashboard:
+      # - DATABASE_URL (from connected PostgreSQL database)
+      # - STRIPE_PUBLISHABLE_KEY
+      # - STRIPE_SECRET_KEY
+      # - STRIPE_WEBHOOK_SECRET
+      # - OPENAI_API_KEY
+      # - SENTRY_DSN
+    
+    # Health Check
     healthCheckPath: /health
-    region: oregon
-    branch: main
+    
+    # Disk Storage
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
+
+# Database Configuration
+databases:
+  - name: astroyorumai-postgres
+    databaseName: astroyorumai
+    user: astroyorumai_user
+    region: frankfurt
+    plan: starter

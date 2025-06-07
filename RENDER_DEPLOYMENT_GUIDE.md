@@ -1,9 +1,20 @@
-# Render.com Deployment Troubleshooting Guide
+# 🚀 Render.com Deployment Guide for AstroYorumAI
 
-## Current Status
-The AstroYorumAI backend is pushed to GitHub but not responding on Render.com. Here's how to complete the deployment:
+## 📋 Environment Setup Complete
 
-## Step 1: Manual Render.com Deployment
+### ✅ Updated Files
+- `.env.render` - Render-specific production environment
+- `.env.development` - Clean development environment  
+- `.env.example` - Updated example with clear instructions
+- `.env.production` - Updated production environment
+- `render.yaml` - Optimized Render Blueprint configuration
+
+### ✅ Railway Cleanup Complete
+- All Railway references removed
+- Environment variables updated for Render
+- Clean codebase ready for new deployment
+
+## 🔧 Deployment Steps
 1. Go to [Render.com](https://render.com)
 2. Sign in/Sign up with your GitHub account
 3. Click "New +" and select "Web Service"
