@@ -1,13 +1,14 @@
-# 🚀 GitHub Production Environment Setup - Step by Step
+# 🚂 GitHub Production Environment Setup for Railway - Complete Guide
 
 ## 🎯 Objective
-Create a new "production" environment in GitHub with proper secrets configuration for Render.com deployment.
+Create a new "production" environment in GitHub with proper secrets configuration for Railway.app deployment.
 
 ## 📋 Prerequisites
 - ✅ GitHub repository: AstroYorumAI
-- ✅ Production API running: https://astroyorumai-api.onrender.com
-- ✅ Render.com service deployed and working
-- ✅ Railway references cleaned from codebase
+- ✅ Railway account created (railway.app)
+- ✅ Railway CLI installed (`npm install -g @railway/cli`)
+- ✅ Railway deployment files ready (railway.toml, railway.json)
+- ✅ Migration from Render.com completed
 
 ## 🔧 Step-by-Step GitHub Environment Setup
 
@@ -57,29 +58,28 @@ Value: 0.0.0.0
 ```
 
 #### 🗄️ Database Configuration
-Choose one option and add the secret:
-
 ```bash
-# Option 1: Supabase (Recommended - Free 500MB)
+# Railway PostgreSQL (Recommended - Built-in)
 Name: DATABASE_URL
-Value: postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres
+Value: postgresql://postgres:[password]@[host]:5432/railway
 
-# Option 2: Render PostgreSQL (Paid)
-Name: DATABASE_URL  
-Value: postgresql://[user]:[password]@[host]/[database]
+# Alternative Options:
+# Supabase (Free 500MB)
+# Name: DATABASE_URL
+# Value: postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres
 
-# Option 3: PlanetScale (Free 5GB MySQL)
-Name: DATABASE_URL
-Value: mysql://[username]:[password]@[host]/[database]?sslmode=require
+# PlanetScale (Free 5GB MySQL)
+# Name: DATABASE_URL  
+# Value: mysql://[username]:[password]@[host]/[database]?sslmode=require
 ```
 
 #### 🌐 CORS & Security Configuration
 ```bash
 Name: CORS_ORIGINS
-Value: https://astroyorumai.com,https://www.astroyorumai.com,https://astroyorumai-api.onrender.com
+Value: https://astroyorumai.com,https://www.astroyorumai.com,https://astroyorumai-backend-production.up.railway.app
 
 Name: ALLOWED_HOSTS
-Value: astroyorumai.com,www.astroyorumai.com,astroyorumai-api.onrender.com
+Value: astroyorumai.com,www.astroyorumai.com,astroyorumai-backend-production.up.railway.app
 ```
 
 #### ⚡ Performance Optimization
@@ -91,7 +91,7 @@ Name: ENABLE_KEEP_ALIVE
 Value: true
 
 Name: KEEP_ALIVE_URL
-Value: https://astroyorumai-api.onrender.com/health
+Value: https://astroyorumai-backend-production.up.railway.app/health
 
 Name: PYTHONUNBUFFERED
 Value: 1
@@ -138,48 +138,81 @@ Name: FIREBASE_PROJECT_ID
 Value: astroyorumai-production
 ```
 
-## 🔄 Render.com Integration
+## 🚂 Railway Integration & Secrets
 
-### Render.com Environment Variables Setup
-After creating GitHub environment, also add these to Render.com:
+### Railway Environment Variables Setup
+After creating GitHub environment, configure Railway deployment:
 
-```
-1. Go to https://dashboard.render.com
-2. Select your service: astroyorumai-api
-3. Click "Environment" tab
-4. Add environment variables:
-```
-
-#### Core Variables for Render.com
+#### Step 1: Railway CLI Login & Setup
 ```bash
-SECRET_KEY = [same as GitHub secret]
-FLASK_ENV = production
-FLASK_DEBUG = False
-PORT = 5000
-DATABASE_URL = [your chosen database URL]
-CORS_ORIGINS = https://astroyorumai.com,https://www.astroyorumai.com,https://astroyorumai-api.onrender.com
-WEB_CONCURRENCY = 1
-PYTHONUNBUFFERED = 1
-ENABLE_KEEP_ALIVE = true
-KEEP_ALIVE_URL = https://astroyorumai-api.onrender.com/health
+# Install Railway CLI if not installed
+npm install -g @railway/cli
+
+# Login to Railway
+railway login
+
+# Link to existing project or create new
+railway link
+# OR
+railway new AstroYorumAI-Backend
 ```
 
-## 🧪 Testing Environment Configuration
+#### Step 2: Add Railway Environment Variables
+```bash
+# Core application variables
+railway variables set SECRET_KEY="your-secure-256-bit-production-secret-key-here"
+railway variables set FLASK_ENV="production"
+railway variables set FLASK_DEBUG="False"
+railway variables set PORT="5000"
+railway variables set HOST="0.0.0.0"
+
+# Database (Railway provides PostgreSQL)
+railway add postgresql
+# DATABASE_URL will be automatically set
+
+# CORS & Security
+railway variables set CORS_ORIGINS="https://astroyorumai.com,https://www.astroyorumai.com,https://astroyorumai-backend-production.up.railway.app"
+railway variables set ALLOWED_HOSTS="astroyorumai.com,www.astroyorumai.com,astroyorumai-backend-production.up.railway.app"
+
+# Performance
+railway variables set WEB_CONCURRENCY="1"
+railway variables set PYTHONUNBUFFERED="1"
+railway variables set ENABLE_KEEP_ALIVE="true"
+railway variables set KEEP_ALIVE_URL="https://astroyorumai-backend-production.up.railway.app/health"
+```
+
+#### Step 3: Deploy to Railway
+```bash
+# Deploy current branch
+railway up
+
+# Check deployment status
+railway status
+
+# View logs
+railway logs
+
+# Get deployment URL
+railway domain
+```
+
+## 🧪 Testing Railway Deployment
 
 ### Test 1: API Health Check
 ```powershell
-# PowerShell command to test API
-Invoke-WebRequest -Uri "https://astroyorumai-api.onrender.com/health" -Method GET | ConvertFrom-Json
+# PowerShell command to test Railway API
+Invoke-WebRequest -Uri "https://astroyorumai-backend-production.up.railway.app/health" -Method GET | ConvertFrom-Json
 ```
 
 Expected Response:
 ```json
 {
   "status": "healthy",
-  "version": "2.1.3-real-calculations",
+  "version": "2.1.3-railway",
   "service": "AstroYorumAI API",
-  "python_version": "3.11.11",
-  "calculation_method": "flatlib Swiss Ephemeris"
+  "python_version": "3.11.x",
+  "calculation_method": "flatlib Swiss Ephemeris",
+  "platform": "Railway"
 }
 ```
 
@@ -193,35 +226,26 @@ $body = @{
     longitude = 28.9784
 } | ConvertTo-Json
 
-Invoke-WebRequest -Uri "https://astroyorumai-api.onrender.com/natal" -Method POST -Body $body -ContentType "application/json"
+Invoke-WebRequest -Uri "https://astroyorumai-backend-production.up.railway.app/natal" -Method POST -Body $body -ContentType "application/json"
 ```
 
 ### Test 3: All Endpoints Status
 ```powershell
-# Test all 9 endpoints
-$endpoints = @("/health", "/status", "/natal", "/synastry", "/transit", "/solar-return", "/progression", "/horary", "/composite")
-
-foreach ($endpoint in $endpoints) {
-    try {
-        $response = Invoke-WebRequest -Uri "https://astroyorumai-api.onrender.com$endpoint" -Method GET
-        Write-Host "✅ $endpoint - Status: $($response.StatusCode)"
-    } catch {
-        Write-Host "❌ $endpoint - Error: $($_.Exception.Message)"
-    }
-}
+python verify_railway_deployment.py
 ```
 
 ## 📱 Flutter App Configuration Update
 
-Update your Flutter app to use production environment:
+Update your Flutter app to use Railway production environment:
 
 ### Update API Base URL
 ```dart
-// lib/config/app_config.dart
-class AppConfig {
-  static const String baseUrl = 'https://astroyorumai-api.onrender.com';
+// lib/config/app_environment.dart - Already updated
+class AppEnvironment {
+  static String get baseUrl => 'https://astroyorumai-backend-production.up.railway.app';
   static const bool isProduction = true;
   static const String environment = 'production';
+  static const String platform = 'Railway';
 }
 ```
 
@@ -229,7 +253,7 @@ class AppConfig {
 ```dart
 // Make sure your HTTP requests include proper headers
 final response = await http.post(
-  Uri.parse('${AppConfig.baseUrl}/natal'),
+  Uri.parse('${AppEnvironment.baseUrl}/natal'),
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -247,77 +271,134 @@ final response = await http.post(
 - [ ] API keys have proper permissions and limits
 - [ ] CORS is configured for production domains only
 
-### Access Control
-- [ ] Environment is protected with branch restrictions
-- [ ] Only main branch can trigger deployments
-- [ ] Secrets are not logged or exposed
-- [ ] Environment variables are properly configured in Render.com
+### Railway Security
+- [ ] Railway project has proper access controls
+- [ ] Environment variables are properly secured in Railway dashboard
+- [ ] Database access is restricted to Railway network
+- [ ] Custom domain configured with SSL/TLS
 
-## 🎯 Deployment Workflow
+## 🎯 Railway Deployment Workflow
 
 ### Automatic Deployment Process
 ```
 1. Code pushed to main branch
-2. GitHub webhook triggers Render.com build
-3. Render.com pulls latest code from GitHub
-4. Environment variables injected from Render dashboard
-5. Docker build process with production configuration
-6. New deployment goes live automatically
-7. Health checks verify deployment success
+2. GitHub webhook triggers Railway build
+3. Railway pulls latest code from GitHub
+4. Environment variables injected from Railway dashboard
+5. Nixpacks/Docker build process with production configuration
+6. New deployment goes live automatically with zero downtime
+7. Health checks verify deployment success (/health endpoint)
 ```
 
 ### Manual Deployment (if needed)
-```
-1. Go to Render.com dashboard
-2. Select astroyorumai-api service
-3. Click "Manual Deploy" button
+```bash
+# Using Railway CLI
+railway login
+railway link [project-id]
+railway up
+
+# Or via Railway dashboard
+1. Go to railway.app dashboard
+2. Select AstroYorumAI-Backend project
+3. Click "Deploy" button
 4. Select branch: main
-5. Click "Deploy Latest Commit"
+5. Railway will build and deploy automatically
 ```
 
 ## 📈 Monitoring & Maintenance
 
 ### Health Monitoring
 ```powershell
-# Create a simple monitoring script
-$healthUrl = "https://astroyorumai-api.onrender.com/health"
+# Create a Railway monitoring script
+$healthUrl = "https://astroyorumai-backend-production.up.railway.app/health"
 $response = Invoke-WebRequest -Uri $healthUrl -Method GET
 $data = $response.Content | ConvertFrom-Json
 
 Write-Host "API Status: $($data.status)"
 Write-Host "Version: $($data.version)"
+Write-Host "Platform: $($data.platform)"
 Write-Host "Response Time: $($response.Headers['Response-Time']) ms"
 ```
 
-### Performance Monitoring
-- Response time monitoring via Render.com dashboard
-- Error rate tracking via application logs
-- Memory and CPU usage monitoring
-- Database connection monitoring
+### Railway Monitoring Dashboard
+```
+1. Railway provides built-in monitoring:
+   - CPU usage
+   - Memory usage
+   - Network traffic
+   - Request logs
+   - Error tracking
 
-## 🎉 Environment Setup Complete!
+2. Access via: railway.app dashboard > Your Project > Metrics
+```
+
+### Performance Monitoring
+```bash
+# Railway Performance Monitoring
+1. Railway Dashboard Metrics:
+   - Real-time CPU usage
+   - Memory consumption
+   - Request volume
+   - Response times
+   - Error rates
+   - Build times
+
+2. Application Logs:
+   railway logs --follow
+
+3. Resource Usage:
+   railway status
+```
+
+### Railway Advanced Features
+```bash
+# Auto-scaling (available on Pro plan)
+railway projects settings
+
+# Custom domains
+railway domain add astroyorumai-api.com
+
+# Environment management
+railway environments
+
+# Database management
+railway run psql $DATABASE_URL
+```
+
+## 🎉 Railway Environment Setup Complete!
 
 ### Verification Checklist
 - [ ] GitHub "production" environment created
 - [ ] All required secrets added to GitHub environment
-- [ ] Render.com environment variables configured
-- [ ] API health check passing
+- [ ] Railway project configured and deployed
+- [ ] Railway environment variables set
+- [ ] API health check passing on Railway URL
 - [ ] CORS working for production domains
 - [ ] All 9 endpoints responding correctly
-- [ ] Flutter app configured for production
+- [ ] Flutter app configured for Railway production
 - [ ] Security measures in place
-- [ ] Monitoring configured
+- [ ] Railway monitoring configured
+
+### Railway Deployment Benefits
+✅ **Zero Downtime Deployments**: Railway handles rolling deployments  
+✅ **Built-in PostgreSQL**: Managed database with automatic backups  
+✅ **Automatic SSL**: HTTPS enabled by default  
+✅ **Environment Management**: Easy variable and secret management  
+✅ **Real-time Monitoring**: Built-in metrics and logging  
+✅ **Git Integration**: Direct GitHub repository connection  
+✅ **Scalability**: Auto-scaling on higher plans  
 
 ### Next Steps
-1. **Database Setup**: Choose and configure production database
-2. **Custom Domain**: Configure custom domain (optional)
-3. **SSL Certificate**: Verify HTTPS configuration
+1. **Railway Deployment**: Execute `railway up` to deploy
+2. **Database Setup**: Configure Railway PostgreSQL database
+3. **Domain Configuration**: Set up custom domain (optional)
 4. **Phase 3 Preparation**: Set up Stripe and OpenAI when ready
-5. **Beta Testing**: Begin user testing with production environment
+5. **Beta Testing**: Begin user testing with Railway production environment
 
 ---
 
-**🚀 Status**: Production environment ready for deployment!
-**📅 Date**: June 7, 2025
-**🔗 Live API**: https://astroyorumai-api.onrender.com
-**🎯 Environment**: production (GitHub)
+**🚂 Status**: Railway production environment ready for deployment!  
+**📅 Date**: December 2024  
+**🔗 Live API**: https://astroyorumai-backend-production.up.railway.app  
+**🎯 Environment**: production (Railway)  
+**🛠️ Platform**: Railway.app

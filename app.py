@@ -91,11 +91,13 @@ def after_request(response):
 def root():
     return jsonify({
         "message": "AstroYorumAI API is running",
-        "version": "2.1.3-real-calculations", 
+        "version": "2.1.3-railway", 
         "status": "healthy",
         "python_version": sys.version.split()[0],
+        "platform": "Railway.app",
         "build_timestamp": datetime.datetime.now().isoformat(),
-        "calculation_method": "flatlib Swiss Ephemeris",        "endpoints": {
+        "calculation_method": "flatlib Swiss Ephemeris",
+        "endpoints": {
             "health": "/health",
             "test": "/test",
             "natal_chart": "/natal",
@@ -114,9 +116,10 @@ def root():
 def health():
     return jsonify({
         "status": "healthy",
-        "version": "2.1.3-real-calculations",
+        "version": "2.1.3-railway",
         "service": "AstroYorumAI API",
         "python_version": sys.version.split()[0],
+        "platform": "Railway.app",
         "calculation_method": "flatlib Swiss Ephemeris"
     })
 
