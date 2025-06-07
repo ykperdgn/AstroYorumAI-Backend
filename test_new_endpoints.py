@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 
 # Backend URL
-BASE_URL = "https://astroyorumai-backend-production.up.railway.app"
+BASE_URL = "https://astroyorumai-backend-latest.onrender.com"
 
 def test_endpoint(endpoint, data, description):
     """Test a specific endpoint with given data"""
