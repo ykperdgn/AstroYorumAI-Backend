@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroYorumAI CORS Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 100px;
+        }
+        .cors-solution {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 AstroYorumAI CORS Test Sayfası</h1>
+        
+        <div class="test-section warning">
+            <h3>⚠️ CORS Kısıtlaması Testi</h3>
+            <p>Bu sayfa, web tarayıcısının CORS kısıtlamalarını test eder.</p>
+            <p><strong>Beklenen sonuç:</strong> CORS hatası alacaksınız (normal durum)</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 API Test Butonları</h3>
+            <button onclick="testHealth()">Health Check Test</button>
+            <button onclick="testNatalChart()">Natal Chart Test</button>
+            <button onclick="clearResults()">Sonuçları Temizle</button>
+        </div>
+
+        <div id="results" class="test-section">
+            <h3>📊 Test Sonuçları</h3>
+            <p>Test butonlarına tıklayın...</p>
+        </div>
+
+        <div class="cors-solution">
+            <h3>🛠️ CORS Sorunu Çözümleri</h3>
+            <h4>1. Chrome CORS Disabled (Geliştirme için)</h4>
+            <p>Chrome'u şu komutla başlatın:</p>
+            <code>start_chrome_cors_disabled.bat</code>
+            
+            <h4>2. Windows Desktop App (Önerilen)</h4>
+            <p>Flutter Windows uygulamasını kullanın:</p>
+            <code>flutter run -d windows</code>
+            
+            <h4>3. Production Deployment</h4>
+            <p>Aynı domain'de deploy edin (CORS olmaz):</p>
+            <code>flutter build web --release</code>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://astroyorumai-api.onrender.com';
+        const resultsDiv = document.getElementById('results');
+
+        function addResult(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString('tr-TR');
+            const resultHtml = `
+                <div class="${type}">
+                    <strong>[${timestamp}]</strong> ${message}
+                </div>
+            `;
+            resultsDiv.innerHTML += resultHtml;
+        }
+
+        function clearResults() {
+            resultsDiv.innerHTML = '<h3>📊 Test Sonuçları</h3><p>Test butonlarına tıklayın...</p>';
+        }
+
+        async function testHealth() {
+            addResult('🏥 Health check testi başlatılıyor...', 'warning');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`✅ Health check başarılı! Version: ${data.version}`, 'success');
+                } else {
+                    addResult(`❌ Health check başarısız: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                if (error.toString().includes('CORS') || error.toString().includes('Access-Control')) {
+                    addResult('🚨 CORS hatası alındı! Bu beklenen durumdur. Chrome CORS-disabled ile deneyin.', 'error');
+                } else {
+                    addResult(`❌ Ağ hatası: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        async function testNatalChart() {
+            addResult('🌟 Natal chart testi başlatılıyor...', 'warning');
+            
+            const testData = {
+                date: '1990-06-15',
+                time: '14:30',
+                latitude: 41.0082,
+                longitude: 28.9784
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/natal`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const planetCount = Object.keys(data.planets || {}).length;
+                    addResult(`✅ Natal chart başarılı! ${planetCount} planet, Ascendant: ${data.ascendant}`, 'success');
+                } else {
+                    addResult(`❌ Natal chart başarısız: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                if (error.toString().includes('CORS') || error.toString().includes('Access-Control')) {
+                    addResult('🚨 CORS hatası alındı! Flutter Windows app veya CORS-disabled Chrome kullanın.', 'error');
+                } else {
+                    addResult(`❌ Ağ hatası: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        // Sayfa yüklendiğinde bilgi mesajı
+        window.onload = function() {
+            addResult('Sayfa yüklendi. CORS testi için butonlara tıklayın.', 'warning');
+        };
+    </script>
+</body>
+</html>

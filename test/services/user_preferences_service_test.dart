@@ -1,17 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:astroyorumai/services/user_preferences_service.dart';
 import 'package:astroyorumai/models/user_birth_info.dart';
 import '../test_setup.dart';
+import '../helpers/firebase_test_helper.dart';
 
 // Generate mocks
-@GenerateMocks([SharedPreferences])
-import 'user_preferences_service_test.mocks.dart';
 
 void main() {
   setUpAll(() async {
+    // Firebase test mock'larını ayarla
+    setupFirebaseTestMocks();
     await setupFirebaseForTest();
   });
   group('UserPreferencesService Tests', () {
@@ -362,13 +360,16 @@ void main() {
 
         // Act
         await userPreferencesService.saveUserBirthInfo(birthInfo);
-        final result = await userPreferencesService.loadUserBirthInfo();
-
-        // Assert
+        final result = await userPreferencesService.loadUserBirthInfo();        // Assert
         expect(result, isNotNull);
         expect(result!.name, equals(longName));
         expect(result.birthPlace, equals(longPlace));
       });
+    });
+
+    tearDownAll(() {
+      // Firebase test mock'larını temizle
+      tearDownFirebaseTestMocks();
     });
   });
 }

@@ -1,0 +1,9 @@
+{
+  "question": "Bugün nasıl bir günüm olacak?",
+  "user_profile": {
+    "birth_date": "1990-05-15",
+    "birth_time": "14:30",
+    "birth_place": "Istanbul",
+    "is_pro": true
+  }
+}

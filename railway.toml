@@ -1,8 +1,0 @@
-[build]
-builder = "NIXPACKS"
-
-[build.env]
-NIXPACKS_LANGUAGE = "python"
-
-[start]
-cmd = "gunicorn --bind 0.0.0.0:$PORT app:app --timeout 120 --workers 2"

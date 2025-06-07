@@ -10,6 +10,7 @@ import 'package:astroyorumai/services/cloud_sync_service.dart';
 import 'package:astroyorumai/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import '../test_setup.dart';
+import '../helpers/firebase_test_helper.dart';
 
 // Generate mocks
 @GenerateMocks([
@@ -25,8 +26,12 @@ import 'settings_screen_test.mocks.dart';
 
 void main() {
   setUpAll(() async {
+    // Firebase test mock'larını ayarla
+    setupFirebaseTestMocks();
     await setupFirebaseForTest();
-  });  group('SettingsScreen Widget Tests', () {
+  });
+
+  group('SettingsScreen Widget Tests', () {
     late AuthService mockAuthService;
     late CloudSyncService mockCloudSyncService;
     late MockUser mockUser;
@@ -63,7 +68,7 @@ void main() {
     });
 
     Widget createTestWidget() {
-      return MaterialApp(
+      return const MaterialApp(
         localizationsDelegates: [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -162,7 +167,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Scroll to see help sections
-      await tester.drag(find.byType(ListView), Offset(0, -300));
+      await tester.drag(find.byType(ListView), const Offset(0, -300));
       await tester.pumpAndSettle();
 
       // Assert
@@ -177,7 +182,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Find and tap sign out button
-      await tester.drag(find.byType(ListView), Offset(0, -300));
+      await tester.drag(find.byType(ListView), const Offset(0, -300));
       await tester.pumpAndSettle();
       
       await tester.tap(find.text('Çıkış Yap'));
@@ -189,7 +194,7 @@ void main() {
       expect(find.text('Hesabınızdan çıkış yapmak istediğinizden emin misiniz?'), findsOneWidget);
     });    testWidgets('should display last sync time', (WidgetTester tester) async {
       // Arrange
-      final syncTime = DateTime.now().subtract(Duration(hours: 2));
+      final syncTime = DateTime.now().subtract(const Duration(hours: 2));
       when(mockAuthService.isSignedIn).thenReturn(true);
       when(mockAuthService.currentUser).thenReturn(mockUser);
       

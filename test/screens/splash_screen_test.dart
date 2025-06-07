@@ -23,7 +23,8 @@ void main() {
     tearDownAll(() async {
       // Cleanup any pending timers or async operations
       await Future.delayed(Duration.zero);
-    });testWidgets('displays correct UI elements', (WidgetTester tester) async {
+    });
+    testWidgets('displays correct UI elements', (WidgetTester tester) async {
       // Mock empty user preferences to prevent navigation
       when(mockPrefsService.loadUserBirthInfo()).thenAnswer((_) async => null);
 
@@ -32,7 +33,7 @@ void main() {
         MaterialApp(
           home: SplashScreen(preferencesService: mockPrefsService),
           routes: {
-            '/birthInfo': (context) => BirthInfoScreen(),
+            '/birthInfo': (context) => const BirthInfoScreen(),
           },
         ),
       );
@@ -53,9 +54,11 @@ void main() {
       expect(subtitleText.style?.fontSize, equals(18));
 
       // Wait for timer to complete to avoid pending timer error
-      await tester.pump(Duration(seconds: 2));
+      await tester.pump(const Duration(seconds: 2));
       await tester.pumpAndSettle();
-    });    testWidgets('displays loading indicator with correct styling', (WidgetTester tester) async {
+    });
+    testWidgets('displays loading indicator with correct styling',
+        (WidgetTester tester) async {
       // Mock empty user preferences to prevent navigation
       when(mockPrefsService.loadUserBirthInfo()).thenAnswer((_) async => null);
 
@@ -64,30 +67,32 @@ void main() {
         MaterialApp(
           home: SplashScreen(preferencesService: mockPrefsService),
           routes: {
-            '/birthInfo': (context) => BirthInfoScreen(),
+            '/birthInfo': (context) => const BirthInfoScreen(),
           },
         ),
       );
 
       // Verify loading indicator is present immediately
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      
+
       final progressIndicator = tester.widget<CircularProgressIndicator>(
         find.byType(CircularProgressIndicator),
       );
       expect(progressIndicator.color, equals(Colors.deepPurpleAccent));
 
       // Verify star icon styling
-      final icon = tester.widget<Icon>(find.byIcon(Icons.star_border_purple500_outlined));
+      final icon = tester
+          .widget<Icon>(find.byIcon(Icons.star_border_purple500_outlined));
       expect(icon.size, equals(120));
       expect(icon.color, equals(Colors.deepPurpleAccent));
 
       // Wait for timer to complete to avoid pending timer error
-      await tester.pump(Duration(seconds: 2));
+      await tester.pump(const Duration(seconds: 2));
       await tester.pumpAndSettle();
     });
 
-    testWidgets('navigates to BirthInfoScreen when no saved user info', (WidgetTester tester) async {
+    testWidgets('navigates to BirthInfoScreen when no saved user info',
+        (WidgetTester tester) async {
       // Mock empty user preferences
       when(mockPrefsService.loadUserBirthInfo()).thenAnswer((_) async => null);
 
@@ -96,19 +101,18 @@ void main() {
         MaterialApp(
           home: SplashScreen(preferencesService: mockPrefsService),
           routes: {
-            '/birthInfo': (context) => BirthInfoScreen(),
+            '/birthInfo': (context) => const BirthInfoScreen(),
             '/natalChart': (context) => NatalChartScreen(
-              name: 'Test', 
-              birthDate: DateTime.now(), 
-              latitude: 0.0, 
-              longitude: 0.0
-            ),
+                name: 'Test',
+                birthDate: DateTime.now(),
+                latitude: 0.0,
+                longitude: 0.0),
           },
         ),
       );
 
       // Wait for the 2-second delay plus some buffer
-      await tester.pump(Duration(seconds: 2));
+      await tester.pump(const Duration(seconds: 2));
       await tester.pumpAndSettle();
 
       // Verify navigation to BirthInfoScreen
@@ -116,7 +120,8 @@ void main() {
       expect(find.byType(SplashScreen), findsNothing);
     });
 
-    testWidgets('navigates to BirthInfoScreen when saved info is incomplete', (WidgetTester tester) async {
+    testWidgets('navigates to BirthInfoScreen when saved info is incomplete',
+        (WidgetTester tester) async {
       // Mock incomplete user preferences (missing essential data)
       final incompleteInfo = UserBirthInfo(
         name: 'Test User',
@@ -126,33 +131,36 @@ void main() {
         latitude: null,
         longitude: null,
       );
-      
-      when(mockPrefsService.loadUserBirthInfo()).thenAnswer((_) async => incompleteInfo);
+
+      when(mockPrefsService.loadUserBirthInfo())
+          .thenAnswer((_) async => incompleteInfo);
 
       // Build SplashScreen with navigation routes
       await tester.pumpWidget(
         MaterialApp(
           home: SplashScreen(preferencesService: mockPrefsService),
           routes: {
-            '/birthInfo': (context) => BirthInfoScreen(initialBirthInfo: incompleteInfo),
+            '/birthInfo': (context) =>
+                BirthInfoScreen(initialBirthInfo: incompleteInfo),
             '/natalChart': (context) => NatalChartScreen(
-              name: 'Test', 
-              birthDate: DateTime.now(), 
-              latitude: 0.0, 
-              longitude: 0.0
-            ),
+                name: 'Test',
+                birthDate: DateTime.now(),
+                latitude: 0.0,
+                longitude: 0.0),
           },
         ),
       );
 
       // Wait for the 2-second delay plus some buffer
-      await tester.pump(Duration(seconds: 2));
+      await tester.pump(const Duration(seconds: 2));
       await tester.pumpAndSettle();
 
       // Verify navigation to BirthInfoScreen with initial data
       expect(find.byType(BirthInfoScreen), findsOneWidget);
       expect(find.byType(SplashScreen), findsNothing);
-    });    testWidgets('navigates to NatalChartScreen when complete saved info exists', (WidgetTester tester) async {
+    });
+    testWidgets('navigates to NatalChartScreen when complete saved info exists',
+        (WidgetTester tester) async {
       // Mock complete user preferences
       final completeInfo = UserBirthInfo(
         name: 'Test User',
@@ -162,41 +170,42 @@ void main() {
         latitude: 41.0082,
         longitude: 28.9784,
       );
-      
-      when(mockPrefsService.loadUserBirthInfo()).thenAnswer((_) async => completeInfo);
+
+      when(mockPrefsService.loadUserBirthInfo())
+          .thenAnswer((_) async => completeInfo);
 
       // Build SplashScreen with navigation routes
       await tester.pumpWidget(
         MaterialApp(
           home: SplashScreen(preferencesService: mockPrefsService),
           routes: {
-            '/birthInfo': (context) => BirthInfoScreen(),
+            '/birthInfo': (context) => const BirthInfoScreen(),
             '/natalChart': (context) => NatalChartScreen(
-              name: completeInfo.name!,
-              birthDate: completeInfo.birthDate!,
-              birthTime: completeInfo.birthTime,
-              birthPlace: completeInfo.birthPlace,
-              latitude: completeInfo.latitude!,
-              longitude: completeInfo.longitude!,
-            ),
+                  name: completeInfo.name!,
+                  birthDate: completeInfo.birthDate!,
+                  birthTime: completeInfo.birthTime,
+                  birthPlace: completeInfo.birthPlace,
+                  latitude: completeInfo.latitude!,
+                  longitude: completeInfo.longitude!,
+                ),
           },
         ),
       );
 
       // Wait for the 2-second delay plus some buffer
-      await tester.pump(Duration(seconds: 2));
+      await tester.pump(const Duration(seconds: 2));
       await tester.pumpAndSettle();
 
       // Verify navigation to NatalChartScreen
       expect(find.byType(NatalChartScreen), findsOneWidget);
       expect(find.byType(SplashScreen), findsNothing);
-    });    testWidgets('onLocaleChange callback is properly stored', (WidgetTester tester) async {
+    });
+    testWidgets('onLocaleChange callback is properly stored',
+        (WidgetTester tester) async {
       // Mock empty user preferences to prevent navigation
       when(mockPrefsService.loadUserBirthInfo()).thenAnswer((_) async => null);
-
-      bool callbackCalled = false;
       void onLocaleChange(Locale locale) {
-        callbackCalled = true;
+        // Callback function stored properly
       }
 
       // Build SplashScreen with callback and mock service
@@ -207,7 +216,7 @@ void main() {
             preferencesService: mockPrefsService,
           ),
           routes: {
-            '/birthInfo': (context) => BirthInfoScreen(),
+            '/birthInfo': (context) => const BirthInfoScreen(),
           },
         ),
       );
@@ -217,18 +226,20 @@ void main() {
       expect(find.text('AstroYorum AI'), findsOneWidget);
 
       // Wait for timer to complete to avoid pending timer error
-      await tester.pump(Duration(seconds: 2));
+      await tester.pump(const Duration(seconds: 2));
       await tester.pumpAndSettle();
-    });    testWidgets('handles service injection correctly', (WidgetTester tester) async {
+    });
+    testWidgets('handles service injection correctly',
+        (WidgetTester tester) async {
       // Mock service için test
       when(mockPrefsService.loadUserBirthInfo()).thenAnswer((_) async => null);
-      
-      // Test with mock service 
+
+      // Test with mock service
       await tester.pumpWidget(
         MaterialApp(
-          home: SplashScreen(preferencesService: mockPrefsService), 
+          home: SplashScreen(preferencesService: mockPrefsService),
           routes: {
-            '/birthInfo': (context) => BirthInfoScreen(),
+            '/birthInfo': (context) => const BirthInfoScreen(),
           },
         ),
       );
@@ -238,9 +249,9 @@ void main() {
       expect(find.text('AstroYorum AI'), findsOneWidget);
 
       // Wait for timer and verify service injection worked
-      await tester.pump(Duration(seconds: 2));
+      await tester.pump(const Duration(seconds: 2));
       await tester.pumpAndSettle();
-      
+
       // Verify mock service was called (not default service)
       verify(mockPrefsService.loadUserBirthInfo()).called(1);
     });

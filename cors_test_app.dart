@@ -135,12 +135,10 @@ class _CORSTestPageState extends State<CORSTestPage> {
                 : const Text('Test CORS Connection'),
             ),
             if (_corsWorking) ...[
-              const SizedBox(height: 20),
-              Card(
-                color: Colors.green.shade50,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: const Column(
+              const SizedBox(height: 20),              Card(
+                color: Colors.green.shade50,                child: const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
                     children: [
                       Icon(Icons.celebration, color: Colors.green, size: 32),
                       SizedBox(height: 10),

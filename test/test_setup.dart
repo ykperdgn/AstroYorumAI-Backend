@@ -1,11 +1,9 @@
 // Test setup file for Firebase initialization and mocking
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/services/auth_service.dart';
-import '../lib/services/cloud_sync_service.dart';
+import 'package:astroyorumai/services/auth_service.dart';
+import 'package:astroyorumai/services/cloud_sync_service.dart';
 
 // Global map to store test SharedPreferences values
 Map<String, dynamic> _testSharedPreferences = {};
@@ -26,16 +24,14 @@ class MockFirebaseApp implements FirebaseApp {
 
   @override
   FirebaseOptions get options => const FirebaseOptions(
-    apiKey: 'test-api-key',
-    appId: 'test-app-id',
-    messagingSenderId: 'test-sender-id',
-    projectId: 'test-project-id',
-  );
-
+        apiKey: 'test-api-key',
+        appId: 'test-app-id',
+        messagingSenderId: 'test-sender-id',
+        projectId: 'test-project-id',
+      );
   @override
   bool get isAutomaticDataCollectionEnabled => false;
 
-  @override
   set isAutomaticDataCollectionEnabled(bool enabled) {}
 
   @override
@@ -43,7 +39,7 @@ class MockFirebaseApp implements FirebaseApp {
 
   @override
   Future<void> setAutomaticDataCollectionEnabled(bool enabled) async {}
-  
+
   @override
   Future<void> setAutomaticResourceManagementEnabled(bool enabled) async {}
 }
@@ -55,11 +51,13 @@ Future<void> setupFirebaseForTest() async {
   const firebaseCoreChannel = MethodChannel('plugins.flutter.io/firebase_core');
   const firebaseAuthChannel = MethodChannel('plugins.flutter.io/firebase_auth');
   const firestoreChannel = MethodChannel('plugins.flutter.io/cloud_firestore');
-  const sharedPreferencesChannel = MethodChannel('plugins.flutter.io/shared_preferences');
-  
+  const sharedPreferencesChannel =
+      MethodChannel('plugins.flutter.io/shared_preferences');
+
   // Mock Firebase Core
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(firebaseCoreChannel, (MethodCall methodCall) async {
+      .setMockMethodCallHandler(firebaseCoreChannel,
+          (MethodCall methodCall) async {
     switch (methodCall.method) {
       case 'Firebase#initializeCore':
         return [
@@ -92,7 +90,8 @@ Future<void> setupFirebaseForTest() async {
 
   // Mock Firebase Auth
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(firebaseAuthChannel, (MethodCall methodCall) async {
+      .setMockMethodCallHandler(firebaseAuthChannel,
+          (MethodCall methodCall) async {
     switch (methodCall.method) {
       case 'Auth#registerIdTokenListener':
       case 'Auth#registerAuthStateListener':
@@ -119,7 +118,8 @@ Future<void> setupFirebaseForTest() async {
   });
   // Mock Firestore
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(firestoreChannel, (MethodCall methodCall) async {
+      .setMockMethodCallHandler(firestoreChannel,
+          (MethodCall methodCall) async {
     switch (methodCall.method) {
       case 'Firestore#enableNetwork':
       case 'Firestore#disableNetwork':
@@ -131,14 +131,16 @@ Future<void> setupFirebaseForTest() async {
       case 'DocumentReference#set':
       case 'DocumentReference#update':
       case 'DocumentReference#delete':
-        return null;      default:
+        return null;
+      default:
         return <String, dynamic>{};
     }
   });
 
   // Mock SharedPreferences with dynamic response based on test data
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(sharedPreferencesChannel, (MethodCall methodCall) async {
+      .setMockMethodCallHandler(sharedPreferencesChannel,
+          (MethodCall methodCall) async {
     switch (methodCall.method) {
       case 'getAll':
         return Map<String, dynamic>.from(_testSharedPreferences);
@@ -160,26 +162,20 @@ Future<void> setupFirebaseForTest() async {
       default:
         return null;
     }
-  });// Only try to initialize Firebase if not already initialized
-  try {
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp();
-    }
-  } catch (e) {
-    // Firebase might already be initialized or mock failed
-    // This is acceptable in test environment
-    print('Firebase initialization warning in test: $e');
-  }
+  });
+
+  // DO NOT initialize Firebase in tests - use mocks only
+  // Firebase.initializeApp() causes platform channel errors in test environment
 }
 
 /// Reset all service singletons for testing
 void resetServiceSingletons() {
   // Reset SharedPreferences test data
   resetTestSharedPreferences();
-  
+
   // Reset AuthService singleton
   AuthService.testInstance = null;
-  
+
   // Reset CloudSyncService singleton
   CloudSyncService.testInstance = null;
 }

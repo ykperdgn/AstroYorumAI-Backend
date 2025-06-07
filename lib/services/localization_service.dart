@@ -55,7 +55,7 @@ class LocalizationService {
       return systemLocale;
     }
     
-    return Locale(_defaultLanguage);
+    return const Locale(_defaultLanguage);
   }
 
   // Initialize with system locale or saved preference

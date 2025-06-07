@@ -3,14 +3,21 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'dart:convert';
 
-import '../../lib/services/astrology_api_service.dart';
+import 'package:astroyorumai/services/astrology_api_service.dart';
 import '../test_setup.dart';
+import '../helpers/firebase_test_helper.dart';
 
 // Generate mocks for HTTP client
 @GenerateMocks([http.Client])
 void main() {
-  group('AstrologyApiService', () {    setUpAll(() async {
+  group('AstrologyApiService', () {
+    setUpAll(() async {
+      setupFirebaseTestMocks();
       await setupFirebaseForTest();
+    });
+
+    tearDownAll(() {
+      tearDownFirebaseTestMocks();
     });
 
     group('getDailyHoroscope', () {
@@ -31,7 +38,7 @@ void main() {
 
       test('should construct correct API URL', () {
         const testSign = 'aries';
-        final expectedUrl = 'https://aztro.sameerkumar.website/?sign=$testSign&day=today';
+        const expectedUrl = 'https://aztro.sameerkumar.website/?sign=$testSign&day=today';
         
         expect(expectedUrl, contains('aztro.sameerkumar.website'));
         expect(expectedUrl, contains('sign=$testSign'));
@@ -229,7 +236,7 @@ void main() {
             'description': 'Today brings positive energy and new opportunities.'
           };
 
-          final description = sampleResponse['description'] as String?;
+          final description = sampleResponse['description'];
           expect(description, isNotNull);
           expect(description!.isNotEmpty, isTrue);
           expect(description, contains('positive'));
@@ -241,7 +248,7 @@ void main() {
             'current_date': 'December 7, 2023'
           };
 
-          final description = responseWithoutDescription['description'] as String?;
+          final description = responseWithoutDescription['description'];
           expect(description, isNull);
         });
 
@@ -371,7 +378,7 @@ void main() {
           const baseUrl = 'https://aztro.sameerkumar.website';
           const sign = 'leo';
           const day = 'today';
-          final constructedUrl = '$baseUrl/?sign=$sign&day=$day';
+          const constructedUrl = '$baseUrl/?sign=$sign&day=$day';
           
           expect(constructedUrl, equals('https://aztro.sameerkumar.website/?sign=leo&day=today'));
         });

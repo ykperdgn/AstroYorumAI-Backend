@@ -13,6 +13,8 @@ import 'test/screens/birth_info_screen_test.mocks.dart';
 
 // Create a test widget that mimics BirthInfoScreen behavior
 class TestFormWidget extends StatefulWidget {
+  const TestFormWidget({super.key});
+
   @override
   _TestFormWidgetState createState() => _TestFormWidgetState();
 }
@@ -25,7 +27,7 @@ class _TestFormWidgetState extends State<TestFormWidget> {
     if (_nameController.text.trim().isEmpty) {
       print('Name is empty, showing SnackBar');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Name required'))
+        const SnackBar(content: Text('Name required'))
       );
       return;
     }
@@ -39,12 +41,12 @@ class _TestFormWidgetState extends State<TestFormWidget> {
         children: [
           TextField(
             controller: _nameController,
-            decoration: InputDecoration(labelText: 'Name'),
+            decoration: const InputDecoration(labelText: 'Name'),
           ),
           ElevatedButton(
-            key: Key('test_button'),
+            key: const Key('test_button'),
             onPressed: _handleSubmission,
-            child: Text('Submit'),
+            child: const Text('Submit'),
           ),
         ],
       ),
@@ -57,17 +59,17 @@ class _TestFormWidgetState extends State<TestFormWidget> {
 void main() {
   testWidgets('Debug simple button logic', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: TestFormWidget(),
       ),
     );
     
     print('Tapping test button...');
-    await tester.tap(find.byKey(Key('test_button')));
+    await tester.tap(find.byKey(const Key('test_button')));
     await tester.pump();
     
     print('SnackBar count: ${tester.widgetList(find.byType(SnackBar)).length}');
-    await tester.pump(Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 100));
     print('SnackBar count after delay: ${tester.widgetList(find.byType(SnackBar)).length}');
   });
   testWidgets('Debug actual BirthInfoScreen method call', (WidgetTester tester) async {
@@ -84,7 +86,7 @@ void main() {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        locale: Locale('tr', 'TR'),
+        locale: const Locale('tr', 'TR'),
         home: BirthInfoScreen(
           geocodingService: mockGeocodingService,
           preferencesService: mockPreferencesService,
@@ -94,14 +96,14 @@ void main() {
     );
     
     print('Getting name controller text...');
-    final nameField = find.byKey(Key('name_field'));
+    final nameField = find.byKey(const Key('name_field'));
     final nameWidget = tester.widget<TextFormField>(nameField);
     print('Name controller text: "${nameWidget.controller?.text}"');
     print('Name controller text empty: ${nameWidget.controller?.text.trim().isEmpty}');
     
     print('Tapping actual submit button...');
     try {
-      await tester.tap(find.byKey(Key('submit_button')));
+      await tester.tap(find.byKey(const Key('submit_button')));
       await tester.pump();
       print('Button tap completed successfully');
     } catch (e) {

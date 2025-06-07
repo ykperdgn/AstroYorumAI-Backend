@@ -8,30 +8,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'test_setup.dart';
+import 'helpers/firebase_test_helper.dart';
 
 import 'package:astroyorumai/main.dart';
 
 void main() {
   setUpAll(() async {
+    setupFirebaseTestMocks();
     await setupFirebaseForTest();
   });
 
-  testWidgets('App launches and shows main screen', (WidgetTester tester) async {
+  tearDownAll(() {
+    tearDownFirebaseTestMocks();
+  });
+  testWidgets('App launches and shows main screen',
+      (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(AstrolojiMasterApp());
-    
+    await tester.pumpWidget(const AstroYorumAIApp());
+
     // Verify that our app loads (should show some basic UI)
     expect(find.byType(MaterialApp), findsOneWidget);
-    
+
     // Wait for initial frames and splash screen to appear
     await tester.pump();
-    
+
     // Check if splash screen elements are present
     expect(find.text('AstroYorum AI'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    
+
     // Wait for the splash screen timer to complete (2 seconds + buffer)
-    await tester.pump(Duration(seconds: 3));
+    await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();
   });
 }

@@ -1,0 +1,14 @@
+[variables]
+NIXPACKS_LANGUAGE = "python"
+
+[phases.setup]
+nixPkgs = ["python311", "python311Packages.pip", "python311Packages.gunicorn"]
+
+[phases.install]
+cmd = "pip install --no-cache-dir -r requirements.txt"
+
+[phases.build]
+cmd = "echo 'Python Flask app - no build step required'"
+
+[start]
+cmd = "gunicorn --bind 0.0.0.0:$PORT app:app --timeout 120 --workers 2"

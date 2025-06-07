@@ -49,12 +49,12 @@ void main() {
 
       test('should handle different locales', () async {
         // Test Turkish
-        await LocalizationService.setCurrentLocale(Locale('tr'));
+        await LocalizationService.setCurrentLocale(const Locale('tr'));
         var prefs = await SharedPreferences.getInstance();
         expect(prefs.getString(LocalizationService.localeKey), equals('tr'));
 
         // Test English
-        await LocalizationService.setCurrentLocale(Locale('en'));
+        await LocalizationService.setCurrentLocale(const Locale('en'));
         prefs = await SharedPreferences.getInstance();
         expect(prefs.getString(LocalizationService.localeKey), equals('en'));
       });
@@ -90,13 +90,13 @@ void main() {
 
     group('isSupported', () {
       test('should return true for supported locales', () {
-        expect(LocalizationService.isSupported(Locale('en')), isTrue);
-        expect(LocalizationService.isSupported(Locale('tr')), isTrue);
+        expect(LocalizationService.isSupported(const Locale('en')), isTrue);
+        expect(LocalizationService.isSupported(const Locale('tr')), isTrue);
       });
 
       test('should return false for unsupported locales', () {
-        expect(LocalizationService.isSupported(Locale('es')), isFalse);
-        expect(LocalizationService.isSupported(Locale('fr')), isFalse);
+        expect(LocalizationService.isSupported(const Locale('es')), isFalse);
+        expect(LocalizationService.isSupported(const Locale('fr')), isFalse);
       });
     });
   });

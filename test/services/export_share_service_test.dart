@@ -3,11 +3,12 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:intl/date_symbol_data_local.dart';
 
-import '../../lib/services/export_share_service.dart';
-import '../../lib/models/user_profile.dart';
-import '../../lib/models/planet_position.dart';
-import '../../lib/models/celestial_event.dart';
+import 'package:astroyorumai/services/export_share_service.dart';
+import 'package:astroyorumai/models/user_profile.dart';
+import 'package:astroyorumai/models/planet_position.dart';
+import 'package:astroyorumai/models/celestial_event.dart';
 import '../test_setup.dart';
+import '../helpers/firebase_test_helper.dart';
 
 void main() {
   group('ExportShareService', () {
@@ -15,6 +16,8 @@ void main() {
     late List<PlanetPosition> testPlanetPositions;
     late List<CelestialEvent> testEvents;
     late Map<String, dynamic> testHoroscopeData;    setUpAll(() async {
+      // Firebase test mock'larını ayarla
+      setupFirebaseTestMocks();
       await setupFirebaseForTest();
       // Initialize Turkish locale for date formatting
       await initializeDateFormatting('tr_TR', null);
@@ -702,11 +705,15 @@ void main() {
             null,
           );
 
-          expect(file, isA<File>());
-        } catch (e) {
+          expect(file, isA<File>());        } catch (e) {
           expect(e, isA<Exception>());
         }
       });
+    });
+
+    tearDownAll(() {
+      // Firebase test mock'larını temizle
+      tearDownFirebaseTestMocks();
     });
   });
 }

@@ -5,26 +5,33 @@ import '../models/user_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
-  const NotificationSettingsScreen({Key? key}) : super(key: key);
-
+  const NotificationSettingsScreen({super.key});
   @override
-  _NotificationSettingsScreenState createState() => _NotificationSettingsScreenState();
+  State<NotificationSettingsScreen> createState() =>
+      _NotificationSettingsScreenState();
 }
 
-class _NotificationSettingsScreenState extends State<NotificationSettingsScreen> {
+class _NotificationSettingsScreenState
+    extends State<NotificationSettingsScreen> {
   bool _dailyHoroscopeEnabled = false;
   bool _weeklyHoroscopeEnabled = false;
-  bool _celestialEventsEnabled = false;  
+  bool _celestialEventsEnabled = false;
   TimeOfDay _dailyTime = const TimeOfDay(hour: 9, minute: 0);
   int _weeklyDay = 1; // Monday
   TimeOfDay _weeklyTime = const TimeOfDay(hour: 9, minute: 0);
-  
+
   UserProfile? _activeProfile;
   bool _isLoading = true;
   bool _permissionGranted = false;
 
   final List<String> _weekdays = [
-    'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'
+    'Pazartesi',
+    'Salı',
+    'Çarşamba',
+    'Perşembe',
+    'Cuma',
+    'Cumartesi',
+    'Pazar'
   ];
 
   @override
@@ -33,27 +40,31 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     _loadSettings();
   }
 
-  Future<void> _loadSettings() async {    await NotificationService.initialize();
-    
+  Future<void> _loadSettings() async {
+    await NotificationService.initialize();
+
     final service = await ProfileManagementService.getInstance();
     final profile = await service.getActiveProfile();
     final prefs = await SharedPreferences.getInstance();
-    
+
     setState(() {
       _activeProfile = profile;
-      _dailyHoroscopeEnabled = prefs.getBool('daily_horoscope_enabled') ?? false;
-      _weeklyHoroscopeEnabled = prefs.getBool('weekly_horoscope_enabled') ?? false;
-      _celestialEventsEnabled = prefs.getBool('celestial_events_enabled') ?? false;
-      
+      _dailyHoroscopeEnabled =
+          prefs.getBool('daily_horoscope_enabled') ?? false;
+      _weeklyHoroscopeEnabled =
+          prefs.getBool('weekly_horoscope_enabled') ?? false;
+      _celestialEventsEnabled =
+          prefs.getBool('celestial_events_enabled') ?? false;
+
       final dailyHour = prefs.getInt('daily_notification_hour') ?? 9;
       final dailyMinute = prefs.getInt('daily_notification_minute') ?? 0;
       _dailyTime = TimeOfDay(hour: dailyHour, minute: dailyMinute);
-      
+
       _weeklyDay = prefs.getInt('weekly_notification_day') ?? 1;
       final weeklyHour = prefs.getInt('weekly_notification_hour') ?? 9;
       final weeklyMinute = prefs.getInt('weekly_notification_minute') ?? 0;
       _weeklyTime = TimeOfDay(hour: weeklyHour, minute: weeklyMinute);
-      
+
       _isLoading = false;
     });
 
@@ -69,14 +80,14 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
 
   Future<void> _saveSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    
+
     await prefs.setBool('daily_horoscope_enabled', _dailyHoroscopeEnabled);
     await prefs.setBool('weekly_horoscope_enabled', _weeklyHoroscopeEnabled);
     await prefs.setBool('celestial_events_enabled', _celestialEventsEnabled);
-    
+
     await prefs.setInt('daily_notification_hour', _dailyTime.hour);
     await prefs.setInt('daily_notification_minute', _dailyTime.minute);
-    
+
     await prefs.setInt('weekly_notification_day', _weeklyDay);
     await prefs.setInt('weekly_notification_hour', _weeklyTime.hour);
     await prefs.setInt('weekly_notification_minute', _weeklyTime.minute);
@@ -102,7 +113,8 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
 
       if (!_dailyHoroscopeEnabled || !_weeklyHoroscopeEnabled) {
         if (!_dailyHoroscopeEnabled && !_weeklyHoroscopeEnabled) {
-          await NotificationService.cancelProfileNotifications(_activeProfile!.id);
+          await NotificationService.cancelProfileNotifications(
+              _activeProfile!.id);
         }
       }
     }
@@ -114,7 +126,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
       initialTime: isDaily ? _dailyTime : _weeklyTime,
       helpText: isDaily ? 'Günlük Bildirim Saati' : 'Haftalık Bildirim Saati',
     );
-    
+
     if (picked != null) {
       setState(() {
         if (isDaily) {
@@ -131,20 +143,20 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        appBar: AppBar(title: Text('Bildirim Ayarları')),
-        body: Center(child: CircularProgressIndicator()),
+        appBar: AppBar(title: const Text('Bildirim Ayarları')),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_activeProfile == null) {
       return Scaffold(
-        appBar: AppBar(title: Text('Bildirim Ayarları')),
+        appBar: AppBar(title: const Text('Bildirim Ayarları')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.person_off, size: 64, color: Colors.grey),
-              SizedBox(height: 16),
+              const Icon(Icons.person_off, size: 64, color: Colors.grey),
+              const SizedBox(height: 16),
               Text(
                 'Bildirimleri etkinleştirmek için\nönce bir profil oluşturun.',
                 textAlign: TextAlign.center,
@@ -155,53 +167,51 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
         ),
       );
     }
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bildirim Ayarları'),
+        title: const Text('Bildirim Ayarları'),
         actions: [
           IconButton(
-            icon: Icon(Icons.info_outline),
+            icon: const Icon(Icons.info_outline),
             onPressed: () => _showPermissionInfo(),
           ),
         ],
       ),
       body: ListView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         children: [
           if (!_permissionGranted)
             Card(
               color: Colors.orange[50],
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    Icon(Icons.notifications_off, color: Colors.orange),
-                    SizedBox(height: 8),
-                    Text(
+                    const Icon(Icons.notifications_off, color: Colors.orange),
+                    const SizedBox(height: 8),
+                    const Text(
                       'Bildirim İzni Gerekli',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 4),
-                    Text(
+                    const SizedBox(height: 4),
+                    const Text(
                       'Bildirimleri almak için izin vermeniz gerekiyor.',
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: _checkPermissions,
-                      child: Text('İzin Ver'),
+                      child: const Text('İzin Ver'),
                     ),
                   ],
                 ),
               ),
             ),
-          
-          SizedBox(height: 16),
-          
+          const SizedBox(height: 16),
+
           Card(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -209,20 +219,21 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                     'Aktif Profil',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
                       CircleAvatar(
                         child: Text(_activeProfile!.name[0].toUpperCase()),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               _activeProfile!.name,
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             Text(
                               '${_activeProfile!.birthDate.day}/${_activeProfile!.birthDate.month}/${_activeProfile!.birthDate.year}',
@@ -238,48 +249,51 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
             ),
           ),
 
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Daily Horoscope Settings
           Card(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       Icon(Icons.today, color: Theme.of(context).primaryColor),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Text(
                         'Günlük Burç Yorumu',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     'Her gün belirlediğiniz saatte günlük burç yorumunuzu alın.',
                     style: TextStyle(color: Colors.grey[600]),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   SwitchListTile(
-                    title: Text('Günlük Bildirimleri Etkinleştir'),
+                    key: const Key('daily_reminder_switch'),
+                    title: const Text('Günlük Bildirimleri Etkinleştir'),
                     value: _dailyHoroscopeEnabled,
-                    onChanged: _permissionGranted ? (value) {
-                      setState(() {
-                        _dailyHoroscopeEnabled = value;
-                      });
-                      _saveSettings();
-                    } : null,
+                    onChanged: _permissionGranted
+                        ? (value) {
+                            setState(() {
+                              _dailyHoroscopeEnabled = value;
+                            });
+                            _saveSettings();
+                          }
+                        : null,
                   ),
                   if (_dailyHoroscopeEnabled) ...[
-                    Divider(),
+                    const Divider(),
                     ListTile(
-                      leading: Icon(Icons.schedule),
-                      title: Text('Bildirim Saati'),
-                      subtitle: Text('${_dailyTime.format(context)}'),
-                      trailing: Icon(Icons.edit),
+                      leading: const Icon(Icons.schedule),
+                      title: const Text('Bildirim Saati'),
+                      subtitle: Text(_dailyTime.format(context)),
+                      trailing: const Icon(Icons.edit),
                       onTap: () => _selectTime(context, true),
                     ),
                   ],
@@ -288,55 +302,57 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
             ),
           ),
 
-          SizedBox(height: 16),
-
-          // Weekly Horoscope Settings
+          const SizedBox(height: 16), // Weekly Horoscope Settings
           Card(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.calendar_view_week, color: Theme.of(context).primaryColor),
-                      SizedBox(width: 8),
+                      Icon(Icons.calendar_view_week,
+                          color: Theme.of(context).primaryColor),
+                      const SizedBox(width: 8),
                       Text(
                         'Haftalık Burç Yorumu',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     'Haftanın belirlediğiniz gününde haftalık burç yorumunuzu alın.',
                     style: TextStyle(color: Colors.grey[600]),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   SwitchListTile(
-                    title: Text('Haftalık Bildirimleri Etkinleştir'),
+                    key: const Key('weekly_reminder_switch'),
+                    title: const Text('Haftalık Bildirimleri Etkinleştir'),
                     value: _weeklyHoroscopeEnabled,
-                    onChanged: _permissionGranted ? (value) {
-                      setState(() {
-                        _weeklyHoroscopeEnabled = value;
-                      });
-                      _saveSettings();
-                    } : null,
+                    onChanged: _permissionGranted
+                        ? (value) {
+                            setState(() {
+                              _weeklyHoroscopeEnabled = value;
+                            });
+                            _saveSettings();
+                          }
+                        : null,
                   ),
                   if (_weeklyHoroscopeEnabled) ...[
-                    Divider(),
+                    const Divider(),
                     ListTile(
-                      leading: Icon(Icons.date_range),
-                      title: Text('Bildirim Günü'),
+                      leading: const Icon(Icons.date_range),
+                      title: const Text('Bildirim Günü'),
                       subtitle: Text(_weekdays[_weeklyDay - 1]),
-                      trailing: Icon(Icons.edit),
+                      trailing: const Icon(Icons.edit),
                       onTap: () => _selectWeekday(),
                     ),
                     ListTile(
-                      leading: Icon(Icons.schedule),
-                      title: Text('Bildirim Saati'),
-                      subtitle: Text('${_weeklyTime.format(context)}'),
-                      trailing: Icon(Icons.edit),
+                      leading: const Icon(Icons.schedule),
+                      title: const Text('Bildirim Saati'),
+                      subtitle: Text(_weeklyTime.format(context)),
+                      trailing: const Icon(Icons.edit),
                       onTap: () => _selectTime(context, false),
                     ),
                   ],
@@ -345,53 +361,84 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
             ),
           ),
 
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Celestial Events Settings
           Card(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.auto_awesome, color: Theme.of(context).primaryColor),
-                      SizedBox(width: 8),
+                      Icon(Icons.auto_awesome,
+                          color: Theme.of(context).primaryColor),
+                      const SizedBox(width: 8),
                       Text(
                         'Göksel Olaylar',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     'Önemli göksel olaylar (tutulmalar, retrogradlar vb.) hakkında bildirim alın.',
                     style: TextStyle(color: Colors.grey[600]),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   SwitchListTile(
-                    title: Text('Göksel Olay Bildirimleri'),
+                    key: const Key('special_event_switch'),
+                    title: const Text('Göksel Olay Bildirimleri'),
                     value: _celestialEventsEnabled,
-                    onChanged: _permissionGranted ? (value) {
-                      setState(() {
-                        _celestialEventsEnabled = value;
-                      });
-                      _saveSettings();
-                    } : null,
+                    onChanged: _permissionGranted
+                        ? (value) {
+                            setState(() {
+                              _celestialEventsEnabled = value;
+                            });
+                            _saveSettings();
+                          }
+                        : null,
                   ),
                 ],
               ),
             ),
           ),
 
-          SizedBox(height: 16),
+          const SizedBox(height: 24),
+
+          // Save button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              key: const Key('save_button'),
+              icon: const Icon(Icons.save),
+              label: const Text('Ayarları Kaydet'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () async {
+                await _saveSettings();
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Ayarlar başarıyla kaydedildi!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              },
+            ),
+          ),
+
+          const SizedBox(height: 16),
 
           // Test Notification Button
           if (_permissionGranted)
             ElevatedButton.icon(
-              icon: Icon(Icons.notification_add),
-              label: Text('Test Bildirimi Gönder'),
+              icon: const Icon(Icons.notification_add),
+              label: const Text('Test Bildirimi Gönder'),
               onPressed: () => _sendTestNotification(),
             ),
         ],
@@ -403,7 +450,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     final int? selected = await showDialog<int>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Bildirim Günü Seçin'),
+        title: const Text('Bildirim Günü Seçin'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: List.generate(7, (index) {
@@ -432,35 +479,36 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     await NotificationService.showNotification(
       id: 999,
       title: 'Test Bildirimi ✨',
-      body: 'Bildirimleriniz başarıyla çalışıyor! Astroloji Master\'dan selamlar.',
+      body:
+          'Bildirimleriniz başarıyla çalışıyor! Astroloji Master\'dan selamlar.',
       payload: 'test',
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Test bildirimi gönderildi!'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Test bildirimi gönderildi!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
   }
 
   void _showPermissionInfo() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Bildirim İzinleri Hakkında'),
-        content: Text(
-          'Bildirimleri etkinleştirmek için:\n\n'
-          '1. Cihazınızın bildirim izinlerini kontrol edin\n'
-          '2. Astroloji Master uygulamasına bildirim gönderme izni verin\n'
-          '3. Bildirimlerin engellenmediğinden emin olun\n\n'
-          'iOS: Ayarlar > Bildirimler > Astroloji Master\n'
-          'Android: Ayarlar > Uygulamalar > Astroloji Master > Bildirimler'
-        ),
+        title: const Text('Bildirim İzinleri Hakkında'),
+        content: const Text('Bildirimleri etkinleştirmek için:\n\n'
+            '1. Cihazınızın bildirim izinlerini kontrol edin\n'
+            '2. Astroloji Master uygulamasına bildirim gönderme izni verin\n'
+            '3. Bildirimlerin engellenmediğinden emin olun\n\n'
+            'iOS: Ayarlar > Bildirimler > Astroloji Master\n'
+            'Android: Ayarlar > Uygulamalar > Astroloji Master > Bildirimler'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Tamam'),
+            child: const Text('Tamam'),
           ),
         ],
       ),

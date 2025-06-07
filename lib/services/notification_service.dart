@@ -5,9 +5,9 @@ import 'dart:io';
 import '../models/user_profile.dart';
 
 class NotificationService {
-  static final FlutterLocalNotificationsPlugin _notifications = 
+  static final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
-  
+
   static bool _initialized = false;
 
   // Initialize the notification service
@@ -38,11 +38,12 @@ class NotificationService {
     );
 
     _initialized = true;
-  }
-  // Handle notification tap
+  } // Handle notification tap
+
   static void _onNotificationTapped(NotificationResponse response) {
     // Handle notification tap - can navigate to specific screens
-    log.log('Notification tapped: ${response.payload}');
+    // TODO: Implement proper logging framework
+    // print('Notification tapped: ${response.payload}');
   }
 
   // Request notification permissions
@@ -57,10 +58,12 @@ class NotificationService {
             sound: true,
           );
       return result ?? false;
-    } else if (Platform.isAndroid) {      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+    } else if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
           _notifications.resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>();
-      return await androidImplementation?.requestNotificationsPermission() ?? false;
+      return await androidImplementation?.requestNotificationsPermission() ??
+          false;
     }
     return false;
   }
@@ -146,7 +149,8 @@ class NotificationService {
     final sunSign = await _getUserSunSign(profile);
     if (sunSign == null) return;
 
-    await _notifications.cancel(profile.id.hashCode + 1000); // Offset for weekly
+    await _notifications
+        .cancel(profile.id.hashCode + 1000); // Offset for weekly
 
     await _notifications.zonedSchedule(
       profile.id.hashCode + 1000,
@@ -178,8 +182,8 @@ class NotificationService {
     required DateTime eventTime,
     int? profileId,
   }) async {
-    final id = profileId != null 
-        ? profileId.hashCode + 2000 
+    final id = profileId != null
+        ? profileId.hashCode + 2000
         : eventTime.millisecondsSinceEpoch.hashCode;
 
     await _notifications.zonedSchedule(
@@ -209,6 +213,7 @@ class NotificationService {
     await _notifications.cancel(profileId.hashCode); // Daily
     await _notifications.cancel(profileId.hashCode + 1000); // Weekly
   }
+
   // Cancel all notifications
   static Future<void> cancelAllNotifications() async {
     await _notifications.cancelAll();
@@ -249,17 +254,19 @@ class NotificationService {
   }
 
   // Get all pending notifications
-  static Future<List<PendingNotificationRequest>> getPendingNotifications() async {
+  static Future<List<PendingNotificationRequest>>
+      getPendingNotifications() async {
     return await _notifications.pendingNotificationRequests();
-  }
+  } // Helper method to get user's sun sign
 
-  // Helper method to get user's sun sign
   static Future<String?> _getUserSunSign(UserProfile profile) async {
     try {
       // This would typically call your astrology API
-      // For now, we'll use a simple zodiac calculation    return _calculateZodiacSign(profile.birthDate);
+      // For now, we'll use a simple zodiac calculation
+      return _calculateZodiacSign(profile.birthDate);
     } catch (e) {
-      log.log('Error getting sun sign: $e');
+      // TODO: Implement proper logging framework
+      // print('Error getting sun sign: $e');
       return null;
     }
   }
@@ -268,69 +275,100 @@ class NotificationService {
   static String _calculateZodiacSign(DateTime birthDate) {
     final month = birthDate.month;
     final day = birthDate.day;
+    if ((month == 3 && day >= 21) || (month == 4 && day <= 19)) {
+      return 'Koç';
+    }
+    if ((month == 4 && day >= 20) || (month == 5 && day <= 20)) {
+      return 'Boğa';
+    }
+    if ((month == 5 && day >= 21) || (month == 6 && day <= 20)) {
+      return 'İkizler';
+    }
+    if ((month == 6 && day >= 21) || (month == 7 && day <= 22)) {
+      return 'Yengeç';
+    }
+    if ((month == 7 && day >= 23) || (month == 8 && day <= 22)) {
+      return 'Aslan';
+    }
+    if ((month == 8 && day >= 23) || (month == 9 && day <= 22)) {
+      return 'Başak';
+    }
+    if ((month == 9 && day >= 23) || (month == 10 && day <= 22)) {
+      return 'Terazi';
+    }
+    if ((month == 10 && day >= 23) || (month == 11 && day <= 21)) {
+      return 'Akrep';
+    }
+    if ((month == 11 && day >= 22) || (month == 12 && day <= 21)) {
+      return 'Yay';
+    }
+    if ((month == 12 && day >= 22) || (month == 1 && day <= 19)) {
+      return 'Oğlak';
+    }
+    if ((month == 1 && day >= 20) || (month == 2 && day <= 18)) {
+      return 'Kova';
+    }
+    if ((month == 2 && day >= 19) || (month == 3 && day <= 20)) {
+      return 'Balık';
+    }
 
-    if ((month == 3 && day >= 21) || (month == 4 && day <= 19)) return 'Koç';
-    if ((month == 4 && day >= 20) || (month == 5 && day <= 20)) return 'Boğa';
-    if ((month == 5 && day >= 21) || (month == 6 && day <= 20)) return 'İkizler';
-    if ((month == 6 && day >= 21) || (month == 7 && day <= 22)) return 'Yengeç';
-    if ((month == 7 && day >= 23) || (month == 8 && day <= 22)) return 'Aslan';
-    if ((month == 8 && day >= 23) || (month == 9 && day <= 22)) return 'Başak';
-    if ((month == 9 && day >= 23) || (month == 10 && day <= 22)) return 'Terazi';
-    if ((month == 10 && day >= 23) || (month == 11 && day <= 21)) return 'Akrep';
-    if ((month == 11 && day >= 22) || (month == 12 && day <= 21)) return 'Yay';
-    if ((month == 12 && day >= 22) || (month == 1 && day <= 19)) return 'Oğlak';
-    if ((month == 1 && day >= 20) || (month == 2 && day <= 18)) return 'Kova';
-    if ((month == 2 && day >= 19) || (month == 3 && day <= 20)) return 'Balık';
-    
     return 'Koç'; // Fallback
   }
 
   // Get zodiac sign emoji
   static String _getZodiacSignEmoji(String sign) {
     switch (sign.toLowerCase()) {
-      case 'koç': return '♈';
-      case 'boğa': return '♉';
-      case 'i̇kizler': return '♊';
-      case 'yengeç': return '♋';
-      case 'aslan': return '♌';
-      case 'başak': return '♍';
-      case 'terazi': return '♎';
-      case 'akrep': return '♏';
-      case 'yay': return '♐';
-      case 'oğlak': return '♑';
-      case 'kova': return '♒';
-      case 'balık': return '♓';
-      default: return '⭐';
+      case 'koç':
+        return '♈';
+      case 'boğa':
+        return '♉';
+      case 'i̇kizler':
+        return '♊';
+      case 'yengeç':
+        return '♋';
+      case 'aslan':
+        return '♌';
+      case 'başak':
+        return '♍';
+      case 'terazi':
+        return '♎';
+      case 'akrep':
+        return '♏';
+      case 'yay':
+        return '♐';
+      case 'oğlak':
+        return '♑';
+      case 'kova':
+        return '♒';
+      case 'balık':
+        return '♓';
+      default:
+        return '⭐';
     }
   }
 
   // Calculate next instance of daily time
   static tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(
-      tz.local, 
-      now.year, 
-      now.month, 
-      now.day, 
-      hour, 
-      minute
-    );
-    
+    tz.TZDateTime scheduledDate =
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
-    
+
     return scheduledDate;
   }
 
   // Calculate next instance of weekly time
-  static tz.TZDateTime _nextInstanceOfWeekly(int weekday, int hour, int minute) {
+  static tz.TZDateTime _nextInstanceOfWeekly(
+      int weekday, int hour, int minute) {
     tz.TZDateTime scheduledDate = _nextInstanceOfTime(hour, minute);
-    
+
     while (scheduledDate.weekday != weekday) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
-    
-  return scheduledDate;
+
+    return scheduledDate;
   }
 }

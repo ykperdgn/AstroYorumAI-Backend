@@ -430,12 +430,12 @@ void main() {
       // Mock geocoding service with delay to capture processing state
       when(mockGeocodingService.getCoordinates('İstanbul'))
           .thenAnswer((_) async {
-        await Future.delayed(Duration(milliseconds: 500)); // Longer delay to capture processing state
+        await Future.delayed(const Duration(milliseconds: 500)); // Longer delay to capture processing state
         return {'lat': 41.0082, 'lon': 28.9784}; // Use correct keys
       });
       when(mockPreferencesService.saveUserBirthInfo(any))
           .thenAnswer((_) async {
-        await Future.delayed(Duration(milliseconds: 100)); // Small delay for save operation
+        await Future.delayed(const Duration(milliseconds: 100)); // Small delay for save operation
       });
 
       // Use profile with date/time already set BUT NO coordinates to trigger geocoding
@@ -487,7 +487,7 @@ void main() {
       
       // Give time for the setState call to take effect
       await tester.pump();
-      await tester.pump(Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 50));
 
       // Debug: Check what widgets are currently visible
       print('DEBUG: Checking for LoadingIndicator after form submission...');
@@ -542,7 +542,7 @@ void main() {
       );
       await tester.tap(submitButton, warnIfMissed: false);
       await tester.pump(); // Let any validation appear
-      await tester.pump(Duration(milliseconds: 100)); // Give time for any snackbar
+      await tester.pump(const Duration(milliseconds: 100)); // Give time for any snackbar
       
       // Since date validation is done early, we should still be on the same screen
       // The submit method returns early when date is not selected
@@ -583,7 +583,7 @@ void main() {
       );
       await tester.tap(submitButton, warnIfMissed: false);
       await tester.pump(); // Let any validation appear
-      await tester.pump(Duration(milliseconds: 100)); // Give time for any snackbar
+      await tester.pump(const Duration(milliseconds: 100)); // Give time for any snackbar
       
       // Since time validation is done early, we should still be on the same screen
       // The submit method returns early when time is not selected

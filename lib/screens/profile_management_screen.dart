@@ -6,10 +6,10 @@ import '../screens/birth_info_screen.dart';
 import '../screens/natal_chart_screen.dart';
 
 class ProfileManagementScreen extends StatefulWidget {
-  const ProfileManagementScreen({Key? key}) : super(key: key);
-
+  const ProfileManagementScreen({super.key});
   @override
-  _ProfileManagementScreenState createState() => _ProfileManagementScreenState();
+  State<ProfileManagementScreen> createState() =>
+      _ProfileManagementScreenState();
 }
 
 class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
@@ -26,7 +26,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   Future<void> _loadProfiles() async {
     setState(() {
       _isLoading = true;
-    });    try {
+    });
+    try {
       final service = await ProfileManagementService.getInstance();
       final profiles = await service.getAllProfiles();
       final activeProfile = await service.getActiveProfile();
@@ -40,7 +41,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       setState(() {
         _isLoading = false;
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -57,7 +58,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Profili Sil'),
-        content: Text('${profile.name} profilini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.'),
+        content: Text(
+            '${profile.name} profilini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -127,7 +129,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => BirthInfoScreen(
-          onComplete: (birthInfo) async {            final service = await ProfileManagementService.getInstance();
+          onComplete: (birthInfo) async {
+            final service = await ProfileManagementService.getInstance();
             final profile = await service.importFromBirthInfo(
               name: birthInfo.name ?? 'Yeni Profil',
               birthDate: birthInfo.birthDate ?? DateTime.now(),
@@ -137,16 +140,14 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
               longitude: birthInfo.longitude,
             );
 
-            if (profile != null) {
+            if (profile != null && mounted) {
               _loadProfiles();
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('${profile.name} profili oluşturuldu.'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              }
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${profile.name} profili oluşturuldu.'),
+                  backgroundColor: Colors.green,
+                ),
+              );
             }
           },
         ),
@@ -204,15 +205,15 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
           Text(
             'Henüz profil oluşturmadınız',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Colors.grey[600],
-            ),
+                  color: Colors.grey[600],
+                ),
           ),
           const SizedBox(height: 8),
           Text(
             'İlk profilinizi oluşturmak için + butonuna tıklayın',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey[600],
-            ),
+                  color: Colors.grey[600],
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
@@ -253,7 +254,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   : null,
               child: ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: isActive ? Colors.deepPurple : Colors.grey[300],
+                  backgroundColor:
+                      isActive ? Colors.deepPurple : Colors.grey[300],
                   child: Icon(
                     Icons.person,
                     color: isActive ? Colors.white : Colors.grey[600],
@@ -265,14 +267,16 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                       child: Text(
                         profile.name,
                         style: TextStyle(
-                          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                          fontWeight:
+                              isActive ? FontWeight.bold : FontWeight.normal,
                           color: isActive ? Colors.deepPurple : null,
                         ),
                       ),
                     ),
                     if (isActive)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
                           color: Colors.deepPurple,
                           borderRadius: BorderRadius.circular(12),
@@ -291,7 +295,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Doğum: ${DateFormat('dd.MM.yyyy').format(profile.birthDate)}'),
+                    Text(
+                        'Doğum: ${DateFormat('dd.MM.yyyy').format(profile.birthDate)}'),
                     if (profile.birthPlace != null)
                       Text('Yer: ${profile.birthPlace}'),
                     if (profile.birthTime != null)
@@ -334,7 +339,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                       value: 'delete',
                       child: ListTile(
                         leading: Icon(Icons.delete, color: Colors.red[600]),
-                        title: Text('Sil', style: TextStyle(color: Colors.red[600])),
+                        title: Text('Sil',
+                            style: TextStyle(color: Colors.red[600])),
                         contentPadding: EdgeInsets.zero,
                       ),
                     ),

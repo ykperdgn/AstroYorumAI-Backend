@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:developer' as log;
 import '../models/user_profile.dart';
 import '../models/celestial_event.dart';
 import 'auth_service.dart';

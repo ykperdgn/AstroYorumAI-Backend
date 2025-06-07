@@ -11,10 +11,10 @@ class SplashScreen extends StatefulWidget {
   final UserPreferencesService? preferencesService;
   
   const SplashScreen({
-    Key? key, 
+    super.key, 
     this.onLocaleChange,
     this.preferencesService,
-  }) : super(key: key);
+  });
   
   @override
   State<SplashScreen> createState() => _SplashScreenState();

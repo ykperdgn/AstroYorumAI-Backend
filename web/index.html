@@ -15,22 +15,76 @@
     the `--base-href` argument provided to `flutter build`.
   -->
   <base href="$FLUTTER_BASE_HREF">
-
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="AstroYorumAI - Ücretsiz Türkçe Astroloji ve Natal Harita Uygulaması. Doğum haritanızı oluşturun, günlük horoskoplanızı okuyun.">
+  <meta name="keywords" content="astroloji, natal harita, burçlar, horoscope, astrology, turkish, türkçe">
+  <meta name="author" content="AstroYorumAI">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="AstroYorumAI - Türkçe Astroloji Uygulaması">
+  <meta property="og:description" content="Ücretsiz natal harita oluşturun, günlük horoskoplanızı okuyun. Türkçe astroloji rehberiniz.">
+  <meta property="og:image" content="https://astroyorumai-production.web.app/icons/Icon-512.png">
+  <meta property="og:url" content="https://astroyorumai-production.web.app">
+  <meta property="og:type" content="website">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AstroYorumAI - Türkçe Astroloji Uygulaması">
+  <meta name="twitter:description" content="Ücretsiz natal harita oluşturun, günlük horoskoplanızı okuyun.">
+  <meta name="twitter:image" content="https://astroyorumai-production.web.app/icons/Icon-512.png">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="astroyorumai">
+  <meta name="apple-mobile-web-app-title" content="AstroYorumAI">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>astroyorumai</title>
+  <title>AstroYorumAI - Türkçe Astroloji Uygulaması</title>
   <link rel="manifest" href="manifest.json">
+  
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SPBQSQB0K8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SPBQSQB0K8', {
+      page_title: 'AstroYorumAI Web App',
+      page_location: window.location.href,
+      send_page_view: true
+    });
+    
+    // Custom events for app tracking
+    function trackEvent(action, category, label, value) {
+      gtag('event', action, {
+        event_category: category,
+        event_label: label,
+        value: value
+      });
+    }
+    
+    // Track app usage
+    function trackAppUsage(feature) {
+      gtag('event', 'app_usage', {
+        event_category: 'engagement',
+        event_label: feature,
+        custom_parameter: 'web_app'
+      });
+    }
+    
+    // Track natal chart creation
+    function trackNatalChart() {
+      gtag('event', 'natal_chart_created', {
+        event_category: 'conversion',
+        event_label: 'chart_generation',
+        value: 1
+      });
+    }
+  </script>
 
   <script>
     // The value below is injected by flutter build, do not touch.

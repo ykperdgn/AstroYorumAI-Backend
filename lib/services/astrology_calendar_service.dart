@@ -36,8 +36,8 @@ class AstrologyCalendarService {
   ) async {
     final allEvents = await getAllEvents();
     return allEvents.where((event) {
-      return event.dateTime.isAfter(startDate.subtract(Duration(days: 1))) &&
-             event.dateTime.isBefore(endDate.add(Duration(days: 1)));
+      return event.dateTime.isAfter(startDate.subtract(const Duration(days: 1))) &&
+             event.dateTime.isBefore(endDate.add(const Duration(days: 1)));
     }).toList();
   }
   // Get upcoming events (next 30 days)
@@ -57,7 +57,7 @@ class AstrologyCalendarService {
   static Future<List<CelestialEvent>> getTodaysEvents() async {
     final now = DateTime.now();
     final startOfDay = DateTime(now.year, now.month, now.day);
-    final endOfDay = startOfDay.add(Duration(days: 1));
+    final endOfDay = startOfDay.add(const Duration(days: 1));
     return await getEventsInRange(startOfDay, endOfDay);
   }
 

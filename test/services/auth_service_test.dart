@@ -5,9 +5,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:astroyorumai/services/auth_service.dart';
 import '../test_setup.dart';
+import '../helpers/firebase_test_helper.dart';
 
 // Generate mocks
-@GenerateMocks([FirebaseAuth, FirebaseFirestore, User, UserCredential, CollectionReference, DocumentReference, DocumentSnapshot])
+@GenerateMocks([
+  FirebaseAuth,
+  FirebaseFirestore,
+  User,
+  UserCredential,
+  CollectionReference,
+  DocumentReference,
+  DocumentSnapshot
+])
 import 'auth_service_test.mocks.dart';
 
 void main() {
@@ -15,26 +24,31 @@ void main() {
     late AuthService authService;
     late MockFirebaseAuth mockFirebaseAuth;
     late MockUser mockUser;
-    late MockUserCredential mockUserCredential;    late MockCollectionReference<Map<String, dynamic>> mockCollectionReference;
-    late MockDocumentReference<Map<String, dynamic>> mockDocumentReference;
+    late MockUserCredential mockUserCredential;
+    late MockCollectionReference<Map<String, dynamic>> mockCollectionReference;
 
     setUpAll(() async {
+      // Firebase test mock'larını ayarla
+      setupFirebaseTestMocks();
       await setupFirebaseForTest();
-    });    setUp(() {
+    });
+    setUp(() {
       mockFirebaseAuth = MockFirebaseAuth();
       mockUser = MockUser();
-      mockUserCredential = MockUserCredential();      mockCollectionReference = MockCollectionReference<Map<String, dynamic>>();
-      mockDocumentReference = MockDocumentReference<Map<String, dynamic>>();
-      
+      mockUserCredential = MockUserCredential();
+      mockCollectionReference = MockCollectionReference<Map<String, dynamic>>();
+
       // Create a mock Firestore
-      final mockFirestore = MockFirebaseFirestore();      when(mockFirestore.collection(any)).thenReturn(mockCollectionReference);
-      
+      final mockFirestore = MockFirebaseFirestore();
+      when(mockFirestore.collection(any)).thenReturn(mockCollectionReference);
+
       // Reset service singletons first
       resetServiceSingletons();
-      
+
       // Create a new AuthService instance with mocked dependencies
-      authService = AuthService(auth: mockFirebaseAuth, firestore: mockFirestore);
-      
+      authService =
+          AuthService(auth: mockFirebaseAuth, firestore: mockFirestore);
+
       // Set the test instance
       AuthService.testInstance = authService;
     });
@@ -44,20 +58,22 @@ void main() {
       AuthService.testInstance = null;
     });
 
-    group('signInWithEmailAndPassword', () {      test('should return user when sign in is successful', () async {
+    group('signInWithEmailAndPassword', () {
+      test('should return user when sign in is successful', () async {
         // Arrange
         const email = 'test@example.com';
         const password = 'password123';
-        
+
         when(mockFirebaseAuth.signInWithEmailAndPassword(
           email: email,
           password: password,
         )).thenAnswer((_) async => mockUserCredential);
-        
+
         when(mockUserCredential.user).thenReturn(mockUser);
 
         // Act
-        final result = await authService.signInWithEmailAndPassword(email, password);
+        final result =
+            await authService.signInWithEmailAndPassword(email, password);
 
         // Assert
         expect(result, equals(mockUserCredential));
@@ -65,11 +81,12 @@ void main() {
           email: email,
           password: password,
         )).called(1);
-      });      test('should throw exception when sign in fails', () async {
+      });
+      test('should throw exception when sign in fails', () async {
         // Arrange
         const email = 'test@example.com';
         const password = 'wrongpassword';
-        
+
         when(mockFirebaseAuth.signInWithEmailAndPassword(
           email: email,
           password: password,
@@ -83,21 +100,23 @@ void main() {
       });
     });
 
-    group('createUserWithEmailAndPassword', () {      test('should return user when registration is successful', () async {
+    group('createUserWithEmailAndPassword', () {
+      test('should return user when registration is successful', () async {
         // Arrange
         const email = 'newuser@example.com';
         const password = 'password123';
-        
+
         when(mockFirebaseAuth.createUserWithEmailAndPassword(
           email: email,
           password: password,
         )).thenAnswer((_) async => mockUserCredential);
-        
+
         when(mockUserCredential.user).thenReturn(mockUser);
         when(mockUser.uid).thenReturn('test-uid');
 
         // Act
-        final result = await authService.createUserWithEmailAndPassword(email, password);
+        final result =
+            await authService.createUserWithEmailAndPassword(email, password);
 
         // Assert
         expect(result, equals(mockUserCredential));
@@ -105,11 +124,12 @@ void main() {
           email: email,
           password: password,
         )).called(1);
-      });      test('should throw exception when registration fails', () async {
+      });
+      test('should throw exception when registration fails', () async {
         // Arrange
         const email = 'existing@example.com';
         const password = 'password123';
-        
+
         when(mockFirebaseAuth.createUserWithEmailAndPassword(
           email: email,
           password: password,
@@ -172,7 +192,8 @@ void main() {
 
         // Assert
         verify(mockFirebaseAuth.sendPasswordResetEmail(email: email)).called(1);
-      });      test('should throw exception when email is invalid', () async {
+      });
+      test('should throw exception when email is invalid', () async {
         // Arrange
         const email = 'invalid-email';
         when(mockFirebaseAuth.sendPasswordResetEmail(email: email))
@@ -196,14 +217,15 @@ void main() {
       mockFirebaseAuth = MockFirebaseAuth();
       mockUser = MockUser();
       mockFirestore = MockFirebaseFirestore();
-      
+
       // Reset service singletons
       resetServiceSingletons();
-      
+
       // Create AuthService with mocks
-      authService = AuthService(auth: mockFirebaseAuth, firestore: mockFirestore);
+      authService =
+          AuthService(auth: mockFirebaseAuth, firestore: mockFirestore);
       AuthService.testInstance = authService;
-      
+
       // Setup default mock behavior
       when(mockFirebaseAuth.currentUser).thenReturn(null);
     });
@@ -218,7 +240,7 @@ void main() {
       when(mockFirebaseAuth.currentUser).thenReturn(mockUser);
       when(mockUser.uid).thenReturn('test-uid');
       when(mockUser.email).thenReturn('test@example.com');
-      
+
       // Mock signInWithEmailAndPassword to return success
       final mockUserCredential = MockUserCredential();
       when(mockUserCredential.user).thenReturn(mockUser);
@@ -226,8 +248,9 @@ void main() {
         email: anyNamed('email'),
         password: anyNamed('password'),
       )).thenAnswer((_) async => mockUserCredential);
-      
-      await authService.signInWithEmailAndPassword('test@example.com', 'password123');
+
+      await authService.signInWithEmailAndPassword(
+          'test@example.com', 'password123');
       expect(authService.isSignedIn, isTrue);
     });
 
@@ -235,33 +258,41 @@ void main() {
       // First sign in
       when(mockFirebaseAuth.currentUser).thenReturn(mockUser);
       when(mockUser.uid).thenReturn('test-uid');
-      
+
       final mockUserCredential = MockUserCredential();
       when(mockUserCredential.user).thenReturn(mockUser);
       when(mockFirebaseAuth.signInWithEmailAndPassword(
         email: anyNamed('email'),
         password: anyNamed('password'),
       )).thenAnswer((_) async => mockUserCredential);
-      
-      await authService.signInWithEmailAndPassword('test@example.com', 'password123');
-      
+
+      await authService.signInWithEmailAndPassword(
+          'test@example.com', 'password123');
+
       // Then sign out
       when(mockFirebaseAuth.currentUser).thenReturn(null);
       when(mockFirebaseAuth.signOut()).thenAnswer((_) async {});
-      
+
       await authService.signOut();
       expect(authService.isSignedIn, isFalse);
-    });    test('Hatalı giriş bilgileri oturum açmamalı', () async {
+    });
+    test('Hatalı giriş bilgileri oturum açmamalı', () async {
       when(mockFirebaseAuth.signInWithEmailAndPassword(
         email: anyNamed('email'),
         password: anyNamed('password'),
-      )).thenThrow(FirebaseAuthException(code: 'invalid-credential', message: 'Invalid credentials'));
-      
+      )).thenThrow(FirebaseAuthException(
+          code: 'invalid-credential', message: 'Invalid credentials'));
+
       expect(
         () => authService.signInWithEmailAndPassword('', ''),
         throwsA(equals('Kimlik doğrulama hatası: Invalid credentials')),
       );
       expect(authService.isSignedIn, isFalse);
+    });
+
+    tearDownAll(() {
+      // Firebase test mock'larını temizle
+      tearDownFirebaseTestMocks();
     });
   });
 }

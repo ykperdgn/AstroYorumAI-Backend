@@ -17,10 +17,12 @@ void main() async {
     print('❌ Firebase initialization failed: $e');
   }
   
-  runApp(FirebaseTestApp());
+  runApp(const FirebaseTestApp());
 }
 
 class FirebaseTestApp extends StatelessWidget {
+  const FirebaseTestApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,12 +31,14 @@ class FirebaseTestApp extends StatelessWidget {
         primarySwatch: Colors.purple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: FirebaseTestScreen(),
+      home: const FirebaseTestScreen(),
     );
   }
 }
 
 class FirebaseTestScreen extends StatefulWidget {
+  const FirebaseTestScreen({super.key});
+
   @override
   _FirebaseTestScreenState createState() => _FirebaseTestScreenState();
 }
@@ -138,17 +142,17 @@ class _FirebaseTestScreenState extends State<FirebaseTestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('AstroYorumAI Firebase Test'),
+        title: const Text('AstroYorumAI Firebase Test'),
         backgroundColor: Colors.purple[700],
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Card(
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -160,12 +164,12 @@ class _FirebaseTestScreenState extends State<FirebaseTestScreen> {
                         color: Colors.purple[700],
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     if (_isLoading)
                       Row(
                         children: [
-                          CircularProgressIndicator(),
-                          SizedBox(width: 16),
+                          const CircularProgressIndicator(),
+                          const SizedBox(width: 16),
                           Expanded(child: Text(_status)),
                         ],
                       )
@@ -178,21 +182,21 @@ class _FirebaseTestScreenState extends State<FirebaseTestScreen> {
                           color: _allTestsPassed ? Colors.green : Colors.red,
                         ),
                       ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(
                       _details,
-                      style: TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ],
                 ),
               ),
             ),
             if (_allTestsPassed) ...[
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Card(
                 color: Colors.green[50],
                 child: Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -204,8 +208,8 @@ class _FirebaseTestScreenState extends State<FirebaseTestScreen> {
                           color: Colors.green[700],
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Text(
+                      const SizedBox(height: 8),
+                      const Text(
                         '✅ Backend API: https://astroyorumai-api.onrender.com\n'
                         '✅ Firebase Production: astroyorumai-production\n'
                         '✅ Flutter App: Ready for beta users\n'

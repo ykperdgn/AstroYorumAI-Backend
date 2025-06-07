@@ -6,10 +6,9 @@ import 'auth_screen.dart';
 import 'package:intl/intl.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
-
+  const SettingsScreen({super.key});
   @override
-  _SettingsScreenState createState() => _SettingsScreenState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
@@ -22,60 +21,69 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _loadSettings();
   }
+
   Future<void> _loadSettings() async {
     final lastSync = await CloudSyncService.instance.getLastSyncTime();
     final currentLocale = await LocalizationService.getCurrentLocale();
-    
+
     setState(() {
       _lastSyncTime = lastSync;
       _selectedLanguage = currentLocale.languageCode;
     });
   }
+
   Future<void> _signIn() async {
     final result = await Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const AuthScreen()),
     );
-    
+
     if (result == true) {
       setState(() {});
       _loadSettings();
     }
   }
 
-  Future<void> _signOut() async {    final confirmed = await showDialog<bool>(
+  Future<void> _signOut() async {
+    final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Çıkış Yap'),
-        content: const Text('Hesabınızdan çıkış yapmak istediğinizden emin misiniz?'),
+        content: const Text(
+            'Hesabınızdan çıkış yapmak istediğinizden emin misiniz?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('İptal'),
+            child: const Text('İptal'),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: Text('Çıkış Yap'),
+            child: const Text('Çıkış Yap'),
           ),
         ],
       ),
-    );    if (confirmed == true) {
+    );
+    if (confirmed == true) {
       try {
         await AuthService.instance.signOut();
-        setState(() {});
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Başarıyla çıkış yapıldı'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        if (mounted) {
+          setState(() {});
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Başarıyla çıkış yapıldı'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Çıkış yapılırken hata oluştu: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Çıkış yapılırken hata oluştu: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
   }
@@ -83,26 +91,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _syncToCloud() async {
     setState(() {
       _isLoading = true;
-    });    try {
+    });
+    try {
       await CloudSyncService.instance.syncToCloud();
       await _loadSettings();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Veriler buluta yedeklendi'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Veriler buluta yedeklendi'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Yedekleme başarısız: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Yedekleme başarısız: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -110,17 +125,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Veriyi Geri Yükle'),
-        content: Text('Buluttaki veriler mevcut verilerin üzerine yazılacak. Devam etmek istiyor musunuz?'),
+        title: const Text('Veriyi Geri Yükle'),
+        content: const Text(
+            'Buluttaki veriler mevcut verilerin üzerine yazılacak. Devam etmek istiyor musunuz?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('İptal'),
+            child: const Text('İptal'),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(foregroundColor: Colors.orange),
-            child: Text('Geri Yükle'),
+            child: const Text('Geri Yükle'),
           ),
         ],
       ),
@@ -131,36 +147,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       _isLoading = true;
     });
-
-    try {      await CloudSyncService.instance.syncFromCloud();
+    try {
+      await CloudSyncService.instance.syncFromCloud();
       await _loadSettings();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Veriler buluttan geri yüklendi'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Veriler buluttan geri yüklendi'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Geri yükleme başarısız: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Geri yükleme başarısız: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
   Future<void> _changeLanguage() async {
     final languages = LocalizationService.getAvailableLanguages();
-    
+
     final selected = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Dil Seçin'),
+        title: const Text('Dil Seçin'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: languages.entries.map((entry) {
@@ -176,79 +198,79 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
-
     if (selected != null && selected != _selectedLanguage) {
       await LocalizationService.setLocale(selected);
-      setState(() {
-        _selectedLanguage = selected;
-      });
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Dil değiştirildi. Uygulamayı yeniden başlatın.'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (mounted) {
+        setState(() {
+          _selectedLanguage = selected;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Dil değiştirildi. Uygulamayı yeniden başlatın.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     }
   }
 
-  @override  Widget build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     final isSignedIn = AuthService.instance.isSignedIn;
-    
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ayarlar'),
+        title: const Text('Ayarlar'),
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
       ),
       body: ListView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         children: [
           // Language Settings
           Card(
             child: ListTile(
-              leading: Icon(Icons.language, color: Colors.deepPurple),
-              title: Text('Dil'),
-              subtitle: Text(LocalizationService.getLanguageName(_selectedLanguage)),
-              trailing: Icon(Icons.arrow_forward_ios),
+              leading: const Icon(Icons.language, color: Colors.deepPurple),
+              title: const Text('Dil'),
+              subtitle:
+                  Text(LocalizationService.getLanguageName(_selectedLanguage)),
+              trailing: const Icon(Icons.arrow_forward_ios),
               onTap: _changeLanguage,
             ),
           ),
-          
-          SizedBox(height: 16),
-          
+          const SizedBox(height: 16),
           // Cloud Sync Section
           Text(
             'Bulut Senkronizasyonu',
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          SizedBox(height: 8),
-          
+          const SizedBox(height: 8),
+
           if (!isSignedIn) ...[
             Card(
               child: Padding(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    const Row(
                       children: [
                         Icon(Icons.cloud_off, color: Colors.grey),
                         SizedBox(width: 8),
                         Text('Giriş Yapılmamış'),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'Verilerinizi bulutta saklamak ve cihazlar arası senkronize etmek için giriş yapın.',
                       style: TextStyle(color: Colors.grey[600]),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
-                        icon: Icon(Icons.login),
-                        label: Text('Giriş Yap'),
+                        icon: const Icon(Icons.login),
+                        label: const Text('Giriş Yap'),
                         onPressed: _signIn,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.deepPurple,
@@ -263,33 +285,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ] else ...[
             Card(
               child: Padding(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    const Row(
                       children: [
                         Icon(Icons.cloud_done, color: Colors.green),
                         SizedBox(width: 8),
                         Text('Giriş Yapıldı'),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text('E-posta: ${AuthService.instance.currentUser?.email}'),
                     if (_lastSyncTime != null) ...[
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
                         'Son senkronizasyon: ${DateFormat('dd.MM.yyyy HH:mm').format(_lastSyncTime!)}',
                         style: TextStyle(color: Colors.grey[600], fontSize: 12),
                       ),
                     ],
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         Expanded(
                           child: ElevatedButton.icon(
-                            icon: Icon(Icons.cloud_upload),
-                            label: Text('Yedekle'),
+                            icon: const Icon(Icons.cloud_upload),
+                            label: const Text('Yedekle'),
                             onPressed: _isLoading ? null : _syncToCloud,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
@@ -297,11 +319,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: ElevatedButton.icon(
-                            icon: Icon(Icons.cloud_download),
-                            label: Text('Geri Yükle'),
+                            icon: const Icon(Icons.cloud_download),
+                            label: const Text('Geri Yükle'),
                             onPressed: _isLoading ? null : _syncFromCloud,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.orange,
@@ -311,12 +333,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        icon: Icon(Icons.logout),
-                        label: Text('Çıkış Yap'),
+                        icon: const Icon(Icons.logout),
+                        label: const Text('Çıkış Yap'),
                         onPressed: _signOut,
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.red,
@@ -328,26 +350,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ],
-          
           if (_isLoading) ...[
-            SizedBox(height: 16),
-            Center(child: CircularProgressIndicator()),
+            const SizedBox(height: 16),
+            const Center(child: CircularProgressIndicator()),
           ],
-          
-          SizedBox(height: 24),
-          
+
+          const SizedBox(height: 24),
+
           // Info Section
           Card(
             color: Colors.blue.shade50,
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.info, color: Colors.blue),
-                      SizedBox(width: 8),
+                      const Icon(Icons.info, color: Colors.blue),
+                      const SizedBox(width: 8),
                       Text(
                         'Bulut Senkronizasyonu',
                         style: TextStyle(
@@ -357,7 +378,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     '• Verileriniz güvenli Firebase sunucularında saklanır\n'
                     '• Otomatik yedekleme günde bir kez yapılır\n'

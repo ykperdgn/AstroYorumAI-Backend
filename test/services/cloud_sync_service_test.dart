@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:astroyorumai/services/cloud_sync_service.dart';
 import 'package:astroyorumai/services/auth_service.dart';
 import '../test_setup.dart';
+import '../helpers/firebase_test_helper.dart';
 
 // Generate mocks
 @GenerateMocks([
@@ -23,6 +24,8 @@ import 'cloud_sync_service_test.mocks.dart';
 
 void main() {
   setUpAll(() async {
+    // Firebase test mock'larını ayarla
+    setupFirebaseTestMocks();
     await setupFirebaseForTest();
   });
 
@@ -152,10 +155,14 @@ void main() {
         when(mockUsersCollection.get()).thenAnswer((_) async => mockQuery);
         when(mockQuery.docs).thenReturn([]);
         when(mockUserDocument.delete()).thenAnswer((_) async => {});
-        
-        // Act & Assert
+          // Act & Assert
         await expectLater(cloudSyncService.deleteCloudData(), completes);
       });
+    });
+
+    tearDownAll(() {
+      // Firebase test mock'larını temizle
+      tearDownFirebaseTestMocks();
     });
   });
 }

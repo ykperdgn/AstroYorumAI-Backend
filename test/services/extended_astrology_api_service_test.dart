@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert';
 
-import '../../lib/services/extended_astrology_api_service.dart';
+import 'package:astroyorumai/services/extended_astrology_api_service.dart';
 
 void main() {
   group('ExtendedAstrologyApiService', () {
@@ -44,7 +44,7 @@ void main() {
       test('should construct correct API URL with default period', () {
         const testSign = 'aries';
         const defaultPeriod = 'today';
-        final expectedUrl = 'https://aztro.sameerkumar.website?sign=$testSign&day=$defaultPeriod';
+        const expectedUrl = 'https://aztro.sameerkumar.website?sign=$testSign&day=$defaultPeriod';
         
         expect(expectedUrl, contains('aztro.sameerkumar.website'));
         expect(expectedUrl, contains('sign=$testSign'));
@@ -54,7 +54,7 @@ void main() {
       test('should construct correct API URL with custom period', () {
         const testSign = 'leo';
         const customPeriod = 'week';
-        final expectedUrl = 'https://aztro.sameerkumar.website?sign=$testSign&day=$customPeriod';
+        const expectedUrl = 'https://aztro.sameerkumar.website?sign=$testSign&day=$customPeriod';
         
         expect(expectedUrl, contains('sign=$testSign'));
         expect(expectedUrl, contains('day=$customPeriod'));
@@ -103,7 +103,7 @@ void main() {
           'mood': 'Happy'
         };
 
-        final castedResponse = rawResponse as Map<String, dynamic>;
+        final castedResponse = rawResponse;
         expect(castedResponse, isA<Map<String, dynamic>>());
         expect(castedResponse['description'], equals('Test horoscope'));
       });
@@ -293,7 +293,7 @@ void main() {
         test('should validate query parameter format', () {
           const sign = 'aries';
           const period = 'today';
-          final queryString = 'sign=$sign&day=$period';
+          const queryString = 'sign=$sign&day=$period';
           
           expect(queryString, contains('sign='));
           expect(queryString, contains('day='));
@@ -308,7 +308,7 @@ void main() {
           // Test safe casting
           expect(responseData, isA<Map<String, dynamic>>());
           
-          final castedData = responseData as Map<String, dynamic>;
+          final castedData = responseData;
           expect(castedData['key'], equals('value'));
         });
 
@@ -335,7 +335,7 @@ void main() {
 
           for (final value in stringResponse.values) {
             expect(value, isA<String>());
-            expect((value as String).isNotEmpty, isTrue);
+            expect((value).isNotEmpty, isTrue);
           }
         });
       });

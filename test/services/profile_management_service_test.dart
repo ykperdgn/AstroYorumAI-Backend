@@ -1,17 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:astroyorumai/services/profile_management_service.dart';
-import 'package:astroyorumai/models/user_profile.dart';
 import '../test_setup.dart';
+import '../helpers/firebase_test_helper.dart';
 
 // Generate mocks
-@GenerateMocks([SharedPreferences])
-import 'profile_management_service_test.mocks.dart';
 
 void main() {
   setUpAll(() async {
+    // Firebase test mock'larını ayarla
+    setupFirebaseTestMocks();
     await setupFirebaseForTest();
   });
 
@@ -104,7 +102,7 @@ void main() {
         await service.saveProfile(profile);
 
         // Wait a bit to ensure different timestamps
-        await Future.delayed(Duration(milliseconds: 10));
+        await Future.delayed(const Duration(milliseconds: 10));
 
         // Act - Save profile with same ID but different data
         final updatedProfile = profile.copyWith(
@@ -508,11 +506,15 @@ void main() {
 
         // Assert
         expect(result, isTrue);
-        
-        final profiles = await service.getAllProfiles();
+          final profiles = await service.getAllProfiles();
         expect(profiles.first.name, equals(longName));
         expect(profiles.first.birthPlace, equals(longPlace));
       });
+    });
+
+    tearDownAll(() {
+      // Firebase test mock'larını temizle
+      tearDownFirebaseTestMocks();
     });
   });
 }

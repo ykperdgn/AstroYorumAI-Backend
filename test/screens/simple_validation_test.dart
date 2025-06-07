@@ -29,7 +29,7 @@ void main() {
               children: [
                 TextFormField(
                   controller: controller,
-                  decoration: InputDecoration(labelText: 'Enlem (Latitude)'),
+                  decoration: const InputDecoration(labelText: 'Enlem (Latitude)'),
                   validator: (value) {
                     print('DEBUG: Validator called with value: $value');
                     if (value == null || value.trim().isEmpty) {
@@ -53,7 +53,7 @@ void main() {
                     final isValid = formKey.currentState!.validate();
                     print('DEBUG: Validation result: $isValid');
                   },
-                  child: Text('Validate'),
+                  child: const Text('Validate'),
                 ),
               ],
             ),

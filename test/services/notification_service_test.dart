@@ -1,20 +1,24 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter/services.dart';
 
-import '../../lib/services/notification_service.dart';
-import '../../lib/models/user_profile.dart';
+import 'package:astroyorumai/services/notification_service.dart';
+import 'package:astroyorumai/models/user_profile.dart';
 import '../test_setup.dart';
+import '../helpers/firebase_test_helper.dart';
 
 void main() {
   group('NotificationService Tests', () {
-    setUp(() {
-      setupFirebaseForTest();
+    setUpAll(() {
+      // Firebase test mock'larını ayarla
+      setupFirebaseTestMocks();
+    });
+    setUp(() async {
+      await setupFirebaseForTest();
       // Initialize timezone data for tests
       tz.initializeTimeZones();
-      
+
       // Mock the MethodChannel for flutter_local_notifications
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
@@ -52,7 +56,8 @@ void main() {
         const MethodChannel('dexterous.com/flutter/local_notifications'),
         null,
       );
-    });    group('Initialization Tests', () {
+    });
+    group('Initialization Tests', () {
       test('should initialize notification plugin successfully', () async {
         // Test that initialize completes without throwing
         await expectLater(
@@ -66,7 +71,7 @@ void main() {
       test('should request notification permissions', () async {
         // Initialize first to ensure plugin is ready
         await NotificationService.initialize();
-        
+
         final result = await NotificationService.requestPermissions();
         expect(result, isA<bool>());
       });
@@ -76,7 +81,7 @@ void main() {
       test('should show immediate notification successfully', () async {
         // Initialize first
         await NotificationService.initialize();
-        
+
         await expectLater(
           NotificationService.showNotification(
             id: 1,
@@ -90,7 +95,7 @@ void main() {
 
       test('should show notification without payload', () async {
         await NotificationService.initialize();
-        
+
         await expectLater(
           NotificationService.showNotification(
             id: 2,
@@ -100,9 +105,10 @@ void main() {
           completes,
         );
       });
-    });    group('Scheduled Notifications', () {
+    });
+    group('Scheduled Notifications', () {
       late UserProfile testProfile;
-      
+
       setUp(() async {
         await NotificationService.initialize();
         testProfile = UserProfile(
@@ -143,7 +149,7 @@ void main() {
 
       test('should schedule celestial event notification', () async {
         final eventTime = DateTime.now().add(const Duration(hours: 2));
-        
+
         await expectLater(
           NotificationService.scheduleCelestialEvent(
             title: 'Full Moon',
@@ -197,7 +203,8 @@ void main() {
           completes,
         );
       });
-    });    group('Notification Management', () {
+    });
+    group('Notification Management', () {
       setUp(() async {
         await NotificationService.initialize();
       });
@@ -220,7 +227,8 @@ void main() {
         final result = await NotificationService.getPendingNotifications();
         expect(result, isA<List<PendingNotificationRequest>>());
       });
-    });group('Zodiac Sign Logic', () {
+    });
+    group('Zodiac Sign Logic', () {
       test('should correctly identify Gemini zodiac sign', () {
         // Test profile has birth date June 15, which is Gemini (May 21 - June 20)
         final profile = UserProfile(
@@ -277,15 +285,16 @@ void main() {
     });
 
     group('Time Calculations', () {
-      test('should calculate next scheduled time correctly for daily notifications', () {
+      test(
+          'should calculate next scheduled time correctly for daily notifications',
+          () {
         final now = DateTime(2024, 1, 15, 8, 0); // 8:00 AM
-        final scheduledHour = 9;
-        final scheduledMinute = 30;
-
-        // Since we can't access private methods directly, we test the concept
+        const scheduledHour = 9;
+        const scheduledMinute =
+            30; // Since we can't access private methods directly, we test the concept
         // The next 9:30 should be today at 9:30 (since it's currently 8:00)
-        final expectedTime = DateTime(2024, 1, 15, 9, 30);
-        final actualTime = DateTime(now.year, now.month, now.day, scheduledHour, scheduledMinute);
+        final actualTime = DateTime(
+            now.year, now.month, now.day, scheduledHour, scheduledMinute);
 
         if (actualTime.isBefore(now)) {
           // If the time has passed today, schedule for tomorrow
@@ -301,20 +310,21 @@ void main() {
       test('should calculate next weekly notification time correctly', () {
         // Monday = 1, Tuesday = 2, etc.
         final monday = DateTime(2024, 1, 15); // Assume this is a Monday
-        final targetWeekday = 3; // Wednesday
-        final hour = 10;
-        final minute = 0;
+        const targetWeekday = 3; // Wednesday
 
         // Next Wednesday should be 2 days from Monday
         final expectedDaysUntilTarget = (targetWeekday - monday.weekday) % 7;
-        expect(expectedDaysUntilTarget, equals(2)); // Monday to Wednesday = 2 days
+        expect(
+            expectedDaysUntilTarget, equals(2)); // Monday to Wednesday = 2 days
       });
-    });    group('Profile Integration', () {
+    });
+    group('Profile Integration', () {
       setUp(() async {
         await NotificationService.initialize();
       });
 
-      test('should use profile information in notification scheduling', () async {
+      test('should use profile information in notification scheduling',
+          () async {
         final profile = UserProfile(
           id: 'integration-test',
           name: 'Integration User',
@@ -375,7 +385,7 @@ void main() {
 
       test('should handle celestial events with profile ID', () async {
         final eventTime = DateTime.now().add(const Duration(days: 1));
-        
+
         await expectLater(
           NotificationService.scheduleCelestialEvent(
             title: 'Mercury Retrograde',
@@ -389,7 +399,7 @@ void main() {
 
       test('should handle celestial events without profile ID', () async {
         final eventTime = DateTime.now().add(const Duration(days: 1));
-        
+
         await expectLater(
           NotificationService.scheduleCelestialEvent(
             title: 'Solar Eclipse',
@@ -402,7 +412,7 @@ void main() {
 
       test('should accept future event times', () async {
         final futureTime = DateTime.now().add(const Duration(days: 30));
-        
+
         await expectLater(
           NotificationService.scheduleCelestialEvent(
             title: 'Future Event',
@@ -412,7 +422,8 @@ void main() {
           completes,
         );
       });
-    });    group('API Consistency Tests', () {
+    });
+    group('API Consistency Tests', () {
       setUp(() async {
         await NotificationService.initialize();
       });
@@ -463,13 +474,8 @@ void main() {
         );
       });
     });
-
     group('Additional NotificationService Tests', () {
-      late NotificationService notificationService;
-
-      setUp(() {
-        notificationService = NotificationService();
-      });      test('Bildirim planlama başarılı olmalı', () async {
+      test('Bildirim planlama başarılı olmalı', () async {
         await NotificationService.scheduleNotification(
           id: 1,
           title: 'Test Bildirimi',
@@ -479,7 +485,8 @@ void main() {
 
         // Since scheduleNotification is void, we test that it completes without error
         expect(true, isTrue);
-      });      test('Bildirim iptal etme başarılı olmalı', () async {
+      });
+      test('Bildirim iptal etme başarılı olmalı', () async {
         await NotificationService.scheduleNotification(
           id: 1,
           title: 'Test Bildirimi',
@@ -490,7 +497,8 @@ void main() {
         await NotificationService.cancelNotification(1);
         // Since cancelNotification is void, we test that it completes without error
         expect(true, isTrue);
-      });      test('Tüm bildirimler iptal edilmeli', () async {
+      });
+      test('Tüm bildirimler iptal edilmeli', () async {
         await NotificationService.scheduleNotification(
           id: 1,
           title: 'Test Bildirimi 1',
@@ -503,10 +511,16 @@ void main() {
           title: 'Test Bildirimi 2',
           body: 'Bu bir test bildirimidir.',
           scheduledDate: DateTime.now().add(const Duration(minutes: 10)),
-        );        await NotificationService.cancelAllNotifications();
+        );
+        await NotificationService.cancelAllNotifications();
         // Since cancelAllNotifications is void, we test that it completes without error
         expect(true, isTrue);
       });
+    });
+
+    tearDownAll(() {
+      // Firebase test mock'larını temizle
+      tearDownFirebaseTestMocks();
     });
   });
 }

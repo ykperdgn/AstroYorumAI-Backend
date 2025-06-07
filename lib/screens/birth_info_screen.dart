@@ -16,17 +16,16 @@ class BirthInfoScreen extends StatefulWidget {
   final bool alwaysAutoValidate;
 
   const BirthInfoScreen({
-    Key? key, 
+    super.key,
     this.initialBirthInfo,
     this.prefilledProfile,
     this.onComplete,
     this.preferencesService,
     this.geocodingService,
     this.alwaysAutoValidate = false,
-  }) : super(key: key);
-
+  });
   @override
-  _BirthInfoScreenState createState() => _BirthInfoScreenState();
+  State<BirthInfoScreen> createState() => _BirthInfoScreenState();
 }
 
 class _BirthInfoScreenState extends State<BirthInfoScreen> {
@@ -35,22 +34,24 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
   final _birthPlaceController = TextEditingController();
   final _latitudeController = TextEditingController();
   final _longitudeController = TextEditingController();
-  
+
   late final UserPreferencesService _prefsService;
   late final GeocodingService _geocodingService;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   bool _isProcessing = false;
-  bool _autoValidate = false;  @override
+  bool _autoValidate = false;
+  bool attemptedGeocoding = false;
+  @override
   void initState() {
     super.initState();
     // Test ortamı için her zaman form doğrulaması yapılmasını istiyorsak
     _autoValidate = widget.alwaysAutoValidate;
-    
+
     // Initialize services with dependency injection support
     _prefsService = widget.preferencesService ?? UserPreferencesService();
     _geocodingService = widget.geocodingService ?? GeocodingService();
-    
+
     // Handle UserProfile prefilling
     if (widget.prefilledProfile != null) {
       final profile = widget.prefilledProfile!;
@@ -82,10 +83,13 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
           );
         }
       }
-      _birthPlaceController.text = widget.initialBirthInfo!.birthPlace ?? '';      _latitudeController.text = widget.initialBirthInfo!.latitude?.toString() ?? '';
-      _longitudeController.text = widget.initialBirthInfo!.longitude?.toString() ?? '';
+      _birthPlaceController.text = widget.initialBirthInfo!.birthPlace ?? '';
+      _latitudeController.text =
+          widget.initialBirthInfo!.latitude?.toString() ?? '';
+      _longitudeController.text =
+          widget.initialBirthInfo!.longitude?.toString() ?? '';
     }
-    
+
     // If alwaysAutoValidate is true, trigger validation after the first frame
     if (widget.alwaysAutoValidate) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -124,7 +128,8 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _selectedTime ?? TimeOfDay.now(),
-      builder: (BuildContext context, Widget? child) { // For Turkish TimePicker localization
+      builder: (BuildContext context, Widget? child) {
+        // For Turkish TimePicker localization
         return Localizations.override(
           context: context,
           locale: const Locale('tr', 'TR'),
@@ -138,34 +143,37 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
       });
     }
   }
-  Future<void> _handleFormSubmission() async {
-    FocusScope.of(context).unfocus();
 
-    // Basic required field checks first
+  Future<void> _handleFormSubmission() async {
+    FocusScope.of(context).unfocus(); // Basic required field checks first
     if (_nameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lütfen adınızı ve soyadınızı girin.')),
+        const SnackBar(content: Text('Lütfen adınızı ve soyadınızı girin.')),
       );
       return;
-    }    if (_selectedDate == null) {
+    }
+
+    if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lütfen doğum tarihinizi seçin.')),
+        const SnackBar(content: Text('Lütfen doğum tarihinizi seçin.')),
       );
       return;
     }
 
     if (_selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lütfen doğum saatinizi seçin. Astroloji haritası hesaplaması için bu bilgi gereklidir.')),
+        const SnackBar(
+            content: Text(
+                'Lütfen doğum saatinizi seçin. Astroloji haritası hesaplaması için bu bilgi gereklidir.')),
       );
       return;
     }
 
     // Check if coordinates are provided (either manual or to be geocoded)
     String birthPlace = _birthPlaceController.text.trim();
-    bool manualCoordsProvided = _latitudeController.text.trim().isNotEmpty && 
-                                _longitudeController.text.trim().isNotEmpty;
-    
+    bool manualCoordsProvided = _latitudeController.text.trim().isNotEmpty &&
+        _longitudeController.text.trim().isNotEmpty;
+
     // If manual coordinates are provided, validate them immediately
     if (manualCoordsProvided) {
       // First set autovalidate to true to ensure errors show
@@ -174,45 +182,52 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
           _autoValidate = true;
         });
         // Give Flutter a chance to rebuild with validation
-        await Future.delayed(Duration(milliseconds: 100));
+        await Future.delayed(const Duration(milliseconds: 100));
       }
-      
+
       // Then validate - this will now display errors due to autovalidate being true
       if (!_formKey.currentState!.validate()) {
         return;
       }
-    }
-
-    bool attemptedGeocoding = false;
+    } // bool attemptedGeocoding = false; // Removed unused variable
 
     // If coordinates are empty, try geocoding from birth place
     if (birthPlace.isNotEmpty && !manualCoordsProvided) {
       if (mounted) {
-        setState(() { _isProcessing = true; }); // Show loading for geocoding
+        setState(() {
+          _isProcessing = true;
+        }); // Show loading for geocoding
       }
       attemptedGeocoding = true;
       Map<String, double>? geocodedCoordinates;
       bool geocodingSuccess = false;
 
       try {
-        geocodedCoordinates = await _geocodingService.getCoordinates(birthPlace);
+        geocodedCoordinates =
+            await _geocodingService.getCoordinates(birthPlace);
         if (geocodedCoordinates != null) {
-          _latitudeController.text = geocodedCoordinates['lat']!.toStringAsFixed(6);
-          _longitudeController.text = geocodedCoordinates['lon']!.toStringAsFixed(6);
+          _latitudeController.text =
+              geocodedCoordinates['lat']!.toStringAsFixed(6);
+          _longitudeController.text =
+              geocodedCoordinates['lon']!.toStringAsFixed(6);
           geocodingSuccess = true;
-          // SnackBar for success will be shown after validation below
-        } else {
+          // SnackBar for success will be shown after validation below        } else {
           // Geocoding failed to find coordinates (not an exception)
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Doğum yeri için koordinatlar bulunamadı. Lütfen yeri kontrol edin veya enlem/boylam bilgilerini manuel olarak girin.')),
+              const SnackBar(
+                  content: Text(
+                      'Doğum yeri için koordinatlar bulunamadı. Lütfen yeri kontrol edin veya enlem/boylam bilgilerini manuel olarak girin.')),
             );
-          }        // geocodingSuccess remains false
+          }
+          // geocodingSuccess remains false
         }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Koordinatlar alınırken bir hata oluştu. Lütfen internet bağlantınızı kontrol edin veya enlem/boylam bilgilerini manuel olarak girin.')),
+            const SnackBar(
+                content: Text(
+                    'Koordinatlar alınırken bir hata oluştu. Lütfen internet bağlantınızı kontrol edin veya enlem/boylam bilgilerini manuel olarak girin.')),
           );
         }
         // geocodingSuccess remains false
@@ -220,7 +235,9 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
 
       // Regardless of geocoding outcome, ensure Form is visible for next steps or if returning
       if (mounted) {
-        setState(() { _isProcessing = false; });
+        setState(() {
+          _isProcessing = false;
+        });
         // Ensure the frame is rendered with Form visible before proceeding
         await WidgetsBinding.instance.endOfFrame;
       }
@@ -232,23 +249,28 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
       // Geocoding was successful, controllers are populated. Now validate.
       // _isProcessing is false, so Form is in the tree.
       if (mounted) {
-        setState(() { _autoValidate = true; }); // Ensure validation messages are shown
+        setState(() {
+          _autoValidate = true;
+        }); // Ensure validation messages are shown
       }
-      
+
       if (!_formKey.currentState!.validate()) {
-        // Validation of geocoded coordinates failed. _isProcessing is false.
-        // Errors are displayed by the form.
+        // Validation of geocoded coordinates failed. _isProcessing is false.        // Errors are displayed by the form.
         if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Otomatik doldurulan enlem/boylam değerleri geçersiz. Lütfen kontrol edin veya manuel olarak düzeltin.')),
-            );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text(
+                    'Otomatik doldurulan enlem/boylam değerleri geçersiz. Lütfen kontrol edin veya manuel olarak düzeltin.')),
+          );
         }
-        return; 
+        return;
       } else {
         // Geocoded coordinates are valid. Show success message for geocoding.
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Doğum yeri koordinatları bulundu ve otomatik olarak dolduruldu. Gerekirse düzenleyebilirsiniz.')),
+            const SnackBar(
+                content: Text(
+                    'Doğum yeri koordinatları bulundu ve otomatik olarak dolduruldu. Gerekirse düzenleyebilirsiniz.')),
           );
         }
         // Proceed to final submission steps. _isProcessing is currently false.
@@ -257,7 +279,9 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
     } else if (birthPlace.isEmpty && !manualCoordsProvided) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Lütfen doğum yerini veya enlem/boylam bilgilerini girin.')),
+          const SnackBar(
+              content: Text(
+                  'Lütfen doğum yerini veya enlem/boylam bilgilerini girin.')),
         );
       }
       return;
@@ -275,22 +299,25 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
     final birthInfo = UserBirthInfo(
       name: _nameController.text.trim(),
       birthDate: _selectedDate,
-      birthTime: "${_selectedTime!.hour.toString().padLeft(2, '0')}:${_selectedTime!.minute.toString().padLeft(2, '0')}",
+      birthTime:
+          "${_selectedTime!.hour.toString().padLeft(2, '0')}:${_selectedTime!.minute.toString().padLeft(2, '0')}",
       birthPlace: birthPlace.isNotEmpty ? birthPlace : null,
       latitude: finalLatitude,
       longitude: finalLongitude,
     );
-
     try {
       await _prefsService.saveUserBirthInfo(birthInfo); // Save the birth info
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Doğum bilgileriniz kaydedildi.')),
+          const SnackBar(content: Text('Doğum bilgileriniz kaydedildi.')),
         );
-      }    } catch (e) {
+      }
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Doğum bilgileriniz kaydedilirken bir hata oluştu.')),
+          const SnackBar(
+              content:
+                  Text('Doğum bilgileriniz kaydedilirken bir hata oluştu.')),
         );
       }
     }
@@ -321,127 +348,141 @@ class _BirthInfoScreenState extends State<BirthInfoScreen> {
         );
       }
     }
-  }  @override
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Doğum Bilgilerini Girin'),
+        title: const Text('Doğum Bilgilerini Girin'),
       ),
-      body: _isProcessing 
-        ? LoadingIndicator(message: 'Bilgiler işleniyor...')
-        : Padding(
-            padding: const EdgeInsets.all(16.0),            child: Form(
-              key: _formKey,
-              autovalidateMode: _autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
-              child: ListView(
-                children: <Widget>[
-                  TextFormField(
-                    key: const Key('name_field'),
-                    controller: _nameController,
-                    decoration: InputDecoration(labelText: 'Ad Soyad'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Lütfen adınızı ve soyadınızı girin.';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          _selectedDate == null
-                              ? 'Doğum Tarihi Seçilmedi'
-                              : 'Doğum Tarihi: ${DateFormat('dd/MM/yyyy', 'tr_TR').format(_selectedDate!)}',
-                        ),
-                      ),
-                      TextButton(
-                        key: const Key('birth_date_field'),
-                        onPressed: () => _selectDate(context),
-                        child: Text('Tarih Seç'),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          _selectedTime == null
-                              ? 'Doğum Saati Seçilmedi'
-                              : 'Doğum Saati: ${_selectedTime!.format(context)}',
-                        ),
-                      ),
-                      TextButton(
-                        key: const Key('birth_time_field'),
-                        onPressed: () => _selectTime(context),
-                        child: Text('Saat Seç'),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  TextFormField(
-                    key: const Key('birth_place_field'),
-                    controller: _birthPlaceController,
-                    decoration: InputDecoration(labelText: 'Doğum Yeri (Şehir, Ülke)', hintText: 'Örn: Ankara, Türkiye (İsteğe bağlı)'),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Doğum yerini girerseniz, enlem ve boylam otomatik olarak doldurulmaya çalışılacaktır. Dilerseniz bu alanları manuel olarak da girebilir veya düzeltebilirsiniz.',
-                    style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-                  ),
-                  SizedBox(height: 20),
-                  TextFormField(
-                    controller: _latitudeController,
-                    decoration: InputDecoration(labelText: 'Enlem (Latitude)', hintText: 'Örn: 39.925533'),
-                    keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Lütfen enlem girin (Örn: 39.925533)';
-                      }
-                      final lat = double.tryParse(value.trim());
-                      if (lat == null) {
-                        return 'Geçerli bir sayı girin';
-                      }
-                      if (lat < -90 || lat > 90) {
-                        return 'Enlem -90 ile 90 arasında olmalıdır';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  TextFormField(
-                    controller: _longitudeController,
-                    decoration: InputDecoration(labelText: 'Boylam (Longitude)', hintText: 'Örn: 32.866287'),
-                    keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Lütfen boylam girin (Örn: 32.866287)';
-                      }
-                      final lon = double.tryParse(value.trim());
-                      if (lon == null) {
-                        return 'Geçerli bir sayı girin';
-                      }
-                      if (lon < -180 || lon > 180) {
-                        return 'Boylam -180 ile 180 arasında olmalıdır';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 30),
-                  ElevatedButton(
-                    key: const Key('submit_button'),
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 12),
+      body: _isProcessing
+          ? const LoadingIndicator(message: 'Bilgiler işleniyor...')
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                autovalidateMode: _autoValidate
+                    ? AutovalidateMode.always
+                    : AutovalidateMode.disabled,
+                child: ListView(
+                  children: <Widget>[
+                    TextFormField(
+                      key: const Key('name_field'),
+                      controller: _nameController,
+                      decoration: const InputDecoration(labelText: 'Ad Soyad'),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Lütfen adınızı ve soyadınızı girin.';
+                        }
+                        return null;
+                      },
                     ),
-                    onPressed: _isProcessing ? null : _handleFormSubmission,
-                    child: Text('Natal Haritamı Hesapla', style: TextStyle(fontSize: 16)),
-                  ),
-                ],
+                    const SizedBox(height: 20),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            _selectedDate == null
+                                ? 'Doğum Tarihi Seçilmedi'
+                                : 'Doğum Tarihi: ${DateFormat('dd/MM/yyyy', 'tr_TR').format(_selectedDate!)}',
+                          ),
+                        ),
+                        TextButton(
+                          key: const Key('birth_date_field'),
+                          onPressed: () => _selectDate(context),
+                          child: const Text('Tarih Seç'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            _selectedTime == null
+                                ? 'Doğum Saati Seçilmedi'
+                                : 'Doğum Saati: ${_selectedTime!.format(context)}',
+                          ),
+                        ),
+                        TextButton(
+                          key: const Key('birth_time_field'),
+                          onPressed: () => _selectTime(context),
+                          child: const Text('Saat Seç'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      key: const Key('birth_place_field'),
+                      controller: _birthPlaceController,
+                      decoration: const InputDecoration(
+                          labelText: 'Doğum Yeri (Şehir, Ülke)',
+                          hintText: 'Örn: Ankara, Türkiye (İsteğe bağlı)'),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Doğum yerini girerseniz, enlem ve boylam otomatik olarak doldurulmaya çalışılacaktır. Dilerseniz bu alanları manuel olarak da girebilir veya düzeltebilirsiniz.',
+                      style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _latitudeController,
+                      decoration: const InputDecoration(
+                          labelText: 'Enlem (Latitude)',
+                          hintText: 'Örn: 39.925533'),
+                      keyboardType: const TextInputType.numberWithOptions(
+                          signed: true, decimal: true),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Lütfen enlem girin (Örn: 39.925533)';
+                        }
+                        final lat = double.tryParse(value.trim());
+                        if (lat == null) {
+                          return 'Geçerli bir sayı girin';
+                        }
+                        if (lat < -90 || lat > 90) {
+                          return 'Enlem -90 ile 90 arasında olmalıdır';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _longitudeController,
+                      decoration: const InputDecoration(
+                          labelText: 'Boylam (Longitude)',
+                          hintText: 'Örn: 32.866287'),
+                      keyboardType: const TextInputType.numberWithOptions(
+                          signed: true, decimal: true),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Lütfen boylam girin (Örn: 32.866287)';
+                        }
+                        final lon = double.tryParse(value.trim());
+                        if (lon == null) {
+                          return 'Geçerli bir sayı girin';
+                        }
+                        if (lon < -180 || lon > 180) {
+                          return 'Boylam -180 ile 180 arasında olmalıdır';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 30),
+                    ElevatedButton(
+                      key: const Key('submit_button'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      onPressed: _isProcessing ? null : _handleFormSubmission,
+                      child: const Text('Natal Haritamı Hesapla',
+                          style: TextStyle(fontSize: 16)),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
     );
   }
 }

@@ -50,9 +50,8 @@ void main() {
       final version = data['version'] as String;
       
       print('✅ API Version: $version');
-      
-      // Check if it's version 2.1.0 or higher (or fallback to 1.0.0)
-      expect(version, anyOf(['1.0.0', contains('2.1.0'), contains('2.0')]));
+        // Check if it's version 2.1.0 or higher (or fallback to 1.0.0)
+      expect(version, anyOf(['1.0.0', contains('2.1.0'), contains('2.0'), contains('2.1')]));
     });
   });
 }

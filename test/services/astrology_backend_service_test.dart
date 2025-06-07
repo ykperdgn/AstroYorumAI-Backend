@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert';
 
-import '../../lib/services/astrology_backend_service.dart';
+import 'package:astroyorumai/services/astrology_backend_service.dart';
 
 void main() {
   group('AstrologyBackendService', () {
@@ -79,7 +79,7 @@ void main() {
         test('should construct correct backend URL', () {
           const baseUrl = 'http://localhost:5000';
           const endpoint = '/natal';
-          final expectedUrl = '$baseUrl$endpoint';
+          const expectedUrl = '$baseUrl$endpoint';
           
           expect(expectedUrl, equals('http://localhost:5000/natal'));
           expect(expectedUrl, contains('localhost'));

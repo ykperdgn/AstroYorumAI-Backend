@@ -8,13 +8,13 @@ class PlanetInfoPanel extends StatelessWidget {
   final VoidCallback onClose;
 
   const PlanetInfoPanel({
-    Key? key,
+    super.key,
     required this.planetName,
     required this.sign,
     this.degree,
     required this.aspects,
     required this.onClose,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

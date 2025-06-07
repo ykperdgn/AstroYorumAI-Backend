@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import '../lib/services/geocoding_service.dart';
+import 'package:astroyorumai/services/geocoding_service.dart';
 
 /// Shared MockGeocodingService implementation for all tests
 /// This replaces duplicate code blocks across different test files

@@ -42,7 +42,7 @@ void main() {
                   onPressed: () {
                     formKey.currentState!.validate();
                   },
-                  child: Text('Validate'),
+                  child: const Text('Validate'),
                 ),
               ],
             ),
@@ -63,7 +63,7 @@ void main() {
 
     // Check if validation error appears
     final errorText = find.text('Enlem -90 ile 90 arasında olmalıdır');
-    print('Validation error found: ${errorText.evaluate().length > 0}');
+    print('Validation error found: ${errorText.evaluate().isNotEmpty}');
     
     expect(errorText, findsOneWidget);
   });

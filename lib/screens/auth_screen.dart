@@ -70,7 +70,8 @@ class AuthScreenState extends State<AuthScreen> {
   }
 
   Future<void> _resetPassword() async {
-    if (_emailController.text.trim().isEmpty) {      ScaffoldMessenger.of(context).showSnackBar(
+    if (_emailController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Şifre sıfırlamak için e-posta adresini girin'),
           backgroundColor: Colors.orange,
@@ -78,9 +79,11 @@ class AuthScreenState extends State<AuthScreen> {
       );
       return;
     }
-
     try {
-      await AuthService.instance.sendPasswordResetEmail(_emailController.text.trim());      ScaffoldMessenger.of(context).showSnackBar(
+      await AuthService.instance
+          .sendPasswordResetEmail(_emailController.text.trim());
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Şifre sıfırlama e-postası gönderildi'),
           backgroundColor: Colors.green,
@@ -103,7 +106,8 @@ class AuthScreenState extends State<AuthScreen> {
         title: Text(_isSignUp ? 'Hesap Oluştur' : 'Giriş Yap'),
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
-      ),      body: Padding(
+      ),
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -111,28 +115,29 @@ class AuthScreenState extends State<AuthScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.cloud,
                   size: 80,
                   color: Colors.deepPurple,
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Text(
                   'Bulut Senkronizasyonu',
                   style: Theme.of(context).textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   'Verilerinizi güvenle saklayın ve cihazlar arası senkronize edin',
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 32),                TextFormField(
-                  key: Key('email_field'),
+                const SizedBox(height: 32),
+                TextFormField(
+                  key: const Key('email_field'),
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'E-posta',
                     prefixIcon: Icon(Icons.email),
                     border: OutlineInputBorder(),
@@ -147,22 +152,25 @@ class AuthScreenState extends State<AuthScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),                TextFormField(
-                  key: Key('password_field'),
+                const SizedBox(height: 16),
+                TextFormField(
+                  key: const Key('password_field'),
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     labelText: 'Şifre',
-                    prefixIcon: Icon(Icons.lock),
+                    prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
+                      icon: Icon(_obscurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off),
                       onPressed: () {
                         setState(() {
                           _obscurePassword = !_obscurePassword;
                         });
                       },
                     ),
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -174,7 +182,7 @@ class AuthScreenState extends State<AuthScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -182,14 +190,14 @@ class AuthScreenState extends State<AuthScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
                       foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: _isLoading
-                        ? CircularProgressIndicator(color: Colors.white)
+                        ? const CircularProgressIndicator(color: Colors.white)
                         : Text(_isSignUp ? 'Hesap Oluştur' : 'Giriş Yap'),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -199,29 +207,28 @@ class AuthScreenState extends State<AuthScreen> {
                           _isSignUp = !_isSignUp;
                         });
                       },
-                      child: Text(_isSignUp 
-                          ? 'Zaten hesabım var' 
-                          : 'Hesap oluştur'),
+                      child: Text(
+                          _isSignUp ? 'Zaten hesabım var' : 'Hesap oluştur'),
                     ),
                     if (!_isSignUp)
                       TextButton(
                         onPressed: _resetPassword,
-                        child: Text('Şifremi unuttum'),
+                        child: const Text('Şifremi unuttum'),
                       ),
                   ],
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Card(
                   color: Colors.blue.shade50,
                   child: Padding(
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.info, color: Colors.blue),
-                            SizedBox(width: 8),
+                            const Icon(Icons.info, color: Colors.blue),
+                            const SizedBox(width: 8),
                             Text(
                               'Bulut Senkronizasyonu Hakkında',
                               style: TextStyle(
@@ -231,7 +238,7 @@ class AuthScreenState extends State<AuthScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text(
                           '• Profillerinizi güvenle bulutta saklayın\n'
                           '• Cihazlar arası otomatik senkronizasyon\n'
