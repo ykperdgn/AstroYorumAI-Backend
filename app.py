@@ -3,6 +3,9 @@ from flask_cors import CORS
 import os
 import sys
 import datetime
+import threading
+import time
+import requests
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -38,8 +41,28 @@ CORS(app,
 health_status = {
     "startup_time": datetime.datetime.now().isoformat(),
     "requests_count": 0,
-    "errors_count": 0
+    "errors_count": 0,
+    "keep_alive_enabled": os.environ.get('ENABLE_KEEP_ALIVE', 'false').lower() == 'true'
 }
+
+# Keep-alive function for free tier
+def keep_alive():
+    """Keep the free tier service awake by pinging health endpoint every 14 minutes"""
+    keep_alive_url = os.environ.get('KEEP_ALIVE_URL', 'https://astroyorumai-backend.onrender.com/health')
+    while True:
+        try:
+            response = requests.get(keep_alive_url, timeout=30)
+            print(f"Keep-alive ping: {response.status_code} at {datetime.datetime.now()}")
+            time.sleep(840)  # 14 minutes (14 * 60 = 840 seconds)
+        except Exception as e:
+            print(f"Keep-alive ping failed: {str(e)}")
+            time.sleep(300)  # Wait 5 minutes if failed, then try again
+
+# Start keep-alive thread if enabled
+if os.environ.get('ENABLE_KEEP_ALIVE', 'false').lower() == 'true':
+    keep_alive_thread = threading.Thread(target=keep_alive, daemon=True)
+    keep_alive_thread.start()
+    print("Keep-alive service started for free tier optimization")
 
 @app.before_request
 def before_request():
