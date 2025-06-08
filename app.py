@@ -1004,7 +1004,7 @@ def health_detailed():
 
 if __name__ == "__main__":
     # Railway deployment info
-    port = int(os.environ.get('PORT', 8080))
+    port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') == 'development'
     
     print(f"🚀 Starting AstroYorumAI API v2.1.3-railway...")
@@ -1016,9 +1016,6 @@ if __name__ == "__main__":
     print(f"✅ Real calculations: YES")
     print(f"🎯 Phase 2 Complete: Horary Astrology Pro")
     
-    # Only run development server if explicitly in development
-    if os.environ.get('FLASK_ENV') == 'development':
-        app.run(host='0.0.0.0', port=port, debug=debug)
-    else:
-        print("🚀 Production mode: Use gunicorn to start the server")
-        print(f"   Command: gunicorn --bind 0.0.0.0:{port} app:app")
+    # Always run the Flask development server for Railway
+    # Railway will handle production-level concerns
+    app.run(host='0.0.0.0', port=port, debug=debug)

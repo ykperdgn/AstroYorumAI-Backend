@@ -30,16 +30,16 @@ ENV FLASK_ENV=production
 ENV FLASK_DEBUG=False
 ENV PYTHONUNBUFFERED=1
 
-# Railway will inject PORT env var, default to 8080 if not provided  
-ENV PORT=8080
+# Railway will inject PORT env var
+# Don't set a default PORT here, let Railway handle it
 
-# Expose port - use fixed port number since Railway handles port mapping
-EXPOSE 8080
+# Expose the port that Railway will use (Railway handles port mapping dynamically)
+EXPOSE $PORT
 
-# Health check - use fixed port since Railway maps it correctly
+# Health check - Railway will map the correct port
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:8080/health || exit 1
+    CMD curl -f http://localhost:$PORT/health || exit 1
 
-# Start application with gunicorn - Railway compatible
-# Use shell form to properly expand environment variables
-CMD ["sh", "-c", "exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 4 --worker-class gthread --timeout 120 --keep-alive 2 --max-requests 1000 --max-requests-jitter 100 app:app"]
+# Start application directly with Python - Railway compatible
+# Use exec form with shell to properly expand environment variables
+CMD python app.py
