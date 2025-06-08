@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroYorumAI Backend Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .success {
+            border-left-color: #28a745;
+            background-color: #d4edda;
+        }
+        .loading {
+            border-left-color: #ffc107;
+            background-color: #fff3cd;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .response-data {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status-pass { background: #28a745; }
+        .status-fail { background: #dc3545; }
+        .status-pending { background: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 AstroYorumAI Railway Integration Test</h1>
+            <p>Phase 2: Backend Integration Verification</p>
+        </div>
+
+        <div class="test-section" id="healthTest">
+            <h3>1️⃣ Backend Health Check <span class="status-badge status-pending" id="healthStatus">PENDING</span></h3>
+            <p>Testing Railway backend availability and status</p>
+            <button onclick="testHealth()">Test Health Endpoint</button>
+            <div id="healthResult"></div>
+        </div>
+
+        <div class="test-section" id="natalTest">
+            <h3>2️⃣ Natal Chart API Test <span class="status-badge status-pending" id="natalStatus">PENDING</span></h3>
+            <p>Testing astrology calculation functionality</p>
+            <button onclick="testNatalChart()">Test Natal Chart API</button>
+            <div id="natalResult"></div>
+        </div>
+
+        <div class="test-section" id="corsTest">
+            <h3>3️⃣ CORS Configuration Test <span class="status-badge status-pending" id="corsStatus">PENDING</span></h3>
+            <p>Testing web browser compatibility</p>
+            <button onclick="testCORS()">Test CORS Headers</button>
+            <div id="corsResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4️⃣ Integration Summary</h3>
+            <button onclick="runAllTests()">🚀 Run All Tests</button>
+            <div id="summaryResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const RAILWAY_URL = 'https://astroyorumai-backend-production.up.railway.app';
+
+        async function testHealth() {
+            updateStatus('healthTest', 'loading');
+            updateBadge('healthStatus', 'TESTING', 'status-pending');
+            
+            try {
+                const response = await fetch(`${RAILWAY_URL}/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    updateStatus('healthTest', 'success');
+                    updateBadge('healthStatus', 'PASS', 'status-pass');
+                    document.getElementById('healthResult').innerHTML = `
+                        <div class="response-data">✅ Health Check PASSED
+Status: ${data.status}
+Platform: ${data.platform}
+Version: ${data.version}
+Calculation: ${data.calculation_method}</div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                updateStatus('healthTest', 'error');
+                updateBadge('healthStatus', 'FAIL', 'status-fail');
+                document.getElementById('healthResult').innerHTML = `
+                    <div class="response-data">❌ Health Check FAILED: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function testNatalChart() {
+            updateStatus('natalTest', 'loading');
+            updateBadge('natalStatus', 'TESTING', 'status-pending');
+            
+            try {
+                const testData = {
+                    date: '1990-01-01',
+                    time: '12:00',
+                    latitude: 41.0082,
+                    longitude: 28.9784
+                };
+
+                const response = await fetch(`${RAILWAY_URL}/natal`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    updateStatus('natalTest', 'success');
+                    updateBadge('natalStatus', 'PASS', 'status-pass');
+                    
+                    const planetCount = Object.keys(data.planets || {}).length;
+                    document.getElementById('natalResult').innerHTML = `
+                        <div class="response-data">✅ Natal Chart API PASSED
+Ascendant: ${data.ascendant}
+Planets: ${planetCount} calculated
+Method: ${data.calculation_method}
+Version: ${data.version}
+
+Sample Planet Data:
+${JSON.stringify(data.planets, null, 2)}</div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                updateStatus('natalTest', 'error');
+                updateBadge('natalStatus', 'FAIL', 'status-fail');
+                document.getElementById('natalResult').innerHTML = `
+                    <div class="response-data">❌ Natal Chart API FAILED: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function testCORS() {
+            updateStatus('corsTest', 'loading');
+            updateBadge('corsStatus', 'TESTING', 'status-pending');
+            
+            try {
+                // Test CORS preflight
+                const response = await fetch(`${RAILWAY_URL}/natal`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin,
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+
+                if (response.ok || response.status === 200) {
+                    updateStatus('corsTest', 'success');
+                    updateBadge('corsStatus', 'PASS', 'status-pass');
+                    
+                    const corsHeaders = {
+                        'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                        'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                        'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                    };
+
+                    document.getElementById('corsResult').innerHTML = `
+                        <div class="response-data">✅ CORS Configuration PASSED
+Origin: ${corsHeaders['Access-Control-Allow-Origin']}
+Methods: ${corsHeaders['Access-Control-Allow-Methods']}
+Headers: ${corsHeaders['Access-Control-Allow-Headers']}
+
+✅ Web browser can communicate with backend</div>
+                    `;
+                } else {
+                    throw new Error(`CORS preflight failed: ${response.status}`);
+                }
+            } catch (error) {
+                updateStatus('corsTest', 'error');
+                updateBadge('corsStatus', 'FAIL', 'status-fail');
+                document.getElementById('corsResult').innerHTML = `
+                    <div class="response-data">❌ CORS Test FAILED: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function runAllTests() {
+            document.getElementById('summaryResult').innerHTML = '<div class="response-data">🚀 Running comprehensive integration test...</div>';
+            
+            await testHealth();
+            await testNatalChart();
+            await testCORS();
+            
+            // Generate summary
+            const healthPass = document.getElementById('healthStatus').textContent === 'PASS';
+            const natalPass = document.getElementById('natalStatus').textContent === 'PASS';
+            const corsPass = document.getElementById('corsStatus').textContent === 'PASS';
+            
+            const allPass = healthPass && natalPass && corsPass;
+            const passCount = [healthPass, natalPass, corsPass].filter(Boolean).length;
+            
+            document.getElementById('summaryResult').innerHTML = `
+                <div class="response-data">${allPass ? '✅' : '⚠️'} INTEGRATION TEST SUMMARY
+Tests Passed: ${passCount}/3
+Health Check: ${healthPass ? '✅ PASS' : '❌ FAIL'}
+Natal Chart API: ${natalPass ? '✅ PASS' : '❌ FAIL'}
+CORS Configuration: ${corsPass ? '✅ PASS' : '❌ FAIL'}
+
+${allPass ? 
+    '🎉 ALL TESTS PASSED!\n✅ Railway backend fully operational\n✅ Flutter web integration ready\n✅ Production deployment validated' : 
+    '⚠️ Some tests failed. Check individual results above.'
+}</div>
+            `;
+        }
+
+        function updateStatus(elementId, status) {
+            const element = document.getElementById(elementId);
+            element.className = `test-section ${status}`;
+        }
+
+        function updateBadge(elementId, text, className) {
+            const element = document.getElementById(elementId);
+            element.textContent = text;
+            element.className = `status-badge ${className}`;
+        }
+
+        // Auto-run all tests when page loads
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 1000);
+        });
+    </script>
+</body>
+</html>
