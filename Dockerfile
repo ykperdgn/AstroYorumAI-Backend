@@ -33,10 +33,10 @@ ENV PYTHONUNBUFFERED=1
 # Railway will inject PORT env var, default to 8080 if not provided  
 ENV PORT=8080
 
-# Expose port
-EXPOSE $PORT
+# Expose port - use fixed port number since Railway handles port mapping
+EXPOSE 8080
 
-# Health check - use curl with port
+# Health check - use fixed port since Railway maps it correctly
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD curl -f http://localhost:8080/health || exit 1
 
