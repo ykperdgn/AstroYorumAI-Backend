@@ -30,16 +30,16 @@ ENV FLASK_ENV=production
 ENV FLASK_DEBUG=False
 ENV PYTHONUNBUFFERED=1
 
-# Railway will inject PORT env var
-# Don't set a default PORT here, let Railway handle it
+# Set default port for Railway (fallback if $PORT not provided)
+ENV PORT=8080
 
-# Expose the port that Railway will use (Railway handles port mapping dynamically)
-EXPOSE $PORT
+# Expose port 8080 (fixed port for Docker build-time)
+EXPOSE 8080
 
-# Health check - Railway will map the correct port
+# Health check - use fixed port since Railway maps internally
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:$PORT/health || exit 1
+    CMD curl -f http://localhost:8080/health || exit 1
 
 # Start application directly with Python - Railway compatible
-# Use exec form with shell to properly expand environment variables
-CMD python app.py
+# Use exec form for better signal handling
+CMD ["python", "app.py"]

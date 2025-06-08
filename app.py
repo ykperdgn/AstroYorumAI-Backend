@@ -1004,7 +1004,7 @@ def health_detailed():
 
 if __name__ == "__main__":
     # Railway deployment info
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 8080))  # Match Dockerfile default
     debug = os.environ.get('FLASK_ENV') == 'development'
     
     print(f"🚀 Starting AstroYorumAI API v2.1.3-railway...")
