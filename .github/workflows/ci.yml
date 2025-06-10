@@ -10,89 +10,72 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.10.0'
         channel: 'stable'
-        
     - name: Install dependencies
       run: flutter pub get
-      
     - name: Run tests (skip failing integration tests)
       run: flutter test --exclude-tags=integration
-      
+
   build-android:
     name: Build Android APK
     runs-on: ubuntu-latest
     needs: test
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.10.0'
         channel: 'stable'
-        
     - name: Install dependencies
       run: flutter pub get
-      
     - name: Build APK
       run: flutter build apk --release
-      
     - name: Upload APK artifact
       uses: actions/upload-artifact@v3
       with:
         name: android-apk
         path: build/app/outputs/apk/release/app-release.apk
-        
+
   build-ios:
     name: Build iOS
     runs-on: macos-latest
     needs: test
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.24.0'
         channel: 'stable'
-        
     - name: Install dependencies
       run: flutter pub get
-      
     - name: Build iOS (no codesign)
       run: flutter build ios --release --no-codesign
-        code-quality:
+
+  code-quality:
     name: Code Quality Analysis
     runs-on: ubuntu-latest
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.10.0'
         channel: 'stable'
-        
     - name: Install dependencies
       run: flutter pub get
-      
     - name: Run Flutter analyzer (allow warnings)
       run: flutter analyze --no-fatal-warnings
-      
     - name: Check formatting (allow failures)
       run: flutter format --dry-run . || true
