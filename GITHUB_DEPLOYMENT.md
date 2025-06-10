@@ -16,13 +16,13 @@ git branch -M main
 git push -u origin main
 ```
 
-## Adım 2: Railway.app Deployment
+## Adım 2: Render.com Deployment
 
-1. Railway.app'a git ve GitHub ile giriş yap
-2. "New Project" > "Deploy from GitHub repo" seç
+1. Render.com'a git ve GitHub ile giriş yap
+2. "New +" > "Web Service" seç
 3. GitHub repository'ni bağla: `AstroYorumAI-Backend`
 4. Deployment ayarları:
-   - **Name**: `astroyorumai-backend`
+   - **Name**: `astroyorumai-api`
    - **Environment**: `Python 3`
    - **Build Command**: `pip install -r requirements.txt`
    - **Start Command**: `gunicorn astro_api:app`
@@ -40,8 +40,8 @@ git push -u origin main
 Deployment tamamlandıktan sonra aşağıdaki URL'leri test et:
 
 ```
-https://astroyorumai-backend-production.up.railway.app/health
-https://astroyorumai-backend-production.up.railway.app/natal
+https://astroyorumai-api.onrender.com/health
+https://astroyorumai-api.onrender.com/natal
 ```
 
 ## Adım 4: Flutter App Güncelleme
@@ -51,7 +51,7 @@ Deployment URL'ini Flutter app'de güncelle:
 
 ## Backup Deployment Options
 
-Eğer Railway.app'da sorun yaşarsan:
+Eğer Render.com'da sorun yaşarsan:
 
 ### Heroku Alternative:
 ```bash
@@ -59,16 +59,16 @@ heroku create astroyorumai-api
 git push heroku main
 ```
 
-### Alternative Deployment Options:
-1. Railway.app (currently used) ✅
-2. Heroku (paid plans only)
-3. DigitalOcean App Platform
+### Railway Alternative:
+1. Railway.app'e git
+2. GitHub ile bağlan
+3. Repository'yi deploy et
 
 ## Troubleshooting
 
 ### Common Issues:
 1. **Build fails**: `requirements.txt` kontrol et
-2. **App crashes**: Logs'u kontrol et: Railway Dashboard > Project > Deployments > Logs
+2. **App crashes**: Logs'u kontrol et: Render Dashboard > Service > Logs
 3. **CORS errors**: Frontend URL'ini kontrol et
 
 ### Debug Commands:

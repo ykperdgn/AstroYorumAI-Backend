@@ -1,11 +1,12 @@
-# Railway Specific
-Dockerfile
-.dockerignore
-.git
-.gitignore
-README.md
-.env
-.env.*
-node_modules
-*.log
-*.tmp
+# Ignore Flutter/Dart files to ensure Python detection
+pubspec.yaml
+pubspec.lock
+*.dart
+lib/
+test/
+web/
+android/
+ios/
+macos/
+linux/
+windows/

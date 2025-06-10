@@ -17,8 +17,7 @@
 
 ### 🏗️ **Milestone 1: Production Infrastructure (Hafta 1-2)**
 1. **🌐 Flask Backend Production Deployment**
-   - Flask app'i Railway.app'a deploy edildi ✅
-   - Production URL: https://astroyorumai-backend-production.up.railway.app
+   - Flask app'i Render/Railway/DigitalOcean'a deploy
    - Environment variables (production config)
    - SSL certificate + domain setup
    - API endpoint güvenliği (rate limiting, auth)
@@ -83,7 +82,7 @@
 ### 🔧 **1. Backend Production Deployment**
 
 **Tech Stack:**
-- **Platform**: Railway.app (önerilen - güvenilir, kolay Flask CORS desteği, iyi GitHub entegrasyonu)
+- **Platform**: Railway.app (önerilen - kolay Flutter CORS desteği)
 - **Database**: PostgreSQL (kullanıcı verileri + subscription tracking)
 - **Storage**: AWS S3 (PDF exports, user data backup)
 - **Monitoring**: Sentry (error tracking)
@@ -91,11 +90,11 @@
 **Implementation Steps:**
 ```bash
 # 1. Environment setup
-# Railway dashboard'da yeni Project oluştur
-# GitHub repository'yi bağla: AstroYorumAI-Backend
-# Auto-deploy aktif et
+railway login
+railway init astroyorumai-backend
+railway add postgresql
 
-# 2. Production config (Railway Environment Variables)
+# 2. Production config
 DATABASE_URL=postgresql://...
 STRIPE_SECRET_KEY=sk_live_...
 OPENAI_API_KEY=sk-...
@@ -183,7 +182,7 @@ class AIAstrologyService {
 
 | Kategori | Aylık Maliyet | Açıklama |
 |----------|---------------|-----------|
-| **Render.com Hosting** | $7/month | Backend Web Service (Starter Plan) |
+| **Railway.app Hosting** | $20/month | Backend + Database |
 | **Stripe Transaction Fees** | %2.9 + $0.30 | Per transaction |
 | **OpenAI API** | $50/month | ChatGPT API calls |
 | **Apple Developer** | $99/year | iOS App Store |
@@ -199,11 +198,10 @@ Hemen başlayabileceğimiz en kritik görev:
 
 ### 🚀 **ADIM 1: Backend Production Deploy**
 ```bash
-# Render.com ile production deployment
-# 1. GitHub repository connect et: AstroYorumAI-Backend
-# 2. Web Service oluştur (Free tier)
-# 3. Auto-deploy from main branch aktif
-# 4. Production URL: https://astroyorumai-api.onrender.com
+# Railway.app ile hızlı deployment
+railway login
+railway init astroyorumai-backend
+railway up
 ```
 
 Bu işlem tamamlandıktan sonra:

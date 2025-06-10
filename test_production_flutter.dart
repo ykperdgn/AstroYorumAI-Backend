@@ -4,9 +4,9 @@ import 'package:http/http.dart' as http;
 
 void main() async {
   developer.log('🧪 Testing Flutter app connection to production API...');
-  
+
   const String productionUrl = 'https://astroyorumai-api.onrender.com';
-  
+
   // Test health endpoint
   developer.log('\n1. Testing health endpoint...');
   try {
@@ -20,7 +20,7 @@ void main() async {
   } catch (e) {
     developer.log('❌ Health check error: $e');
   }
-  
+
   // Test natal chart endpoint
   developer.log('\n2. Testing natal chart endpoint...');
   try {
@@ -30,13 +30,13 @@ void main() async {
       'latitude': 41.0082,
       'longitude': 28.9784
     };
-    
+
     final natalResponse = await http.post(
       Uri.parse('$productionUrl/natal'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(natalData),
     );
-      if (natalResponse.statusCode == 200) {
+    if (natalResponse.statusCode == 200) {
       developer.log('✅ Natal chart: SUCCESS');
       final response = json.decode(natalResponse.body);
       developer.log('   Response keys: ${response.keys.toList()}');
@@ -46,6 +46,6 @@ void main() async {
   } catch (e) {
     developer.log('❌ Natal chart error: $e');
   }
-  
+
   developer.log('\n🎉 Production API connectivity test completed!');
 }

@@ -57,7 +57,7 @@
 
 #### Option B: Alternative Deployment (Backup)
 - [ ] **Heroku Deployment**: Quick backup deployment option
-- [x] **Render.com**: Currently deployed and working ✅
+- [ ] **Railway.app**: Modern alternative to Render
 - [ ] **Vercel Serverless**: For Flask API deployment
 
 #### Option C: Debug and Retry

@@ -1,17 +1,9 @@
 Flask==2.3.3
 flask-cors==4.0.0
+flatlib==0.2.3
 python-dotenv==1.0.0
 gunicorn==21.2.0
 psycopg2-binary==2.9.7
 stripe==7.3.0
 openai==1.3.5
-requests==2.31.0
-# Railway deployment optimized
-# Lightweight astronomy library instead of pyswisseph
-skyfield==1.46
-# Additional astronomical calculations
-astropy==5.3.4
-# Python ephemeris library
-jplephem==2.21
-# Swiss Ephemeris for accurate calculations
-pyswisseph==2.10.3.2
+# Phase 3 Production Deployment - v2.1.3

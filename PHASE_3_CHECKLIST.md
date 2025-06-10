@@ -19,15 +19,15 @@
 - [x] Health check endpoints (✅ /health-detailed working)
 - [x] Environment variables setup (✅ .env.production created)
 - [x] Production requirements.txt (✅ Updated with Stripe, OpenAI)
-- [x] Railway.app deployment scripts (✅ railway.toml ready)
+- [x] Railway deployment scripts (✅ deploy-railway.ps1 ready)
 - [x] Local testing complete (✅ All endpoints working)
 - [x] Deployment preparation ready (✅ Starting Railway setup)
 - [x] Railway.app account setup (✅ Login successful, project created)
 - [x] PostgreSQL database deployment (✅ Database added to project)
-- [x] Railway.app deployment configuration (✅ Flask app successfully deployed)
+- [x] Railway deployment configuration (✅ Flask app successfully deployed)
 - [x] Flask web service creation (✅ Separate service deployed with gunicorn)
 - [x] Production deployment success (✅ Docker build completed, container running)
-- [ ] Railway.app domain generation (🔄 Creating domain for Flask service)
+- [ ] Railway domain generation (🔄 Creating domain for Flask service)
 - [ ] SSL certificate configuration
 - [ ] API endpoint security (rate limiting)
 - [ ] Production domain setup (astroyorumai.com)
@@ -158,9 +158,10 @@
 ### Week 1 Priority Tasks:
 1. **Backend Deployment**
    ```bash
-   # Already deployed on Render.com
-   # Visit: https://astroyorumai-api.onrender.com
-   # GitHub integration: Automatic deploys from main branch
+   railway login
+   railway init astroyorumai-backend
+   railway add postgresql
+   railway up
    ```
 
 2. **Environment Configuration**
@@ -187,14 +188,14 @@
 ## 📋 **NOTES & DECISIONS**
 
 ### Technology Choices Made:
-- **Backend Hosting**: Render.com (reliable, PostgreSQL included, better pricing)
+- **Backend Hosting**: Railway.app (easy deployment, PostgreSQL included)
 - **Payment Processing**: Stripe (Flutter support, global coverage)
 - **AI Service**: OpenAI API (GPT-4, reliable, good docs)
 - **Analytics**: Firebase Analytics (free, comprehensive)
 - **Mobile Deployment**: Google Play + Apple App Store
 
 ### Budget Allocation:
-- Backend hosting: $7/month
+- Backend hosting: $20/month
 - Payment processing: 2.9% + $0.30 per transaction
 - AI API calls: ~$50/month estimated
 - App store fees: $124/year total

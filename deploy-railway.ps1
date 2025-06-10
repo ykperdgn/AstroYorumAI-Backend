@@ -1,49 +1,42 @@
-# Railway Deployment Script for AstroYorumAI Backend
-# PowerShell Version
+# AstroYorumAI Phase 3 Railway Deployment Script
+# Run this script to deploy backend to Railway.app
 
-Write-Host "🚂 Starting Railway deployment..." -ForegroundColor Green
+Write-Host "AstroYorumAI Phase 3 - Railway.app Deployment" -ForegroundColor Cyan
+Write-Host "================================================" -ForegroundColor Cyan
 
 # Check if Railway CLI is installed
-try {
-    railway --version | Out-Null
-    Write-Host "✅ Railway CLI found" -ForegroundColor Green
-} catch {
-    Write-Host "❌ Railway CLI not found. Installing..." -ForegroundColor Red
-    npm install -g @railway/cli
+if (-not (Get-Command railway -ErrorAction SilentlyContinue)) {
+    Write-Host "Railway CLI not found. Installing..." -ForegroundColor Red
+    Write-Host "Please install Railway CLI first:" -ForegroundColor Yellow
+    Write-Host "npm install -g @railway/cli" -ForegroundColor Yellow
+    Write-Host "or download from: https://railway.app/cli" -ForegroundColor Yellow
+    exit 1
 }
 
-# Login to Railway (if not already logged in)
-Write-Host "🔑 Checking Railway authentication..." -ForegroundColor Yellow
-try {
-    railway whoami | Out-Null
-    Write-Host "✅ Already authenticated" -ForegroundColor Green
-} catch {
-    Write-Host "🔐 Please authenticate with Railway..." -ForegroundColor Yellow
-    railway login
-}
+Write-Host "Railway CLI found" -ForegroundColor Green
 
-# Link to existing project or create new one
-Write-Host "🔗 Linking to Railway project..." -ForegroundColor Yellow
-if (!(Test-Path ".railway")) {
-    Write-Host "Creating new Railway project..." -ForegroundColor Cyan
-    railway new
-} else {
-    Write-Host "Using existing Railway project..." -ForegroundColor Green
-}
+# Login to Railway
+Write-Host "Logging into Railway..." -ForegroundColor Yellow
+railway login
+
+# Initialize project
+Write-Host "Initializing Railway project..." -ForegroundColor Yellow
+railway init astroyorumai-backend --name "AstroYorumAI Backend"
+
+# Add PostgreSQL database
+Write-Host "Adding PostgreSQL database..." -ForegroundColor Yellow
+railway add postgresql
 
 # Set environment variables
-Write-Host "⚙️ Setting environment variables..." -ForegroundColor Yellow
+Write-Host "Setting environment variables..." -ForegroundColor Yellow
 railway variables set FLASK_ENV=production
-railway variables set PYTHONUNBUFFERED=1
-railway variables set API_VERSION=2.1.3-railway
-railway variables set CORS_ORIGINS="https://astroyorumai.com,https://www.astroyorumai.com"
-railway variables set HOST=0.0.0.0
-railway variables set PORT=8080
+railway variables set FLASK_DEBUG=False
+railway variables set API_VERSION=2.1.3
 
 # Deploy to Railway
-Write-Host "🚀 Deploying to Railway..." -ForegroundColor Green
-railway up --detach
+Write-Host "Deploying to Railway..." -ForegroundColor Yellow
+railway up
 
-Write-Host "✅ Railway deployment initiated!" -ForegroundColor Green
-Write-Host "📊 Monitor deployment at: https://railway.app/dashboard" -ForegroundColor Cyan
-Write-Host "🌐 Your app will be available at: https://[project-name].up.railway.app" -ForegroundColor Cyan
+Write-Host "Deployment complete!" -ForegroundColor Green
+Write-Host "Your API will be available at the Railway-provided URL" -ForegroundColor Cyan
+Write-Host "Check deployment status at: https://railway.app/dashboard" -ForegroundColor Cyan

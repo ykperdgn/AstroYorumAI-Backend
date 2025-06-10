@@ -1,15 +1,11 @@
-# AstroYorumAI Backend Dockerfile - Railway Production Ready
-FROM python:3.11-slim-bullseye
+# AstroYorumAI Backend Dockerfile - Phase 3 Production
+FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies for astronomy libraries and curl for health checks
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    curl \
-    wget \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
@@ -21,25 +17,19 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY app.py .
-
-# Create necessary directories
-RUN mkdir -p /app/static /app/templates
+COPY .env.production .env
 
 # Set environment variables
 ENV FLASK_ENV=production
 ENV FLASK_DEBUG=False
 ENV PYTHONUNBUFFERED=1
 
-# Set default port for Railway (fallback if $PORT not provided)
-ENV PORT=8080
-
-# Expose port 8080 (fixed port for Docker build-time)
+# Expose port
 EXPOSE 8080
 
-# Health check - use fixed port since Railway maps internally
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8080/health || exit 1
 
-# Start application directly with Python - Railway compatible
-# Use exec form for better signal handling
-CMD ["python", "app.py"]
+# Start application
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app", "--timeout", "120", "--workers", "2"]

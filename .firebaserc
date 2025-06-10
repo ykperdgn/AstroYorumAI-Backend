@@ -1,8 +1,5 @@
 {
   "projects": {
-    "default": "astroyorumai-production",
-    "list": "astroyorumai-production"
-  },
-  "targets": {},
-  "etags": {}
+    "default": "astroyorumai-production"
+  }
 }

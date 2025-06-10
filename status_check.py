@@ -1,52 +1,5 @@
-#!/usr/bin/env python3
-"""
-Comprehensive Status Check Script - AstroYorumAI
-Updated with saved configuration status
-"""
 import requests
 import json
-import subprocess
-import os
-from datetime import datetime
-
-def check_flutter_status():
-    """Check Flutter app lint and build status"""
-    print("🔍 FLUTTER APP STATUS CHECK")
-    print("-" * 40)
-    
-    try:
-        if os.path.exists("pubspec.yaml"):
-            print("✅ Flutter project detected")
-        else:
-            print("❌ Not in Flutter project directory")
-    except Exception as e:
-        print(f"❌ Flutter check error: {e}")
-
-def check_saved_configuration():
-    """Check if all configurations are saved"""
-    print("\n💾 SAVED CONFIGURATION STATUS")
-    print("-" * 40)
-    
-    config_files = [
-        "CURRENT_PROGRESS_SAVED_STATUS.md",
-        "backend_debug_config.py", 
-        "flutter_app_settings.yaml",
-        "analysis_options.yaml"
-    ]
-    
-    for file in config_files:
-        if os.path.exists(file):
-            print(f"✅ {file}: SAVED")
-        else:
-            print(f"❌ {file}: MISSING")
-
-print("=" * 60)
-print("ASTROYORUMAI - COMPREHENSIVE STATUS CHECK")
-print(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-print("=" * 60)
-
-check_flutter_status()
-check_saved_configuration()
 
 print("🚀 AstroYorumAI API Status Check")
 print("=" * 50)

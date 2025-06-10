@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'birth_info_screen.dart';
 import 'profile_management_screen.dart';
 import 'notification_settings_screen.dart';
@@ -7,12 +6,6 @@ import 'astrology_calendar_screen.dart';
 import 'settings_screen.dart';
 import 'partner_management_screen.dart';
 import 'horary_question_pro_screen.dart';
-import 'advanced_astrology_test_screen.dart';
-import 'transit_analysis_screen.dart';
-import 'solar_return_screen.dart';
-import 'progression_analysis_screen.dart';
-import 'composite_chart_screen.dart';
-import 'enhanced_synastry_screen.dart';
 import '../services/profile_management_service.dart';
 import '../services/daily_astrology_service.dart';
 import '../models/user_profile.dart';
@@ -171,125 +164,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
-  }
-
-  void _navigateToAdvancedAstrologyTest() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const AdvancedAstrologyTestScreen(),
-      ),
-    );
-  }
-
-  void _navigateToTransitAnalysis() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const TransitAnalysisScreen(),
-      ),
-    );
-  }
-
-  void _navigateToSolarReturn() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const SolarReturnScreen(),
-      ),
-    );
-  }
-
-  void _navigateToProgressionAnalysis() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ProgressionAnalysisScreen(),
-      ),
-    );
-  }
-
-  void _navigateToCompositeChart() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const CompositeChartScreen(),
-      ),
-    );
-  }
-
-  void _navigateToEnhancedSynastry() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const EnhancedSynastryScreen(),
-      ),
-    );
-  }
-
-  Widget _buildAdvancedFeatureButton({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required List<Color> colors,
-    required VoidCallback onPressed,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: colors),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: onPressed,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(icon, color: Colors.white, size: 24),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        subtitle,
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.white.withOpacity(0.7),
-                  size: 16,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   void _showProUpgradeDialog() {
@@ -614,108 +488,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  // Advanced Astrology Features Section
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.purple[50]!, Colors.blue[50]!],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.purple[200]!),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.auto_awesome,
-                                color: Colors.purple[600], size: 24),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Gelişmiş Astroloji Özellikleri',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.purple[700],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        // Transit Analysis
-                        _buildAdvancedFeatureButton(
-                          icon: Icons.timeline,
-                          title: 'Transit Analizi',
-                          subtitle: 'Güncel gezegen geçişleri',
-                          colors: [Colors.blue[400]!, Colors.blue[600]!],
-                          onPressed: _navigateToTransitAnalysis,
-                        ),
-                        const SizedBox(height: 12),
-                        // Solar Return
-                        _buildAdvancedFeatureButton(
-                          icon: Icons.wb_sunny,
-                          title: 'Solar Return',
-                          subtitle: 'Doğum günü harita analizi',
-                          colors: [Colors.orange[400]!, Colors.orange[600]!],
-                          onPressed: _navigateToSolarReturn,
-                        ),
-                        const SizedBox(height: 12),
-                        // Progression Analysis
-                        _buildAdvancedFeatureButton(
-                          icon: Icons.trending_up,
-                          title: 'Progresyon Analizi',
-                          subtitle: 'Kişisel gelişim tahminleri',
-                          colors: [Colors.green[400]!, Colors.green[600]!],
-                          onPressed: _navigateToProgressionAnalysis,
-                        ),
-                        const SizedBox(height: 12), // Enhanced Synastry
-                        _buildAdvancedFeatureButton(
-                          icon: Icons.psychology,
-                          title: 'Gelişmiş Synastry',
-                          subtitle: 'Detaylı ilişki analizi',
-                          colors: [Colors.pink[400]!, Colors.pink[600]!],
-                          onPressed: _navigateToEnhancedSynastry,
-                        ),
-                        const SizedBox(height: 12),
-                        // Composite Chart
-                        _buildAdvancedFeatureButton(
-                          icon: Icons.favorite,
-                          title: 'Composite Chart',
-                          subtitle: 'İlişki harita analizi',
-                          colors: [Colors.red[400]!, Colors.red[600]!],
-                          onPressed: _navigateToCompositeChart,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  // Advanced Astrology Test Button (Development Only)
-                  if (kDebugMode) ...[
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.orange.shade400, Colors.red.shade600],
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: OutlinedButton.icon(
-                        icon: const Icon(Icons.science, color: Colors.white),
-                        label: const Text(
-                          'Test Advanced Features',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: _navigateToAdvancedAstrologyTest,
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide.none,
-                          backgroundColor: Colors.transparent,
-                        ),
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),

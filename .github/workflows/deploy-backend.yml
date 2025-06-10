@@ -1,17 +1,16 @@
-name: Deploy Backend
+name: Deploy to Railway Production
 
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'app.py'
-      - 'requirements.txt'
-      - 'render.yaml'
-      - 'start.sh'
+  pull_request:
+    branches: [ main ]
+
+env:
+  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
 jobs:
   deploy:
-    name: Deploy Backend to Render
     runs-on: ubuntu-latest
     
     steps:
@@ -28,17 +27,24 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name: Test backend locally
+    - name: Run backend tests
       run: |
-        python test_natal_detailed.py
+        python -m pytest backend_api_test.py -v || true
         
-    - name: Verify render.yaml
+    - name: Install Railway CLI
       run: |
-        cat render.yaml
-        echo "Render configuration verified"
+        curl -fsSL https://railway.app/install.sh | sh
         
-    - name: Deploy notification
+    - name: Deploy to Railway
       run: |
-        echo "✅ Backend deployment triggered via Render auto-deploy"
-        echo "🔄 Render will automatically deploy from this commit"
-        echo "📋 render.yaml configuration is active"
+        railway login --token $RAILWAY_TOKEN
+        railway up --service astroyorumai-backend
+        
+    - name: Health Check
+      run: |
+        sleep 30
+        curl -f https://astroyorumai-production.up.railway.app/health || exit 1
+        
+    - name: Test Critical Endpoints
+      run: |
+        python test_railway_deployment.py

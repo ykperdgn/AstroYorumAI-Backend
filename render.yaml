@@ -1,19 +1,10 @@
 services:
   - type: web
-    name: astroyorumai-backend
+    name: astroyorumai-api
     env: python
-    plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: python backend/app.py
+    plan: free    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
     envVars:
       - key: FLASK_ENV
         value: production
-      - key: FLASK_DEBUG
-        value: false
-      - key: CORS_ORIGINS
-        value: "*"
     healthCheckPath: /health
-    disk:
-      name: cache
-      mountPath: /tmp
-      sizeGB: 1

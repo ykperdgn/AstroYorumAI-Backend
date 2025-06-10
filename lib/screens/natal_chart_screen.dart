@@ -7,7 +7,6 @@ import '../models/planet_position.dart';
 import '../models/user_profile.dart';
 import '../widgets/planet_positions_table.dart';
 import '../widgets/zodiac_wheel_display.dart';
-import '../widgets/enhanced_error_display.dart';
 import 'package:intl/intl.dart';
 import 'transit_screen.dart';
 
@@ -88,27 +87,16 @@ class _NatalChartScreenState extends State<NatalChartScreen> {
           _errorMessage =
               'Doğum haritası verileri alınamadı. Backend API bağlantı sorunu.';
         } else if (chartData.containsKey('error')) {
-          // Enhanced error message handling with better user experience
+          // Enhanced error message handling
           String detailedError = chartData['error'] ?? 'Bilinmeyen hata';
           String userMessage = chartData['user_message'] ?? '';
           String solution = chartData['solution'] ?? '';
-          bool isCorsError = chartData['is_cors_error'] == true;
-          String platform = chartData['platform'] ?? 'unknown';
-
-          _errorMessage = detailedError;
-
+          _errorMessage = 'Harita hesaplama hatası: $detailedError';
           if (userMessage.isNotEmpty) {
             _errorMessage = '${_errorMessage ?? ''}\n\n$userMessage';
           }
           if (solution.isNotEmpty) {
-            _errorMessage =
-                '${_errorMessage ?? ''}\n\nÇözüm önerileri:\n$solution';
-          }
-
-          // Add web-specific guidance
-          if (isCorsError && platform == 'web') {
-            _errorMessage =
-                '${_errorMessage ?? ''}\n\n⚠️ Web Uygulaması Kısıtlaması: Bu sorun yalnızca web tarayıcısında yaşanır. Mobil uygulamayı tercih edebilirsiniz.';
+            _errorMessage = '${_errorMessage ?? ''}\n\nÇözüm: $solution';
           }
         } else {
           // Natal chart verisi başarıyla alındıysa, Güneş burcunu buradan alıp günlük yorumu getir
@@ -242,43 +230,47 @@ class _NatalChartScreenState extends State<NatalChartScreen> {
         body: const Center(child: CircularProgressIndicator()),
       );
     }
+
     if (_errorMessage != null) {
       return Scaffold(
         appBar: AppBar(title: const Text('Hata')),
-        body: SingleChildScrollView(
-          child: EnhancedErrorDisplay(
-            errorMessage: _errorMessage,
-            errorData: _natalChartData?.containsKey('error') == true
-                ? _natalChartData
-                : null,
-            onRetry: _fetchNatalChartData,
-            context: 'Doğum Haritası',
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                const SizedBox(height: 16),
+                Text(_errorMessage!,
+                    style: const TextStyle(color: Colors.red, fontSize: 16),
+                    textAlign: TextAlign.center),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Tekrar Dene'),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepPurple),
+                  onPressed: _fetchNatalChartData,
+                ),
+              ],
+            ),
           ),
         ),
       );
     }
-    List<PlanetPosition> planetPositions = _getPlanetPositionsFromData(
-        _natalChartData); // Güneş burcu için yeni format desteği - API verilerini doğru şekilde al
+    List<PlanetPosition> planetPositions =
+        _getPlanetPositionsFromData(_natalChartData);
+
+    // Güneş burcu için yeni format desteği
     String sunSign = 'Bilinmiyor';
-    if (_natalChartData?['planets']?['Güneş'] != null) {
-      // Türkçe anahtar kontrolü (API serviste çeviri yapılıyor)
-      var sunData = _natalChartData!['planets']['Güneş'];
-      if (sunData is String) {
-        sunSign = sunData;
-      } else if (sunData is Map) {
-        sunSign = sunData['sign'] ?? 'Bilinmiyor';
-      }
-    } else if (_natalChartData?['planets']?['Sun'] != null) {
-      // İngilizce anahtar kontrolü (fallback)
+    if (_natalChartData?['planets']?['Sun'] != null) {
       var sunData = _natalChartData!['planets']['Sun'];
       if (sunData is String) {
         sunSign = sunData;
       } else if (sunData is Map) {
         sunSign = sunData['sign'] ?? 'Bilinmiyor';
       }
-    } // Eğer hala bilinmiyor ise ve doğum tarihi varsa, basit hesaplama yap
-    if (sunSign == 'Bilinmiyor') {
-      sunSign = _calculateSunSignFromDate(widget.birthDate);
     }
 
     String ascendantSign = _natalChartData?['ascendant'] ?? 'Bilinmiyor';
@@ -540,10 +532,7 @@ class _NatalChartScreenState extends State<NatalChartScreen> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (context) => TransitScreen(
-                            birthDate: widget.birthDate,
-                            sunSign: sunSign,
-                          )),
+                      builder: (context) => const TransitScreen()),
                 );
               },
             ),
@@ -556,30 +545,6 @@ class _NatalChartScreenState extends State<NatalChartScreen> {
         ),
       ),
     );
-  }
-
-  // Doğum tarihinden güneş burcunu hesaplayan yardımcı metod
-  String _calculateSunSignFromDate(DateTime birthDate) {
-    final day = birthDate.day;
-    final month = birthDate.month;
-
-    if ((month == 3 && day >= 21) || (month == 4 && day <= 19)) return "Koç";
-    if ((month == 4 && day >= 20) || (month == 5 && day <= 20)) return "Boğa";
-    if ((month == 5 && day >= 21) || (month == 6 && day <= 20))
-      return "İkizler";
-    if ((month == 6 && day >= 21) || (month == 7 && day <= 22)) return "Yengeç";
-    if ((month == 7 && day >= 23) || (month == 8 && day <= 22)) return "Aslan";
-    if ((month == 8 && day >= 23) || (month == 9 && day <= 22)) return "Başak";
-    if ((month == 9 && day >= 23) || (month == 10 && day <= 22))
-      return "Terazi";
-    if ((month == 10 && day >= 23) || (month == 11 && day <= 21))
-      return "Akrep";
-    if ((month == 11 && day >= 22) || (month == 12 && day <= 21)) return "Yay";
-    if ((month == 12 && day >= 22) || (month == 1 && day <= 19)) return "Oğlak";
-    if ((month == 1 && day >= 20) || (month == 2 && day <= 18)) return "Kova";
-    if ((month == 2 && day >= 19) || (month == 3 && day <= 20)) return "Balık";
-
-    return "Koç"; // Fallback
   }
 
   Future<void> _handleExportShare(String action) async {
