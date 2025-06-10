@@ -312,7 +312,8 @@ def health_detailed():
         "environment": os.environ.get('FLASK_ENV', 'production')
     })
 
-if __name__ == "__main__":
+# Only run the development server if explicitly requested (not in production)
+if __name__ == "__main__" and os.environ.get("FLASK_DEV_SERVER", "0") == "1":
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') == 'development'
     print(f"Starting AstroYorumAI API v2.1.3-real-calculations...")
@@ -321,5 +322,4 @@ if __name__ == "__main__":
     print(f"Python version: {sys.version}")
     print(f"Calculation method: flatlib Swiss Ephemeris")
     print(f"Real calculations: YES")
-    
     app.run(host='0.0.0.0', port=port, debug=debug)
