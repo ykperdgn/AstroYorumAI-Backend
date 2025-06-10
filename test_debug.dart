@@ -21,19 +21,15 @@ class TestFormWidget extends StatefulWidget {
 
 class _TestFormWidgetState extends State<TestFormWidget> {
   final _nameController = TextEditingController();
-  
+
   void _handleSubmission() {
-    print('_handleSubmission called');
     if (_nameController.text.trim().isEmpty) {
-      print('Name is empty, showing SnackBar');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Name required'))
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Name required')));
       return;
     }
-    print('Name is not empty: ${_nameController.text}');
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,21 +59,20 @@ void main() {
         home: TestFormWidget(),
       ),
     );
-    
-    print('Tapping test button...');
+
     await tester.tap(find.byKey(const Key('test_button')));
     await tester.pump();
-    
-    print('SnackBar count: ${tester.widgetList(find.byType(SnackBar)).length}');
+
     await tester.pump(const Duration(milliseconds: 100));
-    print('SnackBar count after delay: ${tester.widgetList(find.byType(SnackBar)).length}');
   });
-  testWidgets('Debug actual BirthInfoScreen method call', (WidgetTester tester) async {
+  testWidgets('Debug actual BirthInfoScreen method call',
+      (WidgetTester tester) async {
     final mockGeocodingService = SharedMockGeocodingService();
     final mockPreferencesService = MockUserPreferencesService();
-    
+
     // Set up preferences service mock behavior
-    when(mockPreferencesService.saveUserBirthInfo(any)).thenAnswer((_) async {});
+    when(mockPreferencesService.saveUserBirthInfo(any))
+        .thenAnswer((_) async {});
 
     await tester.pumpWidget(
       MaterialApp(
@@ -94,22 +89,12 @@ void main() {
         ),
       ),
     );
-    
-    print('Getting name controller text...');
-    final nameField = find.byKey(const Key('name_field'));
-    final nameWidget = tester.widget<TextFormField>(nameField);
-    print('Name controller text: "${nameWidget.controller?.text}"');
-    print('Name controller text empty: ${nameWidget.controller?.text.trim().isEmpty}');
-    
-    print('Tapping actual submit button...');
+
     try {
       await tester.tap(find.byKey(const Key('submit_button')));
       await tester.pump();
-      print('Button tap completed successfully');
     } catch (e) {
-      print('Error during button tap: $e');
+      // Handle error
     }
-    
-    print('SnackBar count: ${tester.widgetList(find.byType(SnackBar)).length}');
   });
 }

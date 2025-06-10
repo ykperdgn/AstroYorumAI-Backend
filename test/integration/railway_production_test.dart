@@ -18,9 +18,6 @@ void main() {
       final data = json.decode(response.body);
       expect(data['status'], equals('healthy'));
       expect(data['service'], equals('AstroYorumAI API'));
-
-      print('✅ Railway Health: ${data['status']}');
-      print('✅ Version: ${data['version']}');
     });
 
     test('Railway natal endpoint should work', () async {
@@ -45,10 +42,6 @@ void main() {
       expect(data['planets'], isNotNull);
       expect(data['ascendant'], isNotNull);
       expect(data['calculation_method'], contains('flatlib'));
-
-      print('✅ Railway Natal Calculation Working');
-      print('✅ Planets found: ${data['planets'].length}');
-      print('✅ Ascendant: ${data['ascendant']}');
     });
     test('Railway status endpoint should work', () async {
       final response = await http.get(
@@ -60,9 +53,6 @@ void main() {
 
       final data = json.decode(response.body);
       expect(data['status'], isNotNull);
-
-      print('✅ Railway Status Working');
-      print('✅ API Status: ${data['status']}');
     });
 
     test('Railway CORS headers should be present', () async {
@@ -74,8 +64,6 @@ void main() {
       expect(response.headers['access-control-allow-origin'], isNotNull);
       expect(
           response.headers['access-control-allow-methods'], contains('POST'));
-
-      print('✅ Railway CORS Configuration: Working');
     });
   });
 }

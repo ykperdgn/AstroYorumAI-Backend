@@ -16,13 +16,14 @@ void main() {
       mockGeocodingService = MockGeocodingService();
     });
 
-    testWidgets('debug form submission step by step', (WidgetTester tester) async {
+    testWidgets('debug form submission step by step',
+        (WidgetTester tester) async {
       // Setup mocks
-      when(mockGeocodingService.getCoordinates(any)).thenAnswer((_) async => null);
-      
+      when(mockGeocodingService.getCoordinates(any))
+          .thenAnswer((_) async => null);
+
       bool saveWasCalled = false;
       when(mockPreferencesService.saveUserBirthInfo(any)).thenAnswer((_) async {
-        print('=== MOCK SAVE CALLED ===');
         saveWasCalled = true;
       });
 
@@ -50,27 +51,18 @@ void main() {
       );
 
       await tester.pumpAndSettle();
-      
+
       // Verify fields are populated (from previous test we know they are)
-      final nameField = tester.widget<TextFormField>(find.byKey(const Key('name_field')));
-      final latitudeField = tester.widget<TextFormField>(find.byType(TextFormField).at(2));
-      final longitudeField = tester.widget<TextFormField>(find.byType(TextFormField).at(3));
-      
-      print('=== PRE-SUBMISSION STATE ===');
-      print('Name: "${nameField.controller?.text}"');
-      print('Latitude: "${latitudeField.controller?.text}"');
-      print('Longitude: "${longitudeField.controller?.text}"');
-      
+      tester.widget<TextFormField>(find.byKey(const Key('name_field')));
+      tester.widget<TextFormField>(find.byType(TextFormField).at(2));
+      tester.widget<TextFormField>(find.byType(TextFormField).at(3));
+
       // Find submit button
       final submitButtonFinder = find.byKey(const Key('submit_button'));
-      final ElevatedButton submitButton = tester.widget<ElevatedButton>(submitButtonFinder);
-      
-      print('=== BUTTON STATE ===');
-      print('Button enabled: ${submitButton.onPressed != null}');
-      
+      final ElevatedButton submitButton =
+          tester.widget<ElevatedButton>(submitButtonFinder);
+
       // Try to trigger onPressed directly
-      print('=== CALLING onPressed DIRECTLY ===');
-      
       try {
         if (submitButton.onPressed != null) {
           // Call the function and wait for it
@@ -80,12 +72,11 @@ void main() {
           await tester.pumpAndSettle();
         }
       } catch (e) {
-        print('Error in direct onPressed call: $e');
-        print('Stack trace: ${e.toString()}');
+        // Handle or log the error as needed
       }
-      
-      print('=== AFTER DIRECT CALL ===');
-      print('Save was called: $saveWasCalled');
+
+      // Check if save was called
+      expect(saveWasCalled, isTrue);
     });
   });
 }

@@ -77,32 +77,31 @@ void main() {
       );
     });
 
-    testWidgets('Bildirim ayarları varsayılan değerlerle geliyor mu?', (WidgetTester tester) async {
+    testWidgets('Bildirim ayarları varsayılan değerlerle geliyor mu?',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         createTestApp(const NotificationSettingsScreen()),
       );
 
       // Wait for initial loading
       await tester.pump();
-      
+
       // Check if still loading
       var progressIndicator = find.byType(CircularProgressIndicator);
       if (progressIndicator.evaluate().isNotEmpty) {
-        print("Still loading, waiting more...");
         await tester.pumpAndSettle(const Duration(seconds: 3));
       }
 
       // Check for missing profile message
-      final profileMissing = find.text('Bildirimleri etkinleştirmek için\nönce bir profil oluşturun.');
+      final profileMissing = find
+          .text('Bildirimleri etkinleştirmek için\nönce bir profil oluşturun.');
       if (profileMissing.evaluate().isNotEmpty) {
-        print("Profile missing message found - test setup issue");
         fail("Profile should be available in test");
       }
 
       // Check for permission warning and try to grant permission
       final permissionWarning = find.text('Bildirim İzni Gerekli');
       if (permissionWarning.evaluate().isNotEmpty) {
-        print("Permission warning found, trying to grant permission");
         final grantButton = find.text('İzin Ver');
         if (grantButton.evaluate().isNotEmpty) {
           await tester.tap(grantButton);
@@ -114,13 +113,11 @@ void main() {
       // Final check and wait
       await tester.pumpAndSettle(const Duration(seconds: 1));
 
-      // Debug: print current widget tree state
-      final allSwitches = find.byType(SwitchListTile);
-      print("Found ${allSwitches.evaluate().length} SwitchListTiles");
-
       // Now try to find the switches
-      final dailyReminderSwitch = find.byKey(const Key('daily_reminder_switch'));
-      final weeklyReminderSwitch = find.byKey(const Key('weekly_reminder_switch'));
+      final dailyReminderSwitch =
+          find.byKey(const Key('daily_reminder_switch'));
+      final weeklyReminderSwitch =
+          find.byKey(const Key('weekly_reminder_switch'));
       final specialEventSwitch = find.byKey(const Key('special_event_switch'));
 
       expect(dailyReminderSwitch, findsOneWidget);
@@ -128,16 +125,20 @@ void main() {
       expect(specialEventSwitch, findsOneWidget);
 
       // Varsayılan değerler kontrolü (örnek: kapalı olmalı)
-      final dailySwitchWidget = tester.widget<SwitchListTile>(dailyReminderSwitch);
-      final weeklySwitchWidget = tester.widget<SwitchListTile>(weeklyReminderSwitch);
-      final specialSwitchWidget = tester.widget<SwitchListTile>(specialEventSwitch);
+      final dailySwitchWidget =
+          tester.widget<SwitchListTile>(dailyReminderSwitch);
+      final weeklySwitchWidget =
+          tester.widget<SwitchListTile>(weeklyReminderSwitch);
+      final specialSwitchWidget =
+          tester.widget<SwitchListTile>(specialEventSwitch);
 
       expect(dailySwitchWidget.value, isFalse);
       expect(weeklySwitchWidget.value, isFalse);
       expect(specialSwitchWidget.value, isFalse);
     });
 
-    testWidgets('Kullanıcı ayarı değiştirdiğinde switch durumu değişiyor mu?', (WidgetTester tester) async {
+    testWidgets('Kullanıcı ayarı değiştirdiğinde switch durumu değişiyor mu?',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         createTestApp(const NotificationSettingsScreen()),
       );
@@ -156,7 +157,8 @@ void main() {
         }
       }
 
-      final dailyReminderSwitch = find.byKey(const Key('daily_reminder_switch'));
+      final dailyReminderSwitch =
+          find.byKey(const Key('daily_reminder_switch'));
 
       // Make sure the switch is found
       expect(dailyReminderSwitch, findsOneWidget);
@@ -173,7 +175,8 @@ void main() {
       expect(updatedSwitch.value, !initialValue);
     });
 
-    testWidgets('Kaydet butonuna basıldığında işlem yapılıyor mu?', (WidgetTester tester) async {
+    testWidgets('Kaydet butonuna basıldığında işlem yapılıyor mu?',
+        (WidgetTester tester) async {
       // Test the notification settings screen
       await tester.pumpWidget(
         createTestApp(const NotificationSettingsScreen()),

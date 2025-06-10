@@ -16,13 +16,14 @@ void main() {
       mockGeocodingService = MockGeocodingService();
     });
 
-    testWidgets('compare tap vs direct onPressed call', (WidgetTester tester) async {
+    testWidgets('compare tap vs direct onPressed call',
+        (WidgetTester tester) async {
       // Setup mocks
-      when(mockGeocodingService.getCoordinates(any)).thenAnswer((_) async => null);
-      
+      when(mockGeocodingService.getCoordinates(any))
+          .thenAnswer((_) async => null);
+
       bool saveWasCalled = false;
       when(mockPreferencesService.saveUserBirthInfo(any)).thenAnswer((_) async {
-        print('=== MOCK SAVE CALLED ===');
         saveWasCalled = true;
       });
 
@@ -50,27 +51,23 @@ void main() {
       );
 
       await tester.pumpAndSettle();
-      print('=== WIDGET SETUP COMPLETE ===');
 
       // Find submit button
       final submitButtonFinder = find.byKey(const Key('submit_button'));
       expect(submitButtonFinder, findsOneWidget);
-      
-      final ElevatedButton submitButton = tester.widget<ElevatedButton>(submitButtonFinder);
-      print('Button onPressed exists: ${submitButton.onPressed != null}');
-      
+
+      final ElevatedButton submitButton =
+          tester.widget<ElevatedButton>(submitButtonFinder);
+
       // Test 1: Try tester.tap() (we know this fails)
-      print('\n=== TEST 1: Using tester.tap() ===');
       await tester.tap(submitButtonFinder, warnIfMissed: false);
       await tester.pumpAndSettle();
-      print('After tap - Save was called: $saveWasCalled');
-      
+
       // Reset the flag
       saveWasCalled = false;
-      
+
       // Test 2: Call onPressed directly (this should work)
-      print('\n=== TEST 2: Calling onPressed directly ===');
-      
+
       try {
         if (submitButton.onPressed != null) {
           await tester.runAsync(() async {
@@ -78,15 +75,11 @@ void main() {
           });
           await tester.pumpAndSettle();
         }
-      } catch (e) {
-        print('Error in direct onPressed call: $e');
-        print('Stack trace: ${StackTrace.current}');
-      }
-      
-      print('After direct call - Save was called: $saveWasCalled');
-      
+      } catch (e) {}
+
       // The test should pass if direct call works
-      expect(saveWasCalled, isTrue, reason: 'Direct onPressed call should trigger save');
+      expect(saveWasCalled, isTrue,
+          reason: 'Direct onPressed call should trigger save');
     });
   });
 }

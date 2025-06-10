@@ -3,13 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
-  testWidgets('Simple TextFormField validation test', (WidgetTester tester) async {
+  testWidgets('Simple TextFormField validation test',
+      (WidgetTester tester) async {
     final formKey = GlobalKey<FormState>();
     final controller = TextEditingController();
-    
+
     // Set invalid value
     controller.text = "95";
-    
+
     await tester.pumpWidget(
       MaterialApp(
         localizationsDelegates: const [
@@ -29,9 +30,9 @@ void main() {
               children: [
                 TextFormField(
                   controller: controller,
-                  decoration: const InputDecoration(labelText: 'Enlem (Latitude)'),
+                  decoration:
+                      const InputDecoration(labelText: 'Enlem (Latitude)'),
                   validator: (value) {
-                    print('DEBUG: Validator called with value: $value');
                     if (value == null || value.trim().isEmpty) {
                       return 'Lütfen enlem girin';
                     }
@@ -40,18 +41,14 @@ void main() {
                       return 'Geçerli bir sayı girin';
                     }
                     if (lat < -90 || lat > 90) {
-                      print('DEBUG: Validation failed - latitude out of range');
                       return 'Enlem -90 ile 90 arasında olmalıdır';
                     }
-                    print('DEBUG: Validation passed');
                     return null;
                   },
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    print('DEBUG: Button pressed, calling validate');
-                    final isValid = formKey.currentState!.validate();
-                    print('DEBUG: Validation result: $isValid');
+                    formKey.currentState!.validate();
                   },
                   child: const Text('Validate'),
                 ),
@@ -72,21 +69,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Look for validation error
-    print('=== Looking for validation error ===');
     final errorFinder = find.text('Enlem -90 ile 90 arasında olmalıdır');
-    print('Found error messages: ${errorFinder.evaluate().length}');
-    
-    // Try to find any text that contains "90"
-    final anyText90 = find.textContaining('90');
-    print('Found text containing "90": ${anyText90.evaluate().length}');
-    
-    // Print all text widgets
-    final allTexts = find.byType(Text);
-    print('All text widgets:');
-    for (int i = 0; i < allTexts.evaluate().length; i++) {
-      final textWidget = tester.widget<Text>(allTexts.at(i));
-      print('  $i: "${textWidget.data}"');
-    }
 
     expect(errorFinder, findsOneWidget);
   });

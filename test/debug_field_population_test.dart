@@ -22,7 +22,7 @@ void main() {
       when(mockGeocodingService.getCoordinates(any))
           .thenAnswer((_) async => null);
       when(mockPreferencesService.saveUserBirthInfo(any)).thenAnswer((_) async {
-        print('=== MOCK SAVE CALLED ===');
+        // print('=== MOCK SAVE CALLED ===');
       });
 
       final profile = UserProfile(
@@ -50,42 +50,25 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      print('=== CHECKING FIELD POPULATION ===');
+      // print('=== CHECKING FIELD POPULATION ===');
 
       // Check name field
       final nameField = find.byKey(const Key('name_field'));
       expect(nameField, findsOneWidget);
-      final nameController = tester.widget<TextFormField>(nameField).controller;
-      print('Name field text: "${nameController?.text}"');
-
-      // Check latitude field
-      final latitudeField = find.byType(TextFormField).at(2); // 3rd field
-      final latitudeController =
-          tester.widget<TextFormField>(latitudeField).controller;
-      print('Latitude field text: "${latitudeController?.text}"');
-
-      // Check longitude field
-      final longitudeField = find.byType(TextFormField).at(3); // 4th field
-      final longitudeController =
-          tester.widget<TextFormField>(longitudeField).controller;
-      print('Longitude field text: "${longitudeController?.text}"');
 
       // Check birth place field
       final birthPlaceField = find.byKey(const Key('birth_place_field'));
       expect(birthPlaceField, findsOneWidget);
-      final birthPlaceController =
-          tester.widget<TextFormField>(birthPlaceField).controller;
-      print('Birth place field text: "${birthPlaceController?.text}"');
 
       // Check if date and time text are visible
       expect(find.text('Doğum Tarihi: 15/01/1990'), findsOneWidget);
       expect(find.text('Doğum Saati: 12:00'), findsOneWidget);
 
-      print('=== FIELD POPULATION CHECK COMPLETE ===');
-      print('Name: "${nameController?.text}"');
-      print('Latitude: "${latitudeController?.text}"');
-      print('Longitude: "${longitudeController?.text}"');
-      print('Birth Place: "${birthPlaceController?.text}"');
+      // print('=== FIELD POPULATION CHECK COMPLETE ===');
+      // print('Name: "${nameController?.text}"');
+      // print('Latitude: "${latitudeController?.text}"');
+      // print('Longitude: "${longitudeController?.text}"');
+      // print('Birth Place: "${birthPlaceController?.text}"');
     });
   });
 }

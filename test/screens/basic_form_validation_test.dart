@@ -5,7 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() {
   testWidgets('Basic form validation test', (WidgetTester tester) async {
     final formKey = GlobalKey<FormState>();
-    
+
     await tester.pumpWidget(
       MaterialApp(
         localizationsDelegates: const [
@@ -63,8 +63,7 @@ void main() {
 
     // Check if validation error appears
     final errorText = find.text('Enlem -90 ile 90 arasında olmalıdır');
-    print('Validation error found: ${errorText.evaluate().isNotEmpty}');
-    
+
     expect(errorText, findsOneWidget);
   });
 }

@@ -68,44 +68,29 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 3));
 
       // Print the entire widget tree
-      print("=== WIDGET TREE DEBUG ===");
+      // print("=== WIDGET TREE DEBUG ===");
       final allWidgets = tester.allWidgets.toList();
       for (int i = 0; i < allWidgets.length; i++) {
-        final widget = allWidgets[i];
-        print("[$i] ${widget.runtimeType}: ${widget.toString()}");
+        // Remove unused local variable 'widget'
       }
 
       // Print specific widget types
-      print("\n=== SWITCH LIST TILES ===");
+      // print("\n=== SWITCH LIST TILES ===");
       final switches = find.byType(SwitchListTile);
-      print("Found ${switches.evaluate().length} SwitchListTiles");
-      for (final element in switches.evaluate()) {
-        final widget = element.widget as SwitchListTile;
-        print("Switch: key=${widget.key}, title=${widget.title}, value=${widget.value}");
+      // print("Found ${switches.evaluate().length} SwitchListTiles");
+      for (final _ in switches.evaluate()) {
+        // final widget = element.widget as SwitchListTile; // Unused variable removed
+        // print("Switch: key=${widget.key}, title=${widget.title}, value=${widget.value}");
       }
 
       // Print buttons
-      print("\n=== ELEVATED BUTTONS ===");
+      // print("\n=== ELEVATED BUTTONS ===");
       final buttons = find.byType(ElevatedButton);
-      print("Found ${buttons.evaluate().length} ElevatedButtons");
-      for (final element in buttons.evaluate()) {
-        final widget = element.widget as ElevatedButton;
-        print("Button: key=${widget.key}, child=${widget.child}");
+      // print("Found ${buttons.evaluate().length} ElevatedButtons");
+      for (final _ in buttons.evaluate()) {
+        // final widget = element.widget as ElevatedButton; // Unused variable removed
+        // print("Button: key=${widget.key}, child=${widget.child}");
       }
-
-      // Check for specific texts that might indicate state
-      print("\n=== IMPORTANT TEXTS ===");
-      final loadingText = find.text('Yükleniyor...');
-      final permissionText = find.text('Bildirim İzni Gerekli');
-      final profileMissingText = find.text('Bildirimleri etkinleştirmek için\nönce bir profil oluşturun.');
-      
-      print("Loading indicator: ${loadingText.evaluate().isNotEmpty}");
-      print("Permission needed: ${permissionText.evaluate().isNotEmpty}");
-      print("Profile missing: ${profileMissingText.evaluate().isNotEmpty}");
-
-      // Print CircularProgressIndicator
-      final progressIndicator = find.byType(CircularProgressIndicator);
-      print("Progress indicator: ${progressIndicator.evaluate().isNotEmpty}");
     });
   });
 }
