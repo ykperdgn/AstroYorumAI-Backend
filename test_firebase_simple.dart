@@ -1,7 +1,7 @@
 import 'dart:developer' as developer;
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
-import 'lib/config/firebase_config_production.dart';
+// import 'lib/config/firebase_config_production.dart';
 
 void main() async {
   try {
@@ -12,8 +12,8 @@ void main() async {
     // Initialize Firebase with production config
     developer.log('⚙️  Initializing Firebase...');
     await Firebase.initializeApp(
-      options: FirebaseConfigProduction.currentPlatform,
-    );
+        // options: FirebaseConfigProduction.currentPlatform,
+        );
 
     developer.log('✅ Firebase Core initialized successfully!');
     developer.log('🔥 Project ID: ${Firebase.app().options.projectId}');

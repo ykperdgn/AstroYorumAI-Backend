@@ -1,13 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'lib/config/firebase_config_production.dart';
+// import 'lib/config/firebase_config_production.dart';
 
 void main() async {
   try {
     // Initialize Firebase with production config
     await Firebase.initializeApp(
-      options: FirebaseConfigProduction.currentPlatform,
-    );
+        // options: FirebaseConfigProduction.currentPlatform,
+        );
 
     // Test Firestore connection
     FirebaseFirestore firestore = FirebaseFirestore.instance;

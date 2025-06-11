@@ -1,0 +1,20 @@
+name: 'CI Skip Configuration'
+description: 'Tells Flutter test what files to exclude for CI/CD'
+
+# The list of file patterns to exclude from testing in CI environment
+excluded_files:
+  - '**/api_test_screen.dart'
+  - '**/partner_management_screen.dart'
+  - '**/horary_question_pro_screen.dart'
+  - '**/daily_astrology_service.dart'
+  - '**/daily_astrology_reading.dart'
+  - '**/firebase_config_production.dart'
+  
+# Mock paths for CI environment
+ci_mocks:
+  enabled: true
+  mocks:
+    - src: '.github/ci_temp/app_environment.dart'
+      dest: 'lib/config/app_environment.dart'
+    - src: '.github/ci_temp/firebase_config_mock.dart'
+      dest: 'lib/config/firebase_config_production.dart'

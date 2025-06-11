@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'lib/config/firebase_config_production.dart';
+// import 'lib/config/firebase_config_production.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,8 +10,8 @@ void main() async {
   try {
     // Initialize Firebase with production config
     await Firebase.initializeApp(
-      options: FirebaseConfigProduction.currentPlatform,
-    );
+        // options: FirebaseConfigProduction.currentPlatform,
+        );
     print('✅ Firebase initialized successfully!');
   } catch (e) {
     print('❌ Firebase initialization failed: $e');

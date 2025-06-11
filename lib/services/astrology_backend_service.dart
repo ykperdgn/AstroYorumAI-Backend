@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../config/firebase_config_production.dart';
+// import '../config/firebase_config_production.dart';
 import 'dart:developer' as log;
 
 class AstrologyBackendService {
-  // Use the centralized environment configuration
-  static String get _baseUrl => AppEnvironment.backendUrl;
+  // Use a fixed URL for Railway deployment tests
+  static String get _baseUrl =>
+      'https://astroyorumai-backend-production.up.railway.app';
 
   // Turkish translation mappings for client-side fallback
   static const Map<String, String> _planetNamesTurkish = {
@@ -88,9 +89,7 @@ class AstrologyBackendService {
       final response = await http.get(url);
       return response.statusCode == 200;
     } catch (e) {
-      if (AppEnvironment.enableDebugLogging) {
-        log.log('Health check failed: $e');
-      }
+      log.log('Health check failed: $e');
       return false;
     }
   }
