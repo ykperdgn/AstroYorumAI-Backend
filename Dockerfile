@@ -27,5 +27,12 @@ ENV PYTHONUNBUFFERED=1
 # Expose port (for local testing)
 EXPOSE 8080
 
-# Default CMD, will be overridden by Railway's startCommand in railway.json
-CMD ["sh", "-c", "echo 'Application starting...' && exec gunicorn app:app --bind 0.0.0.0:8080 --workers 2 --timeout 120"]
+# Health check uses port 8080 for local testing
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Make start script executable
+RUN chmod +x start.sh
+
+# Use start.sh to handle PORT environment variable
+CMD ["./start.sh"]
