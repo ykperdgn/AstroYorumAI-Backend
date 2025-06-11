@@ -1,11 +1,7 @@
 ﻿#!/bin/sh
+# Single line shell script for Railway compatibility
 
-# Print environment variables for debugging
-echo "PORT environment variable: $PORT"
-
-# Set default port if not provided
-PORT=${PORT:-8080}
-echo "Using port: $PORT"
-
-# Execute gunicorn with the port
+# Simple port handling
+PORT="${PORT:-8080}"
+echo "Starting server on port: $PORT"
 exec gunicorn app:app --bind "0.0.0.0:$PORT" --workers 2 --timeout 120
