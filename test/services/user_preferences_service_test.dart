@@ -45,7 +45,8 @@ void main() {
         );
 
         // Assert - Check that data was saved correctly by loading it back
-        final loadedBirthInfo = await userPreferencesService.loadUserBirthInfo();
+        final loadedBirthInfo =
+            await userPreferencesService.loadUserBirthInfo();
         expect(loadedBirthInfo, isNotNull);
         expect(loadedBirthInfo!.name, equals('Test User'));
         expect(loadedBirthInfo.birthDate, equals(DateTime(1990, 5, 15)));
@@ -71,7 +72,8 @@ void main() {
         );
 
         // Assert
-        final loadedBirthInfo = await userPreferencesService.loadUserBirthInfo();
+        final loadedBirthInfo =
+            await userPreferencesService.loadUserBirthInfo();
         expect(loadedBirthInfo, isNotNull);
         expect(loadedBirthInfo!.name, isNull);
         expect(loadedBirthInfo.birthPlace, isNull);
@@ -105,7 +107,8 @@ void main() {
         await userPreferencesService.saveUserBirthInfo(newBirthInfo);
 
         // Assert
-        final loadedBirthInfo = await userPreferencesService.loadUserBirthInfo();
+        final loadedBirthInfo =
+            await userPreferencesService.loadUserBirthInfo();
         expect(loadedBirthInfo, isNotNull);
         expect(loadedBirthInfo!.name, equals('Updated User'));
         expect(loadedBirthInfo.birthDate, equals(DateTime(1995, 6, 15)));
@@ -138,7 +141,8 @@ void main() {
         await userPreferencesService.saveUserBirthInfo(birthInfo);
 
         // Act
-        final loadedBirthInfo = await userPreferencesService.loadUserBirthInfo();
+        final loadedBirthInfo =
+            await userPreferencesService.loadUserBirthInfo();
 
         // Assert
         expect(loadedBirthInfo, isNotNull);
@@ -159,7 +163,7 @@ void main() {
 
         // Assert
         expect(result, isNull);
-        
+
         // Verify that invalid data was cleared
         final clearedData = await userPreferencesService.loadUserBirthInfo();
         expect(clearedData, isNull);
@@ -181,7 +185,7 @@ void main() {
 
         // Assert
         expect(result, isNull);
-        
+
         // Verify that invalid data was cleared
         final clearedData = await userPreferencesService.loadUserBirthInfo();
         expect(clearedData, isNull);
@@ -204,7 +208,7 @@ void main() {
 
         // Assert
         expect(result, isNull);
-        
+
         // Verify that invalid data was cleared
         final clearedData = await userPreferencesService.loadUserBirthInfo();
         expect(clearedData, isNull);
@@ -227,7 +231,7 @@ void main() {
 
         // Assert
         expect(result, isNull);
-        
+
         // Verify that invalid data was cleared
         final clearedData = await userPreferencesService.loadUserBirthInfo();
         expect(clearedData, isNull);
@@ -245,7 +249,7 @@ void main() {
           longitude: 35.0,
         );
         await userPreferencesService.saveUserBirthInfo(birthInfo);
-        
+
         // Verify data was saved
         final savedData = await userPreferencesService.loadUserBirthInfo();
         expect(savedData, isNotNull);
@@ -276,7 +280,7 @@ void main() {
         // Note: This test would require mocking SharedPreferences.getInstance()
         // to throw an exception, which is complex with the current setup.
         // For now, we'll test that normal operations complete without error.
-        
+
         // Arrange
         final birthInfo = UserBirthInfo(
           name: 'Error Test User',
@@ -291,12 +295,12 @@ void main() {
           userPreferencesService.saveUserBirthInfo(birthInfo),
           completes,
         );
-        
+
         await expectLater(
           userPreferencesService.loadUserBirthInfo(),
           completion(isNotNull),
         );
-        
+
         await expectLater(
           userPreferencesService.clearUserBirthInfo(),
           completes,
@@ -348,7 +352,7 @@ void main() {
         // Arrange - Test with very long strings
         final longName = 'A' * 1000; // Very long name
         final longPlace = 'B' * 1000; // Very long place name
-        
+
         final birthInfo = UserBirthInfo(
           name: longName,
           birthDate: DateTime(1975, 6, 30),
@@ -360,7 +364,8 @@ void main() {
 
         // Act
         await userPreferencesService.saveUserBirthInfo(birthInfo);
-        final result = await userPreferencesService.loadUserBirthInfo();        // Assert
+        final result =
+            await userPreferencesService.loadUserBirthInfo(); // Assert
         expect(result, isNotNull);
         expect(result!.name, equals(longName));
         expect(result.birthPlace, equals(longPlace));

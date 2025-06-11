@@ -38,6 +38,7 @@ class UserProfile {
       'isPro': isPro,
     };
   }
+
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
       id: json['id'],
@@ -80,6 +81,7 @@ class UserProfile {
       isPro: isPro ?? this.isPro,
     );
   }
+
   @override
   String toString() {
     return 'UserProfile(id: $id, name: $name, birthDate: $birthDate, isDefault: $isDefault, isPro: $isPro)';

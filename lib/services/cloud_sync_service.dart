@@ -14,9 +14,9 @@ class CloudSyncService {
   final AuthService _authService;
   static const String _lastSyncKey = 'last_cloud_sync';
   CloudSyncService({FirebaseFirestore? firestore, AuthService? authService})
-    : _firestore = firestore ?? FirebaseFirestore.instance,
-      _authService = authService ?? AuthService.instance;
-      
+      : _firestore = firestore ?? FirebaseFirestore.instance,
+        _authService = authService ?? AuthService.instance;
+
   // Static instance for convenience
   static CloudSyncService? _instance;
   static CloudSyncService get instance => _instance ??= CloudSyncService();
@@ -34,7 +34,7 @@ class CloudSyncService {
 
     try {
       final userId = _authService.currentUser!.uid;
-        // Get local data
+      // Get local data
       final profileService = await ProfileManagementService.getInstance();
       final profiles = await profileService.getAllProfiles();
       final activeProfileId = await profileService.getActiveProfileId();
@@ -50,7 +50,8 @@ class CloudSyncService {
       };
 
       // Upload to Firestore
-      await _firestore.collection('users').doc(userId).set(userData, SetOptions(merge: true));      // Update local sync timestamp
+      await _firestore.collection('users').doc(userId).set(
+          userData, SetOptions(merge: true)); // Update local sync timestamp
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_lastSyncKey, DateTime.now().toIso8601String());
 
@@ -59,6 +60,7 @@ class CloudSyncService {
       throw Exception('Bulut senkronizasyonu başarısız: $e');
     }
   }
+
   // Sync data from cloud to local
   Future<void> syncFromCloud() async {
     if (!_authService.isSignedIn) {
@@ -67,21 +69,22 @@ class CloudSyncService {
 
     try {
       final userId = _authService.currentUser!.uid;
-      
+
       // Get data from Firestore
       final doc = await _firestore.collection('users').doc(userId).get();
-        if (!doc.exists) {
+      if (!doc.exists) {
         log.log('No cloud data found for user');
         return;
       }
 
       final data = doc.data()!;
-      
+
       // Restore profiles
       if (data['profiles'] != null) {
         final List<dynamic> profilesData = data['profiles'];
-        final profiles = profilesData.map((p) => UserProfile.fromJson(p)).toList();
-          // Clear existing profiles and restore from cloud
+        final profiles =
+            profilesData.map((p) => UserProfile.fromJson(p)).toList();
+        // Clear existing profiles and restore from cloud
         final profileService = await ProfileManagementService.getInstance();
         await profileService.clearAllProfiles();
         for (final profile in profiles) {
@@ -97,13 +100,14 @@ class CloudSyncService {
       // Restore calendar events
       if (data['calendarEvents'] != null) {
         final List<dynamic> eventsData = data['calendarEvents'];
-        final events = eventsData.map((e) => CelestialEvent.fromJson(e)).toList();
-        
+        final events =
+            eventsData.map((e) => CelestialEvent.fromJson(e)).toList();
+
         // Save calendar events
         final prefs = await SharedPreferences.getInstance();
         final eventsJson = json.encode(events.map((e) => e.toJson()).toList());
         await prefs.setString('celestial_events', eventsJson);
-      }      // Update local sync timestamp
+      } // Update local sync timestamp
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_lastSyncKey, DateTime.now().toIso8601String());
 
@@ -112,16 +116,17 @@ class CloudSyncService {
       throw Exception('Bulut verisi geri yüklenemedi: $e');
     }
   }
+
   // Check if sync is needed
   Future<bool> needsSync() async {
     final prefs = await SharedPreferences.getInstance();
     final lastSyncStr = prefs.getString(_lastSyncKey);
-    
+
     if (lastSyncStr == null) return true;
-    
+
     final lastSync = DateTime.parse(lastSyncStr);
     final daysSinceSync = DateTime.now().difference(lastSync).inDays;
-    
+
     return daysSinceSync >= 1; // Sync daily
   }
 
@@ -129,7 +134,7 @@ class CloudSyncService {
   Future<DateTime?> getLastSyncTime() async {
     final prefs = await SharedPreferences.getInstance();
     final lastSyncStr = prefs.getString(_lastSyncKey);
-    
+
     if (lastSyncStr == null) return null;
     return DateTime.parse(lastSyncStr);
   }
@@ -137,11 +142,12 @@ class CloudSyncService {
   // Auto sync on app start
   Future<void> autoSync() async {
     if (!_authService.isSignedIn) return;
-    
+
     try {
       if (await needsSync()) {
         await syncToCloud();
-      }    } catch (e) {
+      }
+    } catch (e) {
       log.log('Auto sync failed: $e');
       // Don't throw error for auto sync to avoid blocking app startup
     }
@@ -155,18 +161,19 @@ class CloudSyncService {
 
     try {
       final userId = _authService.currentUser!.uid;
-        await _firestore
+      await _firestore
           .collection('users')
           .doc(userId)
           .collection('profiles')
           .doc(profile.id)
           .set(profile.toJson());
-      
+
       log.log('Profile backed up: ${profile.name}');
     } catch (e) {
       throw Exception('Profil yedeklenemedi: $e');
     }
   }
+
   // Restore single profile
   Future<UserProfile?> restoreProfile(String profileId) async {
     if (!_authService.isSignedIn) {
@@ -175,14 +182,14 @@ class CloudSyncService {
 
     try {
       final userId = _authService.currentUser!.uid;
-      
+
       final doc = await _firestore
           .collection('users')
           .doc(userId)
           .collection('profiles')
           .doc(profileId)
           .get();
-      
+
       if (doc.exists) {
         return UserProfile.fromJson(doc.data()!);
       }
@@ -200,13 +207,13 @@ class CloudSyncService {
 
     try {
       final userId = _authService.currentUser!.uid;
-      
+
       final querySnapshot = await _firestore
           .collection('users')
           .doc(userId)
           .collection('profiles')
           .get();
-      
+
       return querySnapshot.docs
           .map((doc) => UserProfile.fromJson(doc.data()))
           .toList();
@@ -223,20 +230,20 @@ class CloudSyncService {
 
     try {
       final userId = _authService.currentUser!.uid;
-      
+
       // Delete user document
       await _firestore.collection('users').doc(userId).delete();
-      
+
       // Delete profiles subcollection
       final profilesQuery = await _firestore
           .collection('users')
           .doc(userId)
           .collection('profiles')
           .get();
-        for (final doc in profilesQuery.docs) {
+      for (final doc in profilesQuery.docs) {
         await doc.reference.delete();
       }
-      
+
       log.log('All cloud data deleted');
     } catch (e) {
       throw Exception('Bulut verisi silinemedi: $e');
@@ -284,14 +291,14 @@ class CloudSyncService {
           .doc(userId)
           .collection('profiles')
           .get();
-      
+
       for (var doc in profilesQuery.docs) {
         await doc.reference.delete();
       }
 
       // Delete user document
       await _firestore.collection('users').doc(userId).delete();
-          log.log('All cloud data deleted for user: $userId');
+      log.log('All cloud data deleted for user: $userId');
     } catch (e) {
       log.log('Error deleting cloud data: $e');
       throw Exception('Failed to delete cloud data: $e');

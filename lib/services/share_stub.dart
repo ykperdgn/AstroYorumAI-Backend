@@ -10,7 +10,8 @@ class Share {
   static Future<void> shareXFiles(
     List<XFile> files, {
     String? text,
-    String? subject,  }) async {
+    String? subject,
+  }) async {
     // Stub implementation - do nothing on unsupported platforms
     log.log('Sharing files: ${files.map((f) => f.path).join(', ')}');
     if (text != null) log.log('Text: $text');

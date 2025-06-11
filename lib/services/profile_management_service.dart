@@ -39,19 +39,20 @@ class ProfileManagementService {
   // Get all profiles
   Future<List<UserProfile>> getAllProfiles() async {
     final profilesJson = prefs.getString('user_profiles');
-    
+
     if (profilesJson == null) {
       return [];
     }
-    
+
     final List<dynamic> profilesList = json.decode(profilesJson);
     return profilesList.map((json) => UserProfile.fromJson(json)).toList();
   }
+
   // Save a profile
   Future<bool> saveProfile(UserProfile profile) async {
     try {
       final profiles = await getAllProfiles();
-      
+
       // Check if profile exists and update, or add new
       final existingIndex = profiles.indexWhere((p) => p.id == profile.id);
       if (existingIndex != -1) {
@@ -59,13 +60,13 @@ class ProfileManagementService {
       } else {
         profiles.add(profile);
       }
-      
+
       // If this is the first profile, make it default
       if (profiles.length == 1) {
         profiles[0] = profiles[0].copyWith(isDefault: true);
         await setActiveProfile(profiles[0].id);
       }
-        return await _saveAllProfiles(profiles);
+      return await _saveAllProfiles(profiles);
     } catch (e) {
       log.log('Error saving profile: $e');
       return false;
@@ -78,11 +79,11 @@ class ProfileManagementService {
       final profiles = await getAllProfiles();
       final originalLength = profiles.length;
       profiles.removeWhere((profile) => profile.id == profileId);
-      
+
       if (profiles.length == originalLength) {
         return false; // Profile not found
       }
-      
+
       // If deleted profile was active, set first remaining as active
       final activeProfileId = await getActiveProfileId();
       if (activeProfileId == profileId && profiles.isNotEmpty) {
@@ -90,7 +91,7 @@ class ProfileManagementService {
         // Update first profile to be default
         profiles[0] = profiles[0].copyWith(isDefault: true);
       }
-        return await _saveAllProfiles(profiles);
+      return await _saveAllProfiles(profiles);
     } catch (e) {
       log.log('Error deleting profile: $e');
       return false;
@@ -101,7 +102,7 @@ class ProfileManagementService {
   Future<bool> setActiveProfile(String profileId) async {
     try {
       await prefs.setString('active_profile_id', profileId);
-      
+
       // Update all profiles to remove default status, then set new default
       final profiles = await getAllProfiles();
       for (int i = 0; i < profiles.length; i++) {
@@ -109,7 +110,7 @@ class ProfileManagementService {
           isDefault: profiles[i].id == profileId,
         );
       }
-        return await _saveAllProfiles(profiles);
+      return await _saveAllProfiles(profiles);
     } catch (e) {
       log.log('Error setting active profile: $e');
       return false;
@@ -126,8 +127,9 @@ class ProfileManagementService {
     double? longitude,
   }) {
     final now = DateTime.now();
-    final id = '${now.millisecondsSinceEpoch}_${name.replaceAll(' ', '_').toLowerCase()}';
-    
+    final id =
+        '${now.millisecondsSinceEpoch}_${name.replaceAll(' ', '_').toLowerCase()}';
+
     return UserProfile(
       id: id,
       name: name,
@@ -158,7 +160,7 @@ class ProfileManagementService {
       latitude: latitude,
       longitude: longitude,
     );
-    
+
     final success = await saveProfile(profile);
     return success ? profile : null;
   }
@@ -167,7 +169,8 @@ class ProfileManagementService {
   Future<bool> clearAllProfiles() async {
     try {
       await prefs.remove('user_profiles');
-      await prefs.remove('active_profile_id');    return true;
+      await prefs.remove('active_profile_id');
+      return true;
     } catch (e) {
       log.log('Error clearing profiles: $e');
       return false;
@@ -184,10 +187,10 @@ class ProfileManagementService {
   Future<List<UserProfile>> searchProfiles(String query) async {
     final profiles = await getAllProfiles();
     final lowerQuery = query.toLowerCase();
-    
+
     return profiles.where((profile) {
       return profile.name.toLowerCase().contains(lowerQuery) ||
-             (profile.birthPlace?.toLowerCase().contains(lowerQuery) ?? false);
+          (profile.birthPlace?.toLowerCase().contains(lowerQuery) ?? false);
     }).toList();
   }
 
@@ -196,14 +199,14 @@ class ProfileManagementService {
     try {
       final profiles = await getAllProfiles();
       final profileIndex = profiles.indexWhere((p) => p.id == profileId);
-      
+
       if (profileIndex == -1) return false;
-      
+
       profiles[profileIndex] = profiles[profileIndex].copyWith(
         isPro: true,
         updatedAt: DateTime.now(),
       );
-          return await _saveAllProfiles(profiles);
+      return await _saveAllProfiles(profiles);
     } catch (e) {
       log.log('Error upgrading user to Pro: $e');
       return false;
@@ -214,15 +217,16 @@ class ProfileManagementService {
     try {
       final profiles = await getAllProfiles();
       final profileIndex = profiles.indexWhere((p) => p.id == profileId);
-      
+
       if (profileIndex == -1) return false;
-      
+
       profiles[profileIndex] = profiles[profileIndex].copyWith(
         isPro: false,
         updatedAt: DateTime.now(),
       );
-      
-      return await _saveAllProfiles(profiles);    } catch (e) {
+
+      return await _saveAllProfiles(profiles);
+    } catch (e) {
       log.log('Error downgrading user from Pro: $e');
       return false;
     }
@@ -246,8 +250,10 @@ class ProfileManagementService {
   // Private helper to save all profiles
   Future<bool> _saveAllProfiles(List<UserProfile> profiles) async {
     try {
-      final profilesJson = json.encode(profiles.map((p) => p.toJson()).toList());
-      return await prefs.setString('user_profiles', profilesJson);    } catch (e) {
+      final profilesJson =
+          json.encode(profiles.map((p) => p.toJson()).toList());
+      return await prefs.setString('user_profiles', profilesJson);
+    } catch (e) {
       log.log('Error saving all profiles: $e');
       return false;
     }

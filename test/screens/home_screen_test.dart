@@ -24,13 +24,15 @@ void main() {
         "isDefault": true,
         "isPro": false
       };
-      
+
       SharedPreferences.setMockInitialValues({
         'active_profile_id': 'test-profile-id',
         'user_profiles': '[${json.encode(testProfile)}]',
       });
-    });testWidgets('Shows loading indicator and then displays active profile', (WidgetTester tester) async {
-      // Act: Build the widget 
+    });
+    testWidgets('Shows loading indicator and then displays active profile',
+        (WidgetTester tester) async {
+      // Act: Build the widget
       await tester.pumpWidget(
         createTestApp(const HomeScreen()),
       );
@@ -43,11 +45,15 @@ void main() {
 
       // Assert: Profile name should now be shown
       expect(find.text('Test User'), findsOneWidget);
-    });    testWidgets('Displays active profile after loading', (WidgetTester tester) async {
+    });
+    testWidgets('Displays active profile after loading',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestApp(const HomeScreen()));
       await tester.pumpAndSettle();
       expect(find.text('Test User'), findsOneWidget);
-    });    testWidgets('Navigates to profile management screen on button tap', (WidgetTester tester) async {
+    });
+    testWidgets('Navigates to profile management screen on button tap',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         createTestAppWithSettings(
           child: const HomeScreen(),

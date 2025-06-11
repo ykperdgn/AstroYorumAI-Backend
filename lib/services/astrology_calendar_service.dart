@@ -10,14 +10,14 @@ class AstrologyCalendarService {
   static Future<List<CelestialEvent>> getAllEvents() async {
     final prefs = await SharedPreferences.getInstance();
     final eventsJson = prefs.getString(_eventsKey);
-    
+
     if (eventsJson == null) {
       // If no events stored, generate some sample events
       final sampleEvents = _generateSampleEvents();
       await _saveEvents(sampleEvents);
       return sampleEvents;
     }
-    
+
     try {
       final List<dynamic> eventsList = json.decode(eventsJson);
       return eventsList.map((json) => CelestialEvent.fromJson(json)).toList();
@@ -31,25 +31,24 @@ class AstrologyCalendarService {
 
   // Get events for a specific date range
   static Future<List<CelestialEvent>> getEventsInRange(
-    DateTime startDate, 
-    DateTime endDate
-  ) async {
+      DateTime startDate, DateTime endDate) async {
     final allEvents = await getAllEvents();
     return allEvents.where((event) {
-      return event.dateTime.isAfter(startDate.subtract(const Duration(days: 1))) &&
-             event.dateTime.isBefore(endDate.add(const Duration(days: 1)));
+      return event.dateTime
+              .isAfter(startDate.subtract(const Duration(days: 1))) &&
+          event.dateTime.isBefore(endDate.add(const Duration(days: 1)));
     }).toList();
   }
+
   // Get upcoming events (next 30 days)
   static Future<List<CelestialEvent>> getUpcomingEvents({int days = 30}) async {
     final now = DateTime.now();
     final endDate = now.add(Duration(days: days));
     final allEvents = await getAllEvents();
-    
+
     // Filter events to be strictly in the future (after now) and within the specified days
     return allEvents.where((event) {
-      return event.dateTime.isAfter(now) && 
-             event.dateTime.isBefore(endDate);
+      return event.dateTime.isAfter(now) && event.dateTime.isBefore(endDate);
     }).toList();
   }
 
@@ -95,13 +94,13 @@ class AstrologyCalendarService {
   static Future<bool> needsUpdate() async {
     final prefs = await SharedPreferences.getInstance();
     final lastUpdateStr = prefs.getString(_lastUpdateKey);
-    
+
     if (lastUpdateStr == null) return true;
-    
+
     try {
       final lastUpdate = DateTime.parse(lastUpdateStr);
       final daysSinceUpdate = DateTime.now().difference(lastUpdate).inDays;
-      
+
       return daysSinceUpdate >= 7;
     } catch (e) {
       // If date string is invalid, assume we need update
@@ -128,17 +127,18 @@ class AstrologyCalendarService {
     // Generate events for the next 6 months
     for (int month = 0; month < 6; month++) {
       final currentMonth = DateTime(now.year, now.month + month, 1);
-      
+
       // New Moon (monthly)
       events.add(CelestialEvent(
         id: 'new_moon_${currentMonth.month}_${currentMonth.year}',
         title: 'Yeni Ay',
         description: 'Yeni başlangıçlar ve niyetler için ideal zaman',
-        dateTime: DateTime(currentMonth.year, currentMonth.month, 
-                         _getRandomDay(1, 15)),
+        dateTime: DateTime(
+            currentMonth.year, currentMonth.month, _getRandomDay(1, 15)),
         type: 'new_moon',
         isImportant: true,
-        impactDescription: 'Yeni projeler başlatmak ve hedefler koymak için güçlü enerji',
+        impactDescription:
+            'Yeni projeler başlatmak ve hedefler koymak için güçlü enerji',
       ));
 
       // Full Moon (monthly)
@@ -146,11 +146,12 @@ class AstrologyCalendarService {
         id: 'full_moon_${currentMonth.month}_${currentMonth.year}',
         title: 'Dolunay',
         description: 'Duygusal yoğunluk ve manifestasyon zamanı',
-        dateTime: DateTime(currentMonth.year, currentMonth.month, 
-                         _getRandomDay(15, 28)),
+        dateTime: DateTime(
+            currentMonth.year, currentMonth.month, _getRandomDay(15, 28)),
         type: 'full_moon',
         isImportant: true,
-        impactDescription: 'Duyguların ve sezgilerin yoğun olduğu, sonuçların netleştiği dönem',
+        impactDescription:
+            'Duyguların ve sezgilerin yoğun olduğu, sonuçların netleştiği dönem',
       ));
 
       // Mercury Retrograde (every 3-4 months)
@@ -159,12 +160,13 @@ class AstrologyCalendarService {
           id: 'mercury_retrograde_${currentMonth.month}_${currentMonth.year}',
           title: 'Merkür Retrosu',
           description: 'İletişim ve teknoloji konularında dikkat',
-          dateTime: DateTime(currentMonth.year, currentMonth.month, 
-                           _getRandomDay(5, 25)),
+          dateTime: DateTime(
+              currentMonth.year, currentMonth.month, _getRandomDay(5, 25)),
           type: 'retrograde',
           planetInvolved: 'Mercury',
           isImportant: true,
-          impactDescription: 'İletişim hatalarına dikkat, önemli kararları erteleme',
+          impactDescription:
+              'İletişim hatalarına dikkat, önemli kararları erteleme',
         ));
       }
 
@@ -174,17 +176,18 @@ class AstrologyCalendarService {
         final signs = ['Koç', 'Boğa', 'İkizler', 'Yengeç', 'Aslan', 'Başak'];
         final planet = planets[month % planets.length];
         final sign = signs[month % signs.length];
-        
+
         events.add(CelestialEvent(
           id: '${planet.toLowerCase()}_ingress_${currentMonth.month}_${currentMonth.year}',
           title: '$planet $sign Burcuna Geçiyor',
           description: '$planet gezegeni $sign burcunun enerjisini getirecek',
-          dateTime: DateTime(currentMonth.year, currentMonth.month, 
-                           _getRandomDay(1, 28)),
+          dateTime: DateTime(
+              currentMonth.year, currentMonth.month, _getRandomDay(1, 28)),
           type: 'ingress',
           planetInvolved: planet,
           signInvolved: sign,
-          impactDescription: '$sign burcunun özelliklerini $planet alanında hissedeceksiniz',
+          impactDescription:
+              '$sign burcunun özelliklerini $planet alanında hissedeceksiniz',
         ));
       }
     }
@@ -194,7 +197,7 @@ class AstrologyCalendarService {
 
     // Sort events by date
     events.sort((a, b) => a.dateTime.compareTo(b.dateTime));
-    
+
     return events;
   }
 
@@ -207,7 +210,8 @@ class AstrologyCalendarService {
       dateTime: DateTime(now.year, (now.month + 2) % 12 + 1, 15),
       type: 'eclipse',
       isImportant: true,
-      impactDescription: 'Köklü değişimler ve yeni başlangıçlar için güçlü enerji',
+      impactDescription:
+          'Köklü değişimler ve yeni başlangıçlar için güçlü enerji',
     ));
 
     // Lunar Eclipse
@@ -230,7 +234,8 @@ class AstrologyCalendarService {
       type: 'retrograde',
       planetInvolved: 'Venus',
       isImportant: true,
-      impactDescription: 'Geçmiş ilişkilerin gözden geçirildiği, değerlerin sorgulandığı dönem',
+      impactDescription:
+          'Geçmiş ilişkilerin gözden geçirildiği, değerlerin sorgulandığı dönem',
     ));
 
     // Jupiter-Saturn Conjunction
@@ -243,7 +248,8 @@ class AstrologyCalendarService {
       planetInvolved: 'Jupiter',
       aspectType: 'conjunction',
       isImportant: true,
-      impactDescription: 'Uzun vadeli planlar ve yapısal değişiklikler için önemli dönem',
+      impactDescription:
+          'Uzun vadeli planlar ve yapısal değişiklikler için önemli dönem',
     ));
   }
 
@@ -267,12 +273,13 @@ class AstrologyCalendarService {
   static Future<List<CelestialEvent>> searchEvents(String query) async {
     final allEvents = await getAllEvents();
     final lowercaseQuery = query.toLowerCase();
-    
+
     return allEvents.where((event) {
       return event.title.toLowerCase().contains(lowercaseQuery) ||
-             event.description.toLowerCase().contains(lowercaseQuery) ||
-             (event.planetInvolved?.toLowerCase().contains(lowercaseQuery) ?? false) ||
-             (event.signInvolved?.toLowerCase().contains(lowercaseQuery) ?? false);
+          event.description.toLowerCase().contains(lowercaseQuery) ||
+          (event.planetInvolved?.toLowerCase().contains(lowercaseQuery) ??
+              false) ||
+          (event.signInvolved?.toLowerCase().contains(lowercaseQuery) ?? false);
     }).toList();
   }
 }

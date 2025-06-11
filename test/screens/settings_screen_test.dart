@@ -20,7 +20,8 @@ import '../helpers/firebase_test_helper.dart';
   DocumentReference<Map<String, dynamic>>,
   DocumentSnapshot<Map<String, dynamic>>,
 ], customMocks: [
-  MockSpec<CollectionReference<Map<String, dynamic>>>(as: #MockCollectionReference),
+  MockSpec<CollectionReference<Map<String, dynamic>>>(
+      as: #MockCollectionReference),
 ])
 import 'settings_screen_test.mocks.dart';
 
@@ -38,33 +39,36 @@ void main() {
     late MockFirebaseAuth mockFirebaseAuth;
     late MockFirebaseFirestore mockFirestore;
     late MockCollectionReference mockUsersCollection;
-    late MockDocumentReference<Map<String, dynamic>> mockUserDocument;    setUp(() {
+    late MockDocumentReference<Map<String, dynamic>> mockUserDocument;
+    setUp(() {
       mockUser = MockUser();
       mockFirebaseAuth = MockFirebaseAuth();
       mockFirestore = MockFirebaseFirestore();
       mockUsersCollection = MockCollectionReference();
       mockUserDocument = MockDocumentReference<Map<String, dynamic>>();
-      
+
       // Reset any existing singletons first
-      resetServiceSingletons();      // Create mocked services using dependency injection
-      mockAuthService = AuthService(auth: mockFirebaseAuth, firestore: mockFirestore);
+      resetServiceSingletons(); // Create mocked services using dependency injection
+      mockAuthService =
+          AuthService(auth: mockFirebaseAuth, firestore: mockFirestore);
       mockCloudSyncService = CloudSyncService(
         firestore: mockFirestore,
         authService: mockAuthService,
       );
-      
+
       // Set the test instances AFTER creating the mocked services
       AuthService.testInstance = mockAuthService;
       CloudSyncService.testInstance = mockCloudSyncService;
-      
+
       // Setup basic mocks
       when(mockFirebaseAuth.currentUser).thenReturn(null);
       when(mockUser.email).thenReturn('test@example.com');
       when(mockUser.uid).thenReturn('test-user-id');
-      
+
       // Setup Firestore mocks
       when(mockFirestore.collection('users')).thenReturn(mockUsersCollection);
-      when(mockUsersCollection.doc('test-user-id')).thenReturn(mockUserDocument);
+      when(mockUsersCollection.doc('test-user-id'))
+          .thenReturn(mockUserDocument);
     });
 
     Widget createTestWidget() {
@@ -80,7 +84,10 @@ void main() {
         ],
         home: SettingsScreen(),
       );
-    }    testWidgets('should display settings sections', (WidgetTester tester) async {
+    }
+
+    testWidgets('should display settings sections',
+        (WidgetTester tester) async {
       // Arrange & Act
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
@@ -92,32 +99,40 @@ void main() {
       expect(find.text('Bulut Senkronizasyonu'), findsAtLeastNWidgets(1));
     });
 
-    testWidgets('should show language selection dialog', (WidgetTester tester) async {
+    testWidgets('should show language selection dialog',
+        (WidgetTester tester) async {
       // Arrange
       await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();      // Act - tap on language setting
+      await tester.pumpAndSettle(); // Act - tap on language setting
       await tester.tap(find.text('Dil'));
-      await tester.pumpAndSettle();      // Assert - should show language selection dialog
+      await tester
+          .pumpAndSettle(); // Assert - should show language selection dialog
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text('Dil Seçin'), findsOneWidget);
       expect(find.text('English'), findsWidgets);
-      expect(find.text('Türkçe'), findsAtLeastNWidgets(1)); // Multiple "Türkçe" widgets expected
-    });    testWidgets('should display cloud sync status when signed in', (WidgetTester tester) async {
+      expect(find.text('Türkçe'),
+          findsAtLeastNWidgets(1)); // Multiple "Türkçe" widgets expected
+    });
+    testWidgets('should display cloud sync status when signed in',
+        (WidgetTester tester) async {
       // Arrange
       when(mockAuthService.isSignedIn).thenReturn(true);
       when(mockAuthService.currentUser).thenReturn(mockUser);
       when(mockUser.email).thenReturn('test@example.com');
-      
+
       // Set up SharedPreferences to return a sync time
-      setTestSharedPreferencesValue('last_cloud_sync', DateTime.now().toIso8601String());
+      setTestSharedPreferencesValue(
+          'last_cloud_sync', DateTime.now().toIso8601String());
 
       await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();      // Assert
+      await tester.pumpAndSettle(); // Assert
       expect(find.text('Giriş Yapıldı'), findsOneWidget);
       expect(find.text('E-posta: test@example.com'), findsOneWidget);
       expect(find.text('Yedekle'), findsOneWidget);
       expect(find.text('Geri Yükle'), findsOneWidget);
-    });testWidgets('should show sign in button when not signed in', (WidgetTester tester) async {
+    });
+    testWidgets('should show sign in button when not signed in',
+        (WidgetTester tester) async {
       // Arrange
       when(mockAuthService.isSignedIn).thenReturn(false);
       when(mockAuthService.currentUser).thenReturn(null);
@@ -128,28 +143,32 @@ void main() {
       // Assert
       expect(find.text('Giriş Yapılmamış'), findsOneWidget);
       expect(find.text('Giriş Yap'), findsOneWidget);
-    });    testWidgets('should show manual backup button', (WidgetTester tester) async {
+    });
+    testWidgets('should show manual backup button',
+        (WidgetTester tester) async {
       // Arrange
       when(mockAuthService.isSignedIn).thenReturn(true);
       when(mockAuthService.currentUser).thenReturn(mockUser);
-      
+
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
 
       // Act & Assert
       expect(find.text('Yedekle'), findsOneWidget);
-      
+
       // Tap backup button and check for success message
       await tester.tap(find.text('Yedekle'));
       await tester.pumpAndSettle();
 
       // Should show success snackbar
       expect(find.text('Veriler buluta yedeklendi'), findsOneWidget);
-    });    testWidgets('should show restore confirmation dialog', (WidgetTester tester) async {
+    });
+    testWidgets('should show restore confirmation dialog',
+        (WidgetTester tester) async {
       // Arrange
       when(mockAuthService.isSignedIn).thenReturn(true);
       when(mockAuthService.currentUser).thenReturn(mockUser);
-      
+
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
 
@@ -160,8 +179,12 @@ void main() {
       // Assert - should show confirmation dialog
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text('Veriyi Geri Yükle'), findsOneWidget);
-      expect(find.text('Buluttaki veriler mevcut verilerin üzerine yazılacak. Devam etmek istiyor musunuz?'), findsOneWidget);
-    });testWidgets('should display help sections', (WidgetTester tester) async {
+      expect(
+          find.text(
+              'Buluttaki veriler mevcut verilerin üzerine yazılacak. Devam etmek istiyor musunuz?'),
+          findsOneWidget);
+    });
+    testWidgets('should display help sections', (WidgetTester tester) async {
       // Arrange & Act
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
@@ -172,34 +195,40 @@ void main() {
 
       // Assert
       expect(find.text('Bulut Senkronizasyonu'), findsWidgets);
-    });    testWidgets('should show sign out confirmation dialog', (WidgetTester tester) async {
+    });
+    testWidgets('should show sign out confirmation dialog',
+        (WidgetTester tester) async {
       // Arrange
       when(mockAuthService.isSignedIn).thenReturn(true);
       when(mockAuthService.currentUser).thenReturn(mockUser);
       when(mockUser.email).thenReturn('test@example.com');
-      
+
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
 
       // Find and tap sign out button
       await tester.drag(find.byType(ListView), const Offset(0, -300));
       await tester.pumpAndSettle();
-      
+
       await tester.tap(find.text('Çıkış Yap'));
       await tester.pumpAndSettle();
 
       // Assert - should show confirmation dialog
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text('Çıkış Yap'), findsWidgets);
-      expect(find.text('Hesabınızdan çıkış yapmak istediğinizden emin misiniz?'), findsOneWidget);
-    });    testWidgets('should display last sync time', (WidgetTester tester) async {
+      expect(
+          find.text('Hesabınızdan çıkış yapmak istediğinizden emin misiniz?'),
+          findsOneWidget);
+    });
+    testWidgets('should display last sync time', (WidgetTester tester) async {
       // Arrange
       final syncTime = DateTime.now().subtract(const Duration(hours: 2));
       when(mockAuthService.isSignedIn).thenReturn(true);
       when(mockAuthService.currentUser).thenReturn(mockUser);
-      
+
       // Set up SharedPreferences to return a sync time
-      setTestSharedPreferencesValue('last_cloud_sync', syncTime.toIso8601String());
+      setTestSharedPreferencesValue(
+          'last_cloud_sync', syncTime.toIso8601String());
 
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();

@@ -76,10 +76,12 @@ void main() {
     group('getLanguageDisplayName', () {
       test('should return correct display names for supported languages', () {
         // Test English
-        expect(LocalizationService.getLanguageDisplayName('en'), equals('English'));
-        
+        expect(LocalizationService.getLanguageDisplayName('en'),
+            equals('English'));
+
         // Test Turkish
-        expect(LocalizationService.getLanguageDisplayName('tr'), equals('Türkçe'));
+        expect(
+            LocalizationService.getLanguageDisplayName('tr'), equals('Türkçe'));
       });
 
       test('should return language code for unsupported languages', () {

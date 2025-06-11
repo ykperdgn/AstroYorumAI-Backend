@@ -20,12 +20,12 @@ void main() {
       expect(profile.isPro, isTrue);
       expect(profile.name, equals('Test User'));
       expect(profile.birthPlace, equals('Istanbul'));
-      
+
       // Test JSON serialization
       final json = profile.toJson();
       expect(json['isPro'], isTrue);
       expect(json['name'], equals('Test User'));
-      
+
       // Test JSON deserialization
       final fromJson = UserProfile.fromJson(json);
       expect(fromJson.isPro, isTrue);
@@ -45,7 +45,7 @@ void main() {
       );
 
       expect(freeUser.isPro, isFalse);
-      
+
       // Test JSON serialization for free user
       final json = freeUser.toJson();
       expect(json['isPro'], isFalse);

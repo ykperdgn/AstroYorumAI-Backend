@@ -4,7 +4,7 @@ class PlanetPosition {
   final double? degree; // Burç içi derece bilgisi
 
   PlanetPosition({
-    required this.name, 
+    required this.name,
     required this.sign,
     this.degree,
   });

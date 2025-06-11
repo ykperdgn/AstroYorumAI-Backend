@@ -7,10 +7,10 @@ import '../test/test_helpers.dart'; // Import shared test helpers
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  
+
   group('Windows Compatible Integration Tests', () {
     late SharedMockGeocodingService mockGeocodingService;
-    
+
     setUp(() {
       mockGeocodingService = SharedMockGeocodingService();
     });
@@ -24,7 +24,7 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(BirthInfoScreen), findsOneWidget);
       expect(find.text('Doğum Bilgilerini Girin'), findsOneWidget);
       expect(find.byKey(const Key('name_field')), findsOneWidget);
@@ -39,12 +39,12 @@ void main() {
           ),
         ),
       );
-      
+
       // Try to submit without filling any fields
       final submitButton = find.byKey(const Key('submit_button'));
       await tester.tap(submitButton, warnIfMissed: false);
       await tester.pump();
-      
+
       // Check for validation errors
       expect(find.textContaining('adınızı'), findsOneWidget);
     });
@@ -57,12 +57,12 @@ void main() {
           ),
         ),
       );
-      
+
       // Fill in the name field
       final nameField = find.byKey(const Key('name_field'));
       await tester.enterText(nameField, 'Test User');
       await tester.pump();
-      
+
       // Verify the text was entered
       expect(find.text('Test User'), findsOneWidget);
     });
@@ -75,14 +75,14 @@ void main() {
           ),
         ),
       );
-      
+
       // Find and tap date field
       final dateField = find.byKey(const Key('birth_date_field'));
       expect(dateField, findsOneWidget);
-      
+
       await tester.tap(dateField);
       await tester.pump();
-      
+
       // Just verify no crash occurred
       expect(find.byType(BirthInfoScreen), findsOneWidget);
     });
@@ -95,21 +95,22 @@ void main() {
           ),
         ),
       );
-      
+
       // Fill in the birth place field
       final placeField = find.byKey(const Key('birth_place_field'));
       await tester.enterText(placeField, 'Istanbul');
       await tester.pump();
-      
+
       // Verify text was entered
       expect(find.text('Istanbul'), findsOneWidget);
     });
 
-    testWidgets('Geocoding service returns null for unknown places', (WidgetTester tester) async {
+    testWidgets('Geocoding service returns null for unknown places',
+        (WidgetTester tester) async {
       // Test the mock service directly
       final result = await mockGeocodingService.getCoordinates('unknown place');
       expect(result, isNull);
-      
+
       final validResult = await mockGeocodingService.getCoordinates('Istanbul');
       expect(validResult, isNotNull);
       expect(validResult!['lat'], 41.0082);

@@ -18,7 +18,8 @@ class UserPreferencesService {
       'birthPlace': birthInfo.birthPlace,
       'latitude': birthInfo.latitude,
       'longitude': birthInfo.longitude,
-    };    String jsonString = json.encode(birthInfoMap);
+    };
+    String jsonString = json.encode(birthInfoMap);
     await prefs.setString(_keyUserBirthInfo, jsonString);
     log.log('UserBirthInfo saved: $jsonString');
   }
@@ -38,18 +39,21 @@ class UserPreferencesService {
         // Validate that essential fields are present and correctly typed
         if (birthDate != null &&
             birthInfoMap['birthTime'] is String &&
-            birthInfoMap['latitude'] is double &&            birthInfoMap['longitude'] is double) {
-              
+            birthInfoMap['latitude'] is double &&
+            birthInfoMap['longitude'] is double) {
           log.log('UserBirthInfo loaded: $birthInfoMap');
           return UserBirthInfo(
-            name: birthInfoMap['name'] as String?, // Allow null name if not saved
+            name:
+                birthInfoMap['name'] as String?, // Allow null name if not saved
             birthDate: birthDate,
             birthTime: birthInfoMap['birthTime'] as String,
             birthPlace: birthInfoMap['birthPlace'] as String?,
             latitude: birthInfoMap['latitude'] as double,
             longitude: birthInfoMap['longitude'] as double,
-          );        } else {
-          log.log('UserBirthInfo loaded but failed validation. Data: $birthInfoMap');
+          );
+        } else {
+          log.log(
+              'UserBirthInfo loaded but failed validation. Data: $birthInfoMap');
           // Clear invalid data to prevent repeated load failures
           await clearUserBirthInfo();
           return null;
@@ -63,6 +67,7 @@ class UserPreferencesService {
     log.log('No UserBirthInfo found in SharedPreferences.');
     return null;
   }
+
   Future<void> clearUserBirthInfo() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_keyUserBirthInfo);

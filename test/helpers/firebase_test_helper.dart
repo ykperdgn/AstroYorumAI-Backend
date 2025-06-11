@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// platform kanallarını mock eder
 void setupFirebaseTestMocks() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  
+
   // Firebase Core platform kanalını mock et
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
@@ -107,19 +107,19 @@ void tearDownFirebaseTestMocks() {
     const MethodChannel('plugins.flutter.io/firebase_core'),
     null,
   );
-  
+
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
     const MethodChannel('plugins.flutter.io/firebase_auth'),
     null,
   );
-  
+
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
     const MethodChannel('plugins.flutter.io/cloud_firestore'),
     null,
   );
-  
+
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
     const MethodChannel('plugins.flutter.io/firebase_messaging'),

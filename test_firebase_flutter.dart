@@ -6,7 +6,7 @@ import 'lib/config/firebase_config_production.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   try {
     // Initialize Firebase with production config
     await Firebase.initializeApp(
@@ -16,7 +16,7 @@ void main() async {
   } catch (e) {
     print('❌ Firebase initialization failed: $e');
   }
-  
+
   runApp(const FirebaseTestApp());
 }
 
@@ -64,20 +64,19 @@ class _FirebaseTestScreenState extends State<FirebaseTestScreen> {
 
       // Test Firestore
       await _testFirestore();
-      
+
       // Test Auth
       await _testAuth();
 
       setState(() {
         _status = '🎉 ALL FIREBASE TESTS PASSED!';
         _details = 'AstroYorumAI production Firebase is ready!\n\n'
-                  'Project ID: ${Firebase.app().options.projectId}\n'
-                  'Auth Domain: ${Firebase.app().options.authDomain}\n'
-                  'Storage Bucket: ${Firebase.app().options.storageBucket}';
+            'Project ID: ${Firebase.app().options.projectId}\n'
+            'Auth Domain: ${Firebase.app().options.authDomain}\n'
+            'Storage Bucket: ${Firebase.app().options.storageBucket}';
         _isLoading = false;
         _allTestsPassed = true;
       });
-
     } catch (e) {
       setState(() {
         _status = '❌ Firebase Test Failed';
@@ -95,9 +94,12 @@ class _FirebaseTestScreenState extends State<FirebaseTestScreen> {
     });
 
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    
+
     // Write test document
-    await firestore.collection('beta_test').doc('firebase_connection_test').set({
+    await firestore
+        .collection('beta_test')
+        .doc('firebase_connection_test')
+        .set({
       'timestamp': FieldValue.serverTimestamp(),
       'message': 'AstroYorumAI Firebase connection test successful',
       'environment': 'production',
@@ -110,7 +112,10 @@ class _FirebaseTestScreenState extends State<FirebaseTestScreen> {
     });
 
     // Read test document
-    DocumentSnapshot doc = await firestore.collection('beta_test').doc('firebase_connection_test').get();
+    DocumentSnapshot doc = await firestore
+        .collection('beta_test')
+        .doc('firebase_connection_test')
+        .get();
     if (!doc.exists) {
       throw Exception('Failed to read test document');
     }
@@ -120,7 +125,10 @@ class _FirebaseTestScreenState extends State<FirebaseTestScreen> {
     });
 
     // Clean up
-    await firestore.collection('beta_test').doc('firebase_connection_test').delete();
+    await firestore
+        .collection('beta_test')
+        .doc('firebase_connection_test')
+        .delete();
   }
 
   Future<void> _testAuth() async {
@@ -132,9 +140,10 @@ class _FirebaseTestScreenState extends State<FirebaseTestScreen> {
     FirebaseAuth auth = FirebaseAuth.instance;
     // Just verify auth service is accessible
     User? currentUser = auth.currentUser;
-    
+
     setState(() {
-      _details = 'Auth service ready! Current user: ${currentUser?.uid ?? 'Anonymous'} ✅';
+      _details =
+          'Auth service ready! Current user: ${currentUser?.uid ?? 'Anonymous'} ✅';
     });
   }
 

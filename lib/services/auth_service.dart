@@ -4,19 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AuthService {
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
-  
-  AuthService({FirebaseAuth? auth, FirebaseFirestore? firestore}) 
-    : _auth = auth ?? FirebaseAuth.instance,
-      _firestore = firestore ?? FirebaseFirestore.instance;
-  
+
+  AuthService({FirebaseAuth? auth, FirebaseFirestore? firestore})
+      : _auth = auth ?? FirebaseAuth.instance,
+        _firestore = firestore ?? FirebaseFirestore.instance;
+
   // Static instance for convenience
   static AuthService? _instance;
   static AuthService get instance => _instance ??= AuthService();
-  
+
   // Test instance setter for testing
   static set testInstance(AuthService? instance) => _instance = instance;
-  
-  
+
   // Get current user
   User? get currentUser => _auth.currentUser;
 
@@ -87,9 +86,11 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       throw _handleAuthError(e);
     } catch (e) {
-      throw Exception('Şifre sıfırlama e-postası gönderilirken hata oluştu: $e');
+      throw Exception(
+          'Şifre sıfırlama e-postası gönderilirken hata oluştu: $e');
     }
-  }  // Delete user account
+  } // Delete user account
+
   Future<void> deleteAccount() async {
     try {
       final user = _auth.currentUser;
@@ -127,7 +128,9 @@ class AuthService {
         return 'Ağ bağlantısı hatası. İnternet bağlantınızı kontrol edin.';
       default:
         return 'Kimlik doğrulama hatası: ${e.message}';
-    }  }
+    }
+  }
+
   // Get user profile data from Firestore
   Future<Map<String, dynamic>?> getUserData() async {
     try {

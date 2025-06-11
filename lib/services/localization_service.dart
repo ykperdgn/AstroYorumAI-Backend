@@ -49,12 +49,13 @@ class LocalizationService {
   // Get system locale if supported, otherwise return default
   static Locale getSystemLocale() {
     final systemLocale = WidgetsBinding.instance.platformDispatcher.locale;
-    final supportedCodes = getSupportedLocales().map((l) => l.languageCode).toList();
-    
+    final supportedCodes =
+        getSupportedLocales().map((l) => l.languageCode).toList();
+
     if (supportedCodes.contains(systemLocale.languageCode)) {
       return systemLocale;
     }
-    
+
     return const Locale(_defaultLanguage);
   }
 
@@ -62,11 +63,11 @@ class LocalizationService {
   static Future<Locale> initializeLocale() async {
     final prefs = await SharedPreferences.getInstance();
     final savedLanguage = prefs.getString(_languageKey);
-    
+
     if (savedLanguage != null) {
       return Locale(savedLanguage);
     }
-    
+
     // If no saved preference, use system locale
     final systemLocale = getSystemLocale();
     await setLocale(systemLocale.languageCode);
@@ -79,6 +80,7 @@ class LocalizationService {
   static Future<void> setCurrentLocale(Locale locale) async {
     await setLocale(locale.languageCode);
   }
+
   static String getLanguageDisplayName(String languageCode) {
     switch (languageCode) {
       case 'tr':

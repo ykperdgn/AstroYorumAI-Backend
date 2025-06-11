@@ -5,7 +5,8 @@ class CelestialEvent {
   final String title;
   final String description;
   final DateTime dateTime;
-  final String type; // 'new_moon', 'full_moon', 'eclipse', 'retrograde', 'ingress', 'aspect'
+  final String
+      type; // 'new_moon', 'full_moon', 'eclipse', 'retrograde', 'ingress', 'aspect'
   final String? planetInvolved;
   final String? signInvolved;
   final String? aspectType;

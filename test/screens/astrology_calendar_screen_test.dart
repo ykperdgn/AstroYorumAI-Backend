@@ -7,7 +7,6 @@ import '../test_helpers.dart';
 
 void main() {
   group('AstrologyCalendarScreen Widget Tests', () {
-
     setUpAll(() async {
       // Initialize date formatting for table_calendar
       await initializeDateFormatting('tr_TR', null);
@@ -17,16 +16,19 @@ void main() {
       SharedPreferences.setMockInitialValues({});
     });
 
-    testWidgets('Displays calendar tab with date range button', (WidgetTester tester) async {
+    testWidgets('Displays calendar tab with date range button',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestApp(const AstrologyCalendarScreen()));
       await tester.pumpAndSettle();
 
       // Check that the calendar tab is displayed
       expect(find.text('Takvim'), findsOneWidget);
-      
+
       // Check for date range button (should be visible by default on calendar tab)
       expect(find.byKey(const Key('dateRangeButton')), findsOneWidget);
-    });    testWidgets('Search tab displays filter chips', (WidgetTester tester) async {
+    });
+    testWidgets('Search tab displays filter chips',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestApp(const AstrologyCalendarScreen()));
       await tester.pumpAndSettle();
 
@@ -36,7 +38,7 @@ void main() {
 
       // Test filter chips exist by finding FilterChip widgets
       expect(find.byType(FilterChip), findsAtLeastNWidgets(3));
-      
+
       // Test that specific filter labels exist (but more specifically)
       expect(find.widgetWithText(FilterChip, 'Tümü'), findsOneWidget);
       expect(find.widgetWithText(FilterChip, 'Yeni Ay'), findsOneWidget);

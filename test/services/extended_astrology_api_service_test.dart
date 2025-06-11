@@ -17,9 +17,18 @@ void main() {
       test('should handle valid zodiac sign parameter', () {
         // Test valid zodiac signs
         const validSigns = [
-          'aries', 'taurus', 'gemini', 'cancer',
-          'leo', 'virgo', 'libra', 'scorpio',
-          'sagittarius', 'capricorn', 'aquarius', 'pisces'
+          'aries',
+          'taurus',
+          'gemini',
+          'cancer',
+          'leo',
+          'virgo',
+          'libra',
+          'scorpio',
+          'sagittarius',
+          'capricorn',
+          'aquarius',
+          'pisces'
         ];
 
         for (final sign in validSigns) {
@@ -44,8 +53,9 @@ void main() {
       test('should construct correct API URL with default period', () {
         const testSign = 'aries';
         const defaultPeriod = 'today';
-        const expectedUrl = 'https://aztro.sameerkumar.website?sign=$testSign&day=$defaultPeriod';
-        
+        const expectedUrl =
+            'https://aztro.sameerkumar.website?sign=$testSign&day=$defaultPeriod';
+
         expect(expectedUrl, contains('aztro.sameerkumar.website'));
         expect(expectedUrl, contains('sign=$testSign'));
         expect(expectedUrl, contains('day=$defaultPeriod'));
@@ -54,15 +64,16 @@ void main() {
       test('should construct correct API URL with custom period', () {
         const testSign = 'leo';
         const customPeriod = 'week';
-        const expectedUrl = 'https://aztro.sameerkumar.website?sign=$testSign&day=$customPeriod';
-        
+        const expectedUrl =
+            'https://aztro.sameerkumar.website?sign=$testSign&day=$customPeriod';
+
         expect(expectedUrl, contains('sign=$testSign'));
         expect(expectedUrl, contains('day=$customPeriod'));
       });
 
       test('should use correct base URL', () {
         const expectedBaseUrl = 'https://aztro.sameerkumar.website';
-        
+
         expect(expectedBaseUrl, contains('https://'));
         expect(expectedBaseUrl, contains('aztro.sameerkumar.website'));
         expect(expectedBaseUrl, startsWith('https://'));
@@ -98,10 +109,7 @@ void main() {
 
       test('should cast response to Map<String, dynamic>', () {
         // Test type casting as done in the service
-        final rawResponse = {
-          'description': 'Test horoscope',
-          'mood': 'Happy'
-        };
+        final rawResponse = {'description': 'Test horoscope', 'mood': 'Happy'};
 
         final castedResponse = rawResponse;
         expect(castedResponse, isA<Map<String, dynamic>>());
@@ -112,7 +120,7 @@ void main() {
         test('should validate required sign parameter', () {
           const requiredSign = 'gemini';
           expect(requiredSign.isNotEmpty, isTrue);
-          
+
           // Empty sign should be handled at caller level
           const emptySign = '';
           expect(emptySign.isEmpty, isTrue);
@@ -134,7 +142,8 @@ void main() {
           for (final period in invalidPeriods) {
             expect(validPeriods.contains(period), isFalse);
           }
-        });        test('should handle case sensitivity in parameters', () {
+        });
+        test('should handle case sensitivity in parameters', () {
           const sign = 'ARIES';
           final normalizedSign = sign.toLowerCase();
           expect(normalizedSign, equals('aries'));
@@ -163,7 +172,7 @@ void main() {
           const errorCodes = [400, 401, 403, 404, 500, 502, 503];
 
           expect(successCode, equals(200));
-          
+
           for (final code in errorCodes) {
             expect(code != 200, isTrue);
           }
@@ -171,11 +180,9 @@ void main() {
 
         test('should handle malformed JSON responses', () {
           const malformedJson = '{"incomplete": response}';
-          
-          expect(
-            () => json.decode(malformedJson),
-            throwsA(isA<FormatException>())
-          );
+
+          expect(() => json.decode(malformedJson),
+              throwsA(isA<FormatException>()));
         });
 
         test('should handle null response body', () {
@@ -214,9 +221,7 @@ void main() {
         });
 
         test('should handle minimal response structure', () {
-          final minimalResponse = {
-            'description': 'Basic horoscope text'
-          };
+          final minimalResponse = {'description': 'Basic horoscope text'};
 
           expect(minimalResponse['description'], isNotNull);
           expect(minimalResponse['date_range'], isNull);
@@ -252,10 +257,20 @@ void main() {
 
         test('should handle different zodiac signs', () {
           const allSigns = [
-            'aries', 'taurus', 'gemini', 'cancer',
-            'leo', 'virgo', 'libra', 'scorpio',
-            'sagittarius', 'capricorn', 'aquarius', 'pisces'
-          ];          for (final sign in allSigns) {
+            'aries',
+            'taurus',
+            'gemini',
+            'cancer',
+            'leo',
+            'virgo',
+            'libra',
+            'scorpio',
+            'sagittarius',
+            'capricorn',
+            'aquarius',
+            'pisces'
+          ];
+          for (final sign in allSigns) {
             expect(sign.length, greaterThanOrEqualTo(3));
             expect(sign.contains(RegExp(r'^[a-z]+$')), isTrue);
           }
@@ -294,7 +309,7 @@ void main() {
           const sign = 'aries';
           const period = 'today';
           const queryString = 'sign=$sign&day=$period';
-          
+
           expect(queryString, contains('sign='));
           expect(queryString, contains('day='));
           expect(queryString, contains('&'));
@@ -304,10 +319,10 @@ void main() {
       group('Data Types and Casting', () {
         test('should handle type casting safety', () {
           final responseData = {'key': 'value'};
-          
+
           // Test safe casting
           expect(responseData, isA<Map<String, dynamic>>());
-          
+
           final castedData = responseData;
           expect(castedData['key'], equals('value'));
         });
@@ -355,7 +370,7 @@ void main() {
         test('should validate response size limits', () {
           const maxResponseSize = 1024 * 10; // 10KB
           const typicalResponseSize = 512; // 512 bytes
-          
+
           expect(typicalResponseSize, lessThan(maxResponseSize));
         });
       });

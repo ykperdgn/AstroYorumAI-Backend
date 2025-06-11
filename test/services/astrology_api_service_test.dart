@@ -24,9 +24,18 @@ void main() {
       test('should handle valid zodiac sign parameter', () {
         // Test valid zodiac signs
         const validSigns = [
-          'aries', 'taurus', 'gemini', 'cancer',
-          'leo', 'virgo', 'libra', 'scorpio',
-          'sagittarius', 'capricorn', 'aquarius', 'pisces'
+          'aries',
+          'taurus',
+          'gemini',
+          'cancer',
+          'leo',
+          'virgo',
+          'libra',
+          'scorpio',
+          'sagittarius',
+          'capricorn',
+          'aquarius',
+          'pisces'
         ];
 
         for (final sign in validSigns) {
@@ -38,8 +47,9 @@ void main() {
 
       test('should construct correct API URL', () {
         const testSign = 'aries';
-        const expectedUrl = 'https://aztro.sameerkumar.website/?sign=$testSign&day=today';
-        
+        const expectedUrl =
+            'https://aztro.sameerkumar.website/?sign=$testSign&day=today';
+
         expect(expectedUrl, contains('aztro.sameerkumar.website'));
         expect(expectedUrl, contains('sign=$testSign'));
         expect(expectedUrl, contains('day=today'));
@@ -48,7 +58,7 @@ void main() {
       test('should handle URL encoding for sign parameter', () {
         const testSign = 'aries';
         final encodedSign = Uri.encodeComponent(testSign);
-        
+
         expect(encodedSign, equals('aries'));
         // Test that special characters would be encoded
         const specialSign = 'test sign';
@@ -100,7 +110,7 @@ void main() {
         // Expected response fields from Aztro API
         final expectedFields = [
           'date_range',
-          'current_date', 
+          'current_date',
           'description',
           'compatibility',
           'mood',
@@ -135,24 +145,29 @@ void main() {
 
       test('should handle malformed JSON responses', () {
         const malformedJson = '{"incomplete": json';
-        
+
         expect(
-          () => json.decode(malformedJson),
-          throwsA(isA<FormatException>())
-        );
+            () => json.decode(malformedJson), throwsA(isA<FormatException>()));
       });
 
       test('should validate zodiac sign input', () {
         // Test zodiac sign validation
         const validSigns = [
-          'aries', 'taurus', 'gemini', 'cancer',
-          'leo', 'virgo', 'libra', 'scorpio', 
-          'sagittarius', 'capricorn', 'aquarius', 'pisces'
+          'aries',
+          'taurus',
+          'gemini',
+          'cancer',
+          'leo',
+          'virgo',
+          'libra',
+          'scorpio',
+          'sagittarius',
+          'capricorn',
+          'aquarius',
+          'pisces'
         ];
 
-        const invalidSigns = [
-          '', 'invalid', 'test', '123', 'aries-invalid'
-        ];
+        const invalidSigns = ['', 'invalid', 'test', '123', 'aries-invalid'];
 
         for (final sign in validSigns) {
           expect(validSigns.contains(sign.toLowerCase()), isTrue);
@@ -197,14 +212,13 @@ void main() {
 
         test('should handle network exceptions', () {
           // Test network exception handling concepts
-          expect(() => throw http.ClientException('Network error'), 
-                 throwsA(isA<http.ClientException>()));
+          expect(() => throw http.ClientException('Network error'),
+              throwsA(isA<http.ClientException>()));
         });
 
         test('should handle timeout exceptions', () {
           // Test timeout exception handling concepts
-          expect(() => throw Exception('Timeout'), 
-                 throwsA(isA<Exception>()));
+          expect(() => throw Exception('Timeout'), throwsA(isA<Exception>()));
         });
       });
 
@@ -218,7 +232,7 @@ void main() {
           // Test rate limiting concepts
           const maxRequestsPerMinute = 60;
           const requestInterval = Duration(seconds: 1);
-          
+
           expect(maxRequestsPerMinute, greaterThan(0));
           expect(requestInterval.inSeconds, equals(1));
         });
@@ -277,10 +291,10 @@ void main() {
 
         test('should handle different data types in response', () {
           final mixedResponse = {
-            'lucky_number': 7,        // int
-            'description': 'text',    // string
-            'is_lucky': true,         // bool
-            'percentage': 75.5,       // double
+            'lucky_number': 7, // int
+            'description': 'text', // string
+            'is_lucky': true, // bool
+            'percentage': 75.5, // double
           };
 
           expect(mixedResponse['lucky_number'], isA<int>());
@@ -292,9 +306,7 @@ void main() {
 
       group('Input Validation', () {
         test('should handle case variations in zodiac signs', () {
-          const variations = [
-            'aries', 'ARIES', 'Aries', 'ArIeS'
-          ];
+          const variations = ['aries', 'ARIES', 'Aries', 'ArIeS'];
 
           for (final variation in variations) {
             final normalized = variation.toLowerCase();
@@ -311,7 +323,7 @@ void main() {
         test('should reject empty or null inputs', () {
           const emptySign = '';
           expect(emptySign.isEmpty, isTrue);
-          
+
           // Test null handling at caller level
           String? nullSign;
           expect(nullSign, isNull);
@@ -319,10 +331,20 @@ void main() {
 
         test('should validate zodiac sign completeness', () {
           const allZodiacSigns = [
-            'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-            'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
+            'aries',
+            'taurus',
+            'gemini',
+            'cancer',
+            'leo',
+            'virgo',
+            'libra',
+            'scorpio',
+            'sagittarius',
+            'capricorn',
+            'aquarius',
+            'pisces'
           ];
-          
+
           expect(allZodiacSigns.length, equals(12));
           expect(allZodiacSigns.toSet().length, equals(12)); // No duplicates
         });
@@ -345,7 +367,7 @@ void main() {
           // Memory usage validation
           const maxReasonableResponseSize = 1024 * 1024; // 1MB
           const smallResponseSize = 1024; // 1KB
-          
+
           expect(smallResponseSize, lessThan(maxReasonableResponseSize));
         });
 
@@ -362,7 +384,7 @@ void main() {
           // The service uses static methods for simplicity
           // Verify this is the expected pattern
           expect(AstrologyApiService, isNotNull);
-          
+
           // The class should not require instantiation
           // All methods should be static
         });
@@ -379,8 +401,9 @@ void main() {
           const sign = 'leo';
           const day = 'today';
           const constructedUrl = '$baseUrl/?sign=$sign&day=$day';
-          
-          expect(constructedUrl, equals('https://aztro.sameerkumar.website/?sign=leo&day=today'));
+
+          expect(constructedUrl,
+              equals('https://aztro.sameerkumar.website/?sign=leo&day=today'));
         });
       });
 
@@ -411,7 +434,7 @@ void main() {
 
           expect(responseVariation1['lucky_number'], isA<String>());
           expect(responseVariation2['lucky_number'], isA<int>());
-          
+
           // Both should be convertible to string representation
           expect(responseVariation1['lucky_number'].toString(), equals('7'));
           expect(responseVariation2['lucky_number'].toString(), equals('7'));

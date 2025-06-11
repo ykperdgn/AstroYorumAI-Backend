@@ -20,7 +20,8 @@ class PlanetInfoPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(16.0),
-      padding: const EdgeInsets.all(16.0),      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: const BorderRadius.all(Radius.circular(12)),
         boxShadow: [
@@ -59,7 +60,8 @@ class PlanetInfoPanel extends StatelessWidget {
             'Burç: $sign',
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
-          if (degree != null)            Text(
+          if (degree != null)
+            Text(
               'Derece: ${degree!.toStringAsFixed(1)}°',
               style: TextStyle(fontSize: 14, color: Colors.grey[700]),
             ),

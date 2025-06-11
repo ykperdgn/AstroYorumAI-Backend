@@ -67,7 +67,7 @@ void main() {
 
         // Assert
         expect(result, isTrue);
-        
+
         // Verify profile was saved by retrieving it
         final profiles = await service.getAllProfiles();
         expect(profiles, hasLength(1));
@@ -87,7 +87,7 @@ void main() {
         // Assert
         final profiles = await service.getAllProfiles();
         expect(profiles.first.isDefault, isTrue);
-        
+
         final activeProfile = await service.getActiveProfile();
         expect(activeProfile, isNotNull);
         expect(activeProfile!.id, equals(profile.id));
@@ -113,7 +113,7 @@ void main() {
 
         // Assert
         expect(result, isTrue);
-        
+
         final profiles = await service.getAllProfiles();
         expect(profiles, hasLength(1));
         expect(profiles.first.name, equals('Updated User'));
@@ -166,7 +166,7 @@ void main() {
 
         // Assert
         expect(result, isTrue);
-        
+
         final profiles = await service.getAllProfiles();
         expect(profiles, isEmpty);
       });
@@ -179,7 +179,8 @@ void main() {
         expect(result, isFalse);
       });
 
-      test('should set new active profile when deleting active profile', () async {
+      test('should set new active profile when deleting active profile',
+          () async {
         // Arrange
         final profile1 = service.createNewProfile(
           name: 'User 1',
@@ -192,7 +193,7 @@ void main() {
 
         await service.saveProfile(profile1);
         await service.saveProfile(profile2);
-        
+
         // Set profile1 as active
         await service.setActiveProfile(profile1.id);
 
@@ -201,7 +202,7 @@ void main() {
 
         // Assert
         expect(result, isTrue);
-        
+
         final activeProfile = await service.getActiveProfile();
         expect(activeProfile, isNotNull);
         expect(activeProfile!.id, equals(profile2.id));
@@ -229,12 +230,12 @@ void main() {
 
         // Assert
         expect(result, isTrue);
-        
+
         final activeProfile = await service.getActiveProfile();
         expect(activeProfile, isNotNull);
         expect(activeProfile!.id, equals(profile2.id));
         expect(activeProfile.isDefault, isTrue);
-        
+
         // Check that profile1 is no longer default
         final profiles = await service.getAllProfiles();
         final profile1Updated = profiles.firstWhere((p) => p.id == profile1.id);
@@ -249,7 +250,8 @@ void main() {
         expect(activeProfile, isNull);
       });
 
-      test('should return null when active profile ID does not exist', () async {
+      test('should return null when active profile ID does not exist',
+          () async {
         // Arrange - Set a non-existent profile as active
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('active_profile_id', 'non-existent-id');
@@ -297,7 +299,7 @@ void main() {
         expect(profile.birthPlace, equals('Izmir, Turkey'));
         expect(profile.latitude, equals(38.4192));
         expect(profile.longitude, equals(27.1287));
-        
+
         // Verify it was saved
         final profiles = await service.getAllProfiles();
         expect(profiles, hasLength(1));
@@ -352,7 +354,8 @@ void main() {
 
         // Assert
         expect(results, hasLength(2));
-        expect(results.map((p) => p.name), containsAll(['Alice Johnson', 'Alice Cooper']));
+        expect(results.map((p) => p.name),
+            containsAll(['Alice Johnson', 'Alice Cooper']));
       });
 
       test('should search profiles by birth place', () async {
@@ -436,13 +439,13 @@ void main() {
 
         // Assert
         expect(result, isTrue);
-        
+
         final profiles = await service.getAllProfiles();
         expect(profiles, isEmpty);
-        
+
         final activeProfile = await service.getActiveProfile();
         expect(activeProfile, isNull);
-        
+
         final count = await service.getProfileCount();
         expect(count, equals(0));
       });
@@ -452,7 +455,7 @@ void main() {
       test('should handle JSON serialization errors gracefully', () async {
         // This test ensures the service can handle various edge cases
         // and doesn't crash on unexpected data
-        
+
         // Create profile with edge case data
         final profile = service.createNewProfile(
           name: 'Test"User\'With"Special\\Characters',
@@ -463,10 +466,11 @@ void main() {
         // Act & Assert
         final result = await service.saveProfile(profile);
         expect(result, isTrue);
-        
+
         final profiles = await service.getAllProfiles();
         expect(profiles, hasLength(1));
-        expect(profiles.first.name, equals('Test"User\'With"Special\\Characters'));
+        expect(
+            profiles.first.name, equals('Test"User\'With"Special\\Characters'));
         expect(profiles.first.birthPlace, equals('City with émöjî 🌟'));
       });
 
@@ -484,7 +488,7 @@ void main() {
 
         // Assert
         expect(result, isTrue);
-        
+
         final profiles = await service.getAllProfiles();
         expect(profiles.first.latitude, equals(90.0));
         expect(profiles.first.longitude, equals(180.0));
@@ -494,7 +498,7 @@ void main() {
         // Arrange
         final longName = 'A' * 1000; // Very long name
         final longPlace = 'B' * 1000; // Very long place name
-        
+
         final profile = service.createNewProfile(
           name: longName,
           birthDate: DateTime(1975, 6, 30),
@@ -506,7 +510,7 @@ void main() {
 
         // Assert
         expect(result, isTrue);
-          final profiles = await service.getAllProfiles();
+        final profiles = await service.getAllProfiles();
         expect(profiles.first.name, equals(longName));
         expect(profiles.first.birthPlace, equals(longPlace));
       });

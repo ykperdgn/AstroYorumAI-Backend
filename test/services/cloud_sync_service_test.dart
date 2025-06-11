@@ -18,7 +18,8 @@ import '../helpers/firebase_test_helper.dart';
   QueryDocumentSnapshot,
   User,
 ], customMocks: [
-  MockSpec<CollectionReference<Map<String, dynamic>>>(as: #MockCollectionReference),
+  MockSpec<CollectionReference<Map<String, dynamic>>>(
+      as: #MockCollectionReference),
 ])
 import 'cloud_sync_service_test.mocks.dart';
 
@@ -38,39 +39,42 @@ void main() {
     late MockDocumentSnapshot<Map<String, dynamic>> mockDocumentSnapshot;
     late MockUser mockUser;
     late AuthService mockAuthService;
-      setUp(() {
+    setUp(() {
       mockFirestore = MockFirebaseFirestore();
       mockFirebaseAuth = MockFirebaseAuth();
       mockUsersCollection = MockCollectionReference();
       mockUserDocument = MockDocumentReference<Map<String, dynamic>>();
       mockDocumentSnapshot = MockDocumentSnapshot<Map<String, dynamic>>();
       mockUser = MockUser();
-      
+
       // Create mock AuthService using dependency injection
-      mockAuthService = AuthService(auth: mockFirebaseAuth, firestore: mockFirestore);
-      
+      mockAuthService =
+          AuthService(auth: mockFirebaseAuth, firestore: mockFirestore);
+
       // Create CloudSyncService with mocked dependencies
       cloudSyncService = CloudSyncService(
         firestore: mockFirestore,
         authService: mockAuthService,
       );
-      
+
       // Set as test instance
       CloudSyncService.testInstance = cloudSyncService;
-      
+
       // Setup basic mocks for authentication
       when(mockUser.uid).thenReturn('test-user-id');
       when(mockFirebaseAuth.currentUser).thenReturn(mockUser);
-      
+
       // Setup Firestore mocks
       when(mockFirestore.collection('users')).thenReturn(mockUsersCollection);
-      when(mockUsersCollection.doc('test-user-id')).thenReturn(mockUserDocument);
+      when(mockUsersCollection.doc('test-user-id'))
+          .thenReturn(mockUserDocument);
     });
 
-    group('syncToCloud', () {      test('should throw exception when user not signed in', () async {
+    group('syncToCloud', () {
+      test('should throw exception when user not signed in', () async {
         // Arrange
         when(mockFirebaseAuth.currentUser).thenReturn(null);
-        
+
         // Act & Assert
         expect(
           () => cloudSyncService.syncToCloud(),
@@ -80,19 +84,21 @@ void main() {
             contains('Bulut senkronizasyonu için giriş yapmalısınız'),
           )),
         );
-      });      test('should sync successfully when user is signed in', () async {
+      });
+      test('should sync successfully when user is signed in', () async {
         // Arrange
         when(mockUserDocument.set(any, any)).thenAnswer((_) async => {});
-        
+
         // Act & Assert - This should complete normally since basic data is mocked
         await expectLater(cloudSyncService.syncToCloud(), completes);
       });
     });
 
-    group('syncFromCloud', () {      test('should throw exception when user not signed in', () async {
+    group('syncFromCloud', () {
+      test('should throw exception when user not signed in', () async {
         // Arrange
         when(mockFirebaseAuth.currentUser).thenReturn(null);
-        
+
         // Act & Assert
         expect(
           () => cloudSyncService.syncFromCloud(),
@@ -106,21 +112,24 @@ void main() {
 
       test('should handle empty cloud data gracefully', () async {
         // Arrange
-        when(mockUserDocument.get()).thenAnswer((_) async => mockDocumentSnapshot);
+        when(mockUserDocument.get())
+            .thenAnswer((_) async => mockDocumentSnapshot);
         when(mockDocumentSnapshot.exists).thenReturn(false);
-        
+
         // Act & Assert
         await expectLater(cloudSyncService.syncFromCloud(), completes);
-      });      test('should restore data when cloud data exists', () async {
+      });
+      test('should restore data when cloud data exists', () async {
         // Arrange
-        when(mockUserDocument.get()).thenAnswer((_) async => mockDocumentSnapshot);
+        when(mockUserDocument.get())
+            .thenAnswer((_) async => mockDocumentSnapshot);
         when(mockDocumentSnapshot.exists).thenReturn(true);
         when(mockDocumentSnapshot.data()).thenReturn({
           'profiles': [],
           'activeProfileId': null,
           'calendarEvents': [],
         });
-        
+
         // Act & Assert - This should complete normally since data is mocked properly
         await expectLater(cloudSyncService.syncFromCloud(), completes);
       });
@@ -130,15 +139,16 @@ void main() {
       test('should return DateTime when sync time exists', () async {
         // Act
         final result = await cloudSyncService.getLastSyncTime();
-        
+
         // Assert
         expect(result, isA<DateTime?>());
       });
-    });    group('deleteCloudData', () {
+    });
+    group('deleteCloudData', () {
       test('should throw exception when user not signed in', () async {
         // Arrange - Set currentUser to null to simulate signed out state
         when(mockFirebaseAuth.currentUser).thenReturn(null);
-        
+
         // Act & Assert
         expect(
           () => cloudSyncService.deleteCloudData(),
@@ -148,14 +158,16 @@ void main() {
             contains('Bulut verisi silmek için giriş yapmalısınız'),
           )),
         );
-      });test('should delete cloud data successfully', () async {
+      });
+      test('should delete cloud data successfully', () async {
         // Arrange
         final mockQuery = MockQuerySnapshot<Map<String, dynamic>>();
-        when(mockUserDocument.collection('profiles')).thenReturn(mockUsersCollection);
+        when(mockUserDocument.collection('profiles'))
+            .thenReturn(mockUsersCollection);
         when(mockUsersCollection.get()).thenAnswer((_) async => mockQuery);
         when(mockQuery.docs).thenReturn([]);
         when(mockUserDocument.delete()).thenAnswer((_) async => {});
-          // Act & Assert
+        // Act & Assert
         await expectLater(cloudSyncService.deleteCloudData(), completes);
       });
     });

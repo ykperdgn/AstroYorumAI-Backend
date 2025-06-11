@@ -39,7 +39,7 @@ class _CORSTestPageState extends State<CORSTestPage> {
 
     try {
       const String apiUrl = 'https://astroyorumai-api.onrender.com';
-      
+
       // Test natal chart endpoint (this will fail with CORS if not deployed)
       final testData = {
         'date': '1990-01-01',
@@ -59,7 +59,8 @@ class _CORSTestPageState extends State<CORSTestPage> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
-          _status = '✅ CORS WORKING!\nAPI Version: ${data['version']}\nAscendant: ${data['ascendant']}';
+          _status =
+              '✅ CORS WORKING!\nAPI Version: ${data['version']}\nAscendant: ${data['ascendant']}';
           _corsWorking = true;
           _isLoading = false;
         });
@@ -71,11 +72,13 @@ class _CORSTestPageState extends State<CORSTestPage> {
       }
     } catch (e) {
       setState(() {
-        _status = '❌ CORS Error: $e\n\nThis means CORS fixes are not deployed yet.\nPlease deploy commit 0fe3e37 on Render.com';
+        _status =
+            '❌ CORS Error: $e\n\nThis means CORS fixes are not deployed yet.\nPlease deploy commit 0fe3e37 on Render.com';
         _isLoading = false;
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,8 +117,11 @@ class _CORSTestPageState extends State<CORSTestPage> {
                       _status,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: _corsWorking ? Colors.green : 
-                               _status.contains('Error') ? Colors.red : Colors.black,
+                        color: _corsWorking
+                            ? Colors.green
+                            : _status.contains('Error')
+                                ? Colors.red
+                                : Colors.black,
                       ),
                     ),
                   ],
@@ -128,15 +134,18 @@ class _CORSTestPageState extends State<CORSTestPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
               ),
-              child: _isLoading 
-                ? const CircularProgressIndicator(color: Colors.white)
-                : const Text('Test CORS Connection'),
+              child: _isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text('Test CORS Connection'),
             ),
             if (_corsWorking) ...[
-              const SizedBox(height: 20),              Card(
-                color: Colors.green.shade50,                child: const Padding(
+              const SizedBox(height: 20),
+              Card(
+                color: Colors.green.shade50,
+                child: const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Column(
                     children: [

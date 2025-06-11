@@ -25,13 +25,15 @@ void main() {
           alwaysAutoValidate: true,
         ),
       ),
-    );    await tester.pumpAndSettle();
-    
+    );
+    await tester.pumpAndSettle();
+
     // Debug widget tree analysis (prints removed for production)
     // Widget tree, keys, and button states are analyzed internally
-    final elements = tester.allElements.where((element) => element.widget.key != null);
+    final elements =
+        tester.allElements.where((element) => element.widget.key != null);
     final buttons = tester.allWidgets.whereType<ElevatedButton>();
-    
+
     // Verify that widgets are properly rendered
     expect(elements.length, greaterThan(0));
     expect(buttons.length, greaterThan(0));

@@ -15,7 +15,8 @@ void main() {
     late UserProfile testProfile;
     late List<PlanetPosition> testPlanetPositions;
     late List<CelestialEvent> testEvents;
-    late Map<String, dynamic> testHoroscopeData;    setUpAll(() async {
+    late Map<String, dynamic> testHoroscopeData;
+    setUpAll(() async {
       // Firebase test mock'larını ayarla
       setupFirebaseTestMocks();
       await setupFirebaseForTest();
@@ -25,7 +26,7 @@ void main() {
 
     setUp(() {
       resetServiceSingletons();
-      
+
       // Create test data
       testProfile = UserProfile(
         id: 'test_profile_1',
@@ -75,7 +76,8 @@ void main() {
       ];
 
       testHoroscopeData = {
-        'description': 'Bugün harika bir gün olacak! Güneş Ikizler burcunda olan sizler için yeni fırsatlar kapıda.',
+        'description':
+            'Bugün harika bir gün olacak! Güneş Ikizler burcunda olan sizler için yeni fırsatlar kapıda.',
         'lucky_numbers': [7, 14, 21],
         'lucky_color': 'Mavi',
       };
@@ -83,8 +85,10 @@ void main() {
 
     tearDown(() {
       resetServiceSingletons();
-    });    group('generateNatalChartPdf', () {
-      test('should attempt to generate PDF file with basic profile data', () async {
+    });
+    group('generateNatalChartPdf', () {
+      test('should attempt to generate PDF file with basic profile data',
+          () async {
         // In test environment, this will fail due to missing platform plugins
         // but we can test that the method handles errors gracefully
         try {
@@ -93,7 +97,7 @@ void main() {
             testPlanetPositions,
             null,
           );
-          
+
           // If successful in test environment (unlikely), verify basic properties
           expect(file, isA<File>());
         } catch (e) {
@@ -109,7 +113,7 @@ void main() {
             testPlanetPositions,
             testHoroscopeData,
           );
-          
+
           expect(file, isA<File>());
         } catch (e) {
           expect(e, isA<Exception>());
@@ -131,7 +135,7 @@ void main() {
             testPlanetPositions,
             null,
           );
-          
+
           expect(file, isA<File>());
         } catch (e) {
           expect(e, isA<Exception>());
@@ -145,7 +149,7 @@ void main() {
             [],
             null,
           );
-          
+
           expect(file, isA<File>());
         } catch (e) {
           expect(e, isA<Exception>());
@@ -164,7 +168,7 @@ void main() {
             startDate,
             endDate,
           );
-          
+
           expect(file, isA<File>());
         } catch (e) {
           expect(e, isA<Exception>());
@@ -181,7 +185,7 @@ void main() {
             startDate,
             endDate,
           );
-          
+
           expect(file, isA<File>());
         } catch (e) {
           expect(e, isA<Exception>());
@@ -190,15 +194,17 @@ void main() {
 
       test('should handle reasonable number of events', () async {
         // Reduce number of events to avoid TooManyPagesException
-        final smallEventsList = List.generate(10, (index) => CelestialEvent(
-          id: 'event_$index',
-          title: 'Event $index',
-          description: 'Description for event $index',
-          dateTime: DateTime(2024, 6, 1 + index),
-          type: 'test',
-          isImportant: index % 5 == 0,
-          impactDescription: 'Impact $index',
-        ));
+        final smallEventsList = List.generate(
+            10,
+            (index) => CelestialEvent(
+                  id: 'event_$index',
+                  title: 'Event $index',
+                  description: 'Description for event $index',
+                  dateTime: DateTime(2024, 6, 1 + index),
+                  type: 'test',
+                  isImportant: index % 5 == 0,
+                  impactDescription: 'Impact $index',
+                ));
 
         final startDate = DateTime(2024, 6, 1);
         final endDate = DateTime(2024, 6, 30);
@@ -209,7 +215,7 @@ void main() {
             startDate,
             endDate,
           );
-          
+
           expect(file, isA<File>());
         } catch (e) {
           expect(e, isA<Exception>());
@@ -219,7 +225,7 @@ void main() {
 
     group('shareNatalChart', () {
       test('should share natal chart successfully', () async {
-        // Note: This test will create a PDF but sharing functionality 
+        // Note: This test will create a PDF but sharing functionality
         // requires platform-specific implementation that can't be fully tested in unit tests
         try {
           await ExportShareService.shareNatalChart(
@@ -488,7 +494,8 @@ void main() {
           expect(e, isA<Exception>());
         }
       });
-    });    group('exportAsPdf', () {
+    });
+    group('exportAsPdf', () {
       test('should attempt to export PDF and handle result', () async {
         try {
           final result = await ExportShareService.exportAsPdf(
@@ -569,13 +576,14 @@ void main() {
         );
 
         expect(socialText, contains(testProfile.name));
-        expect(socialText, contains('Bilinmiyor')); // For Sun and Moon which are missing
+        expect(socialText,
+            contains('Bilinmiyor')); // For Sun and Moon which are missing
       });
 
       test('should generate planet emojis correctly', () {
         // Test through text generation which uses the emoji helper
         final textWithAllPlanets = testPlanetPositions;
-        
+
         final socialText = ExportShareService.generateSocialMediaText(
           testProfile,
           textWithAllPlanets,
@@ -609,11 +617,13 @@ void main() {
         } catch (e) {
           // Expected to throw exception with descriptive message
           expect(e, isA<Exception>());
-          expect(e.toString(), contains('Natal harita paylaşılırken hata oluştu'));
+          expect(
+              e.toString(), contains('Natal harita paylaşılırken hata oluştu'));
         }
       });
 
-      test('should handle PDF generation errors in shareCalendarEvents', () async {
+      test('should handle PDF generation errors in shareCalendarEvents',
+          () async {
         try {
           await ExportShareService.shareCalendarEvents(
             testEvents,
@@ -652,8 +662,10 @@ void main() {
           expect(e.toString(), contains('PDF oluşturulurken hata oluştu'));
         }
       });
-    });    group('Data Formatting', () {
-      test('should attempt to format dates correctly in Turkish locale', () async {
+    });
+    group('Data Formatting', () {
+      test('should attempt to format dates correctly in Turkish locale',
+          () async {
         try {
           final file = await ExportShareService.generateNatalChartPdf(
             testProfile,
@@ -668,7 +680,8 @@ void main() {
         }
       });
 
-      test('should attempt to format coordinates with proper precision', () async {
+      test('should attempt to format coordinates with proper precision',
+          () async {
         final profileWithCoords = UserProfile(
           id: 'coord_test',
           name: 'Coordinate Test',
@@ -692,7 +705,8 @@ void main() {
         }
       });
 
-      test('should attempt to format planet degrees with one decimal place', () async {
+      test('should attempt to format planet degrees with one decimal place',
+          () async {
         final planetsWithPreciseValues = [
           PlanetPosition(name: 'Sun', sign: 'Gemini', degree: 24.567890),
           PlanetPosition(name: 'Moon', sign: 'Pisces', degree: 12.345678),
@@ -705,7 +719,8 @@ void main() {
             null,
           );
 
-          expect(file, isA<File>());        } catch (e) {
+          expect(file, isA<File>());
+        } catch (e) {
           expect(e, isA<Exception>());
         }
       });

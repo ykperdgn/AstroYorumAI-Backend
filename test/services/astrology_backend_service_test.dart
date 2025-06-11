@@ -17,9 +17,7 @@ void main() {
       group('Parameter Validation', () {
         test('should handle valid date parameter', () {
           // Test valid date formats
-          const validDates = [
-            '1990-01-15', '2000-12-31', '1985-06-22'
-          ];
+          const validDates = ['1990-01-15', '2000-12-31', '1985-06-22'];
 
           for (final date in validDates) {
             expect(date, matches(RegExp(r'^\d{4}-\d{2}-\d{2}$')));
@@ -30,9 +28,7 @@ void main() {
 
         test('should handle valid time parameter', () {
           // Test valid time formats
-          const validTimes = [
-            '09:30', '14:45', '23:59', '00:00'
-          ];
+          const validTimes = ['09:30', '14:45', '23:59', '00:00'];
 
           for (final time in validTimes) {
             expect(time, matches(RegExp(r'^\d{2}:\d{2}$')));
@@ -60,15 +56,15 @@ void main() {
         test('should handle edge case coordinates', () {
           // Test coordinate edge cases
           const edgeCases = [
-            {'lat': 90.0, 'lng': 180.0},   // North Pole, International Date Line
+            {'lat': 90.0, 'lng': 180.0}, // North Pole, International Date Line
             {'lat': -90.0, 'lng': -180.0}, // South Pole, Antimeridian
-            {'lat': 0.0, 'lng': 0.0},      // Equator, Prime Meridian
+            {'lat': 0.0, 'lng': 0.0}, // Equator, Prime Meridian
           ];
 
           for (final coords in edgeCases) {
             final lat = coords['lat'] as double;
             final lng = coords['lng'] as double;
-            
+
             expect(lat.abs(), lessThanOrEqualTo(90.0));
             expect(lng.abs(), lessThanOrEqualTo(180.0));
           }
@@ -80,7 +76,7 @@ void main() {
           const baseUrl = 'http://localhost:5000';
           const endpoint = '/natal';
           const expectedUrl = '$baseUrl$endpoint';
-          
+
           expect(expectedUrl, equals('http://localhost:5000/natal'));
           expect(expectedUrl, contains('localhost'));
           expect(expectedUrl, contains('/natal'));
@@ -102,7 +98,7 @@ void main() {
         test('should validate URI parsing', () {
           const testUrl = 'http://localhost:5000/natal';
           final uri = Uri.parse(testUrl);
-          
+
           expect(uri.scheme, equals('http'));
           expect(uri.host, equals('localhost'));
           expect(uri.port, equals(5000));
@@ -161,7 +157,7 @@ void main() {
         test('should use correct content type header', () {
           const expectedContentType = 'application/json; charset=UTF-8';
           const headers = {'Content-Type': expectedContentType};
-          
+
           expect(headers['Content-Type'], equals(expectedContentType));
           expect(headers['Content-Type'], contains('application/json'));
           expect(headers['Content-Type'], contains('charset=UTF-8'));
@@ -185,7 +181,12 @@ void main() {
               '1': {'sign': 'Scorpio', 'degree': 15.7}
             },
             'aspects': [
-              {'planet1': 'Sun', 'planet2': 'Moon', 'aspect': 'trine', 'angle': 120.0}
+              {
+                'planet1': 'Sun',
+                'planet2': 'Moon',
+                'aspect': 'trine',
+                'angle': 120.0
+              }
             ]
           };
 
@@ -200,15 +201,16 @@ void main() {
           const sampleText = 'Türkçe karakterler: üöäñç';
           final bytes = utf8.encode(sampleText);
           final decoded = utf8.decode(bytes);
-          
+
           expect(decoded, equals(sampleText));
           expect(decoded, contains('üöäñç'));
         });
 
         test('should process JSON response correctly', () {
-          const jsonResponse = '{"status": "success", "data": {"sun_sign": "Gemini"}}';
+          const jsonResponse =
+              '{"status": "success", "data": {"sun_sign": "Gemini"}}';
           final decoded = json.decode(jsonResponse) as Map<String, dynamic>;
-          
+
           expect(decoded['status'], equals('success'));
           expect(decoded['data'], isA<Map<String, dynamic>>());
           expect((decoded['data'] as Map)['sun_sign'], equals('Gemini'));
@@ -218,13 +220,13 @@ void main() {
       group('Error Handling', () {
         test('should handle HTTP error responses', () {
           const errorCodes = [400, 401, 403, 404, 500, 502, 503];
-          
+
           for (final code in errorCodes) {
             final errorResponse = {
               "error": "Backend API Error: $code",
               "details": "Error response body"
             };
-            
+
             expect(errorResponse['error'], contains('Backend API Error'));
             expect(errorResponse['error'], contains(code.toString()));
             expect(errorResponse.containsKey('details'), isTrue);
@@ -242,8 +244,9 @@ void main() {
             final errorResponse = {
               "error": "Cannot connect to backend service: $error"
             };
-            
-            expect(errorResponse['error'], contains('Cannot connect to backend service'));
+
+            expect(errorResponse['error'],
+                contains('Cannot connect to backend service'));
             expect(errorResponse['error'], contains(error));
           }
         });
@@ -270,20 +273,16 @@ void main() {
 
           for (final response in malformedResponses) {
             expect(
-              () => json.decode(response),
-              throwsA(isA<FormatException>())
-            );
+                () => json.decode(response), throwsA(isA<FormatException>()));
           }
         });
 
         test('should handle empty response', () {
           const emptyResponse = '';
           expect(emptyResponse.isEmpty, isTrue);
-          
-          expect(
-            () => json.decode(emptyResponse),
-            throwsA(isA<FormatException>())
-          );
+
+          expect(() => json.decode(emptyResponse),
+              throwsA(isA<FormatException>()));
         });
 
         test('should handle null response gracefully', () {
@@ -297,7 +296,7 @@ void main() {
         test('should handle string parameters correctly', () {
           const dateParam = '1990-06-15';
           const timeParam = '14:30';
-          
+
           expect(dateParam, isA<String>());
           expect(timeParam, isA<String>());
           expect(dateParam.isNotEmpty, isTrue);
@@ -305,12 +304,7 @@ void main() {
         });
 
         test('should handle double precision coordinates', () {
-          const coordinates = [
-            41.0082376,
-            28.9783589,
-            -74.0059728,
-            40.7127753
-          ];
+          const coordinates = [41.0082376, 28.9783589, -74.0059728, 40.7127753];
 
           for (final coord in coordinates) {
             expect(coord, isA<double>());
@@ -338,7 +332,7 @@ void main() {
         test('should handle request timeout concepts', () {
           const standardTimeout = Duration(seconds: 30);
           const longTimeout = Duration(minutes: 2);
-          
+
           expect(standardTimeout.inSeconds, equals(30));
           expect(longTimeout.inMinutes, equals(2));
           expect(standardTimeout, lessThan(longTimeout));
@@ -347,7 +341,7 @@ void main() {
         test('should handle concurrent request scenarios', () {
           const maxConcurrentRequests = 10;
           const requestInterval = Duration(milliseconds: 100);
-          
+
           expect(maxConcurrentRequests, greaterThan(0));
           expect(maxConcurrentRequests, lessThanOrEqualTo(20));
           expect(requestInterval.inMilliseconds, equals(100));
@@ -356,7 +350,7 @@ void main() {
         test('should validate memory usage for large responses', () {
           const maxResponseSize = 1024 * 1024; // 1MB
           const typicalResponseSize = 50 * 1024; // 50KB
-          
+
           expect(typicalResponseSize, lessThan(maxResponseSize));
           expect(maxResponseSize, equals(1048576));
         });
@@ -364,7 +358,7 @@ void main() {
         test('should handle retry logic concepts', () {
           const maxRetries = 3;
           const retryDelay = Duration(seconds: 1);
-          
+
           expect(maxRetries, greaterThan(0));
           expect(maxRetries, lessThanOrEqualTo(5));
           expect(retryDelay.inSeconds, equals(1));
@@ -379,9 +373,14 @@ void main() {
             'http://localhost:5000',
             'http://10.0.2.2:5000', // Android emulator
             'http://127.0.0.1:5000'
-          ];          for (final url in localUrls) {
+          ];
+          for (final url in localUrls) {
             expect(url, startsWith('http://'));
-            expect(url.contains('localhost') || url.contains('10.0.2.2') || url.contains('127.0.0.1'), isTrue);
+            expect(
+                url.contains('localhost') ||
+                    url.contains('10.0.2.2') ||
+                    url.contains('127.0.0.1'),
+                isTrue);
           }
         });
 
@@ -410,7 +409,7 @@ void main() {
         test('should handle backend API versioning', () {
           const apiVersions = ['v1', 'v2', 'v3'];
           const baseUrl = 'http://localhost:5000';
-          
+
           for (final version in apiVersions) {
             final versionedUrl = '$baseUrl/$version/natal';
             expect(versionedUrl, contains(version));
@@ -445,7 +444,7 @@ void main() {
           for (final entry in environmentUrls.entries) {
             final environment = entry.key;
             final url = entry.value;
-              expect(environment, isNotEmpty);
+            expect(environment, isNotEmpty);
             expect(url, contains('://'));
             expect(url.contains('5000') || url.contains('astrology'), isTrue);
           }
@@ -453,7 +452,7 @@ void main() {
 
         test('should handle port configuration', () {
           const ports = [5000, 8080, 3000, 443];
-          
+
           for (final port in ports) {
             expect(port, greaterThan(0));
             expect(port, lessThanOrEqualTo(65535));
@@ -478,11 +477,14 @@ void main() {
         const logPatterns = [
           'AstrologyBackendService Error:',
           'Error connecting to AstrologyBackendService:'
-        ];        for (final pattern in logPatterns) {
+        ];
+        for (final pattern in logPatterns) {
           expect(pattern, contains('AstrologyBackendService'));
-          expect(pattern.contains('Error') || pattern.contains('error'), isTrue);
+          expect(
+              pattern.contains('Error') || pattern.contains('error'), isTrue);
         }
-      });      test('should handle service initialization', () {
+      });
+      test('should handle service initialization', () {
         // Service should work without initialization
         expect(AstrologyBackendService, isNotNull);
         expect('AstrologyBackendService', contains('AstrologyBackendService'));
@@ -494,7 +496,7 @@ void main() {
         // Test that service uses appropriate constants
         const baseUrl = 'http://localhost:5000';
         const endpoint = '/natal';
-        
+
         expect(baseUrl, isNotEmpty);
         expect(endpoint, isNotEmpty);
         expect(baseUrl, startsWith('http'));
@@ -504,7 +506,7 @@ void main() {
       test('should handle backward compatibility', () {
         // Test that API changes maintain compatibility
         const apiFields = ['date', 'time', 'latitude', 'longitude'];
-        
+
         for (final field in apiFields) {
           expect(field, isNotEmpty);
           expect(field, isA<String>());

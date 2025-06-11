@@ -14,7 +14,8 @@ class ExtendedAstrologyApiService {
       final response = await http.post(url);
       if (response.statusCode == 200) {
         return json.decode(response.body) as Map<String, dynamic>;
-      }    } catch (e) {
+      }
+    } catch (e) {
       log.log('Horoscope API error: $e');
     }
     return null;

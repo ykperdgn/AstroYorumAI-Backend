@@ -5,9 +5,9 @@ import 'package:http/http.dart' as http;
 Future<void> main() async {
   developer.log('🔍 Testing Flutter App Connection to Production API');
   developer.log('===================================================');
-    // Test production API URL
+  // Test production API URL
   const String productionUrl = 'https://astroyorumai-api.onrender.com';
-    // Test 1: Health Check
+  // Test 1: Health Check
   developer.log('\n1️⃣ Testing Health Endpoint...');
   try {
     final healthResponse = await http.get(Uri.parse('$productionUrl/health'));
@@ -20,7 +20,7 @@ Future<void> main() async {
   } catch (e) {
     developer.log('❌ Health check error: $e');
   }
-    // Test 2: Status Check
+  // Test 2: Status Check
   developer.log('\n2️⃣ Testing Status Endpoint...');
   try {
     final statusResponse = await http.get(Uri.parse('$productionUrl/status'));
@@ -35,7 +35,7 @@ Future<void> main() async {
   } catch (e) {
     developer.log('❌ Status check error: $e');
   }
-    // Test 3: Natal Chart API
+  // Test 3: Natal Chart API
   developer.log('\n3️⃣ Testing Natal Chart Endpoint...');
   try {
     final natalResponse = await http.post(
@@ -48,14 +48,14 @@ Future<void> main() async {
         'longitude': 28.9784,
       }),
     );
-    
+
     if (natalResponse.statusCode == 200) {
       final natalData = json.decode(natalResponse.body);
       developer.log('✅ Natal chart API successful');
       developer.log('   Version: ${natalData['version']}');
       developer.log('   Ascendant: ${natalData['ascendant']}');
       developer.log('   Planets count: ${natalData['planets']?.length ?? 0}');
-      
+
       // Show sample planet data
       if (natalData['planets'] != null) {
         final planets = natalData['planets'] as Map<String, dynamic>;
@@ -71,7 +71,7 @@ Future<void> main() async {
   } catch (e) {
     developer.log('❌ Natal chart error: $e');
   }
-  
+
   developer.log('\n===================================================');
   developer.log('🎉 Flutter App Production API Test Complete!');
   developer.log('✅ If all tests passed, Flutter app is ready for production');

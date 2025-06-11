@@ -1,4 +1,3 @@
-
 // filepath: c:\dev\astroyorumai\lib\widgets\loading_indicator.dart
 import 'package:flutter/material.dart';
 
@@ -8,7 +7,8 @@ class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({super.key, this.message});
 
   @override
-  Widget build(BuildContext context) {    return Center(
+  Widget build(BuildContext context) {
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

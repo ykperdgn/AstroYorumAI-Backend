@@ -17,7 +17,7 @@ class SharedMockGeocodingService implements GeocodingService {
       'New York': {'lat': 40.7128, 'lon': -74.0060},
       'London': {'lat': 51.5074, 'lon': -0.1278},
     };
-    
+
     return mockData[location];
   }
 }
@@ -53,10 +53,11 @@ Widget createTestAppWithSettings({
       GlobalWidgetsLocalizations.delegate,
       GlobalCupertinoLocalizations.delegate,
     ],
-    supportedLocales: supportedLocales ?? const [
-      Locale('tr', 'TR'),
-      Locale('en', 'US'),
-    ],
+    supportedLocales: supportedLocales ??
+        const [
+          Locale('tr', 'TR'),
+          Locale('en', 'US'),
+        ],
     locale: locale ?? const Locale('tr', 'TR'),
     theme: theme,
   );
