@@ -19,10 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY app.py .
 COPY .env.production .env
-COPY start.sh .
-
-# Make start script executable
-RUN chmod +x start.sh
+COPY Procfile .
 
 # Set environment variables
 ENV FLASK_ENV=production
@@ -36,5 +33,5 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8080/health || exit 1
 
-# Use start script to handle PORT environment variable
-CMD ["./start.sh"]
+# Use the Procfile for deployment
+CMD gunicorn app:app --bind 0.0.0.0:${PORT:-8080} --workers 2 --timeout 120
