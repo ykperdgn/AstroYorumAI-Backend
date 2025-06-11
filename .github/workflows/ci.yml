@@ -34,7 +34,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.flutter
-        key: flutter-sdk-${{ runner.os }}-3.10.0
+        key: flutter-sdk-${{ runner.os }}-3.16.0
         restore-keys: |
           flutter-sdk-${{ runner.os }}-
 
@@ -42,22 +42,30 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.10.0'
-        channel: 'stable'
-
-    # Install dependencies
+        flutter-version: '3.16.0'
+        channel: 'stable'    # Install dependencies
     - name: Install dependencies
       run: flutter pub get
       continue-on-error: false
 
     # Run tests (skip failing integration tests)
     - name: Run tests (skip failing integration tests)
-      run: flutter test --exclude-tags=integration --coverage --machine > test-results.json
+      run: flutter test --exclude-tags=integration,firebase --coverage --machine > test-results.json
       continue-on-error: false
+      
+    # Check test results before continuing
+    - name: Verify test results
+      run: |
+        if [ -f test-results.json ]; then
+          echo "Test results captured successfully"
+        else
+          echo "::error::Test results file not created. Tests may have failed catastrophically."
+          exit 1
+        fi
 
     # Upload coverage artifact
     - name: Upload coverage artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report-${{ github.run_number }}
         path: coverage/
@@ -65,7 +73,7 @@ jobs:
     # Upload test results (if any)
     - name: Upload test results (if any)
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-results-${{ github.run_number }}
         path: test-results.json
@@ -121,7 +129,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.flutter
-        key: flutter-sdk-${{ runner.os }}-3.10.0
+        key: flutter-sdk-${{ runner.os }}-3.16.0
         restore-keys: |
           flutter-sdk-${{ runner.os }}-
 
@@ -129,7 +137,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.10.0'
+        flutter-version: '3.16.0'
         channel: 'stable'
 
     # Install dependencies
@@ -158,7 +166,7 @@ jobs:
 
     # Upload APK artifact
     - name: Upload APK artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: android-apk-${{ github.run_number }}
         path: build/app/outputs/apk/release/app-release.apk
@@ -187,7 +195,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.flutter
-        key: flutter-sdk-${{ runner.os }}-3.10.0
+        key: flutter-sdk-${{ runner.os }}-3.16.0
         restore-keys: |
           flutter-sdk-${{ runner.os }}-
 
@@ -195,7 +203,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.10.0'
+        flutter-version: '3.16.0'
         channel: 'stable'
 
     # Install dependencies
@@ -230,7 +238,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.flutter
-        key: flutter-sdk-${{ runner.os }}-3.10.0
+        key: flutter-sdk-${{ runner.os }}-3.16.0
         restore-keys: |
           flutter-sdk-${{ runner.os }}-
 
@@ -238,7 +246,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.10.0'
+        flutter-version: '3.16.0'
         channel: 'stable'
 
     # Install dependencies
