@@ -17,24 +17,15 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY app.py .
-COPY .env.production .env
-COPY Procfile .
+COPY . .
 
 # Set environment variables
 ENV FLASK_ENV=production
 ENV FLASK_DEBUG=False
 ENV PYTHONUNBUFFERED=1
 
-# Set a fixed port for Railway
-ENV PORT=8080
-
 # Expose port (for local testing)
 EXPOSE 8080
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8080/health || exit 1
-
-# Use a direct command with the fixed port
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080", "--workers", "2", "--timeout", "120"]
+# Default CMD, will be overridden by Railway's startCommand in railway.json
+CMD ["sh", "-c", "echo 'Application starting...' && exec gunicorn app:app --bind 0.0.0.0:8080 --workers 2 --timeout 120"]
