@@ -53,6 +53,9 @@ jobs:
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       run: |
+        echo "Ensuring scripts are executable..."
+        chmod +x start.sh
+        chmod +x backend/start.sh
         echo "Deploying to Railway..."
         railway login --token $RAILWAY_TOKEN
         railway up --service astroyorumai-backend-production
@@ -60,5 +63,16 @@ jobs:
     - name: Verify Deployment
       run: |
         echo "Waiting for deployment to complete..."
-        sleep 30
-        curl -s https://astroyorumai-backend-production.up.railway.app/health || echo "Health endpoint not available yet"
+        sleep 45  # Increased wait time for deployment to stabilize
+        
+        # Check if health endpoint is available
+        HEALTH_CHECK=$(curl -s -o /dev/null -w "%{http_code}" https://astroyorumai-backend-production.up.railway.app/health)
+        if [ "$HEALTH_CHECK" == "200" ]; then
+          echo "✅ Health endpoint returned 200 - Deployment successful!"
+          HEALTH_RESPONSE=$(curl -s https://astroyorumai-backend-production.up.railway.app/health)
+          echo "Health response: $HEALTH_RESPONSE"
+        else
+          echo "⚠️ Health check failed with status: $HEALTH_CHECK"
+          echo "This might be normal if the deployment is still in progress."
+          echo "Check Railway logs for more details."
+        fi

@@ -16,8 +16,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Expose port
-EXPOSE $PORT
+# Make start script executable
+RUN chmod +x start.sh
 
-# Start the application
-CMD gunicorn --bind 0.0.0.0:$PORT app:app --timeout 120 --workers 2
+# Expose port (for local testing)
+EXPOSE 8080
+
+# Use start script to handle PORT environment variable
+CMD ["./start.sh"]

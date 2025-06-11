@@ -63,6 +63,43 @@ def after_request(response):
     response.headers.add('Access-Control-Max-Age', '86400')
     return response
 
+# Health check endpoint
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({
+        "status": "healthy",
+        "timestamp": datetime.datetime.now().isoformat(),
+        "version": "2.1.3-real-calculations"
+    }), 200
+
+# Diagnostics endpoint for PORT environment variable 
+@app.route('/diagnostics/port', methods=['GET'])
+def port_diagnostics():
+    port_env = os.environ.get('PORT', 'Not set')
+    return jsonify({
+        "port_environment_variable": port_env,
+        "server_port": os.environ.get('SERVER_PORT', 'Not set'),
+        "host": request.host,
+        "timestamp": datetime.datetime.now().isoformat()
+    }), 200
+
+# Diagnostics endpoint for environment
+@app.route('/diagnostics/environment', methods=['GET'])
+def environment_diagnostics():
+    # Only show safe environment variables
+    safe_env = {
+        "FLASK_ENV": os.environ.get('FLASK_ENV', 'Not set'),
+        "FLASK_DEBUG": os.environ.get('FLASK_DEBUG', 'Not set'),
+        "PORT": os.environ.get('PORT', 'Not set'),
+        "PYTHON_VERSION": sys.version.split()[0],
+        "RAILWAY_ENVIRONMENT": os.environ.get('RAILWAY_ENVIRONMENT', 'Not set'),
+        "RAILWAY_SERVICE_NAME": os.environ.get('RAILWAY_SERVICE_NAME', 'Not set')
+    }
+    return jsonify({
+        "environment": safe_env,
+        "timestamp": datetime.datetime.now().isoformat()
+    }), 200
+
 # Root endpoint
 @app.route('/', methods=['GET'])
 def root():
