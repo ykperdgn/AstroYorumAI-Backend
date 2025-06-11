@@ -26,6 +26,9 @@ ENV FLASK_ENV=production
 ENV FLASK_DEBUG=False
 ENV PYTHONUNBUFFERED=1
 
+# Set a fixed port for Railway
+ENV PORT=8080
+
 # Expose port (for local testing)
 EXPOSE 8080
 
@@ -33,5 +36,5 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8080/health || exit 1
 
-# Use the Procfile for deployment
-CMD gunicorn app:app --bind 0.0.0.0:${PORT:-8080} --workers 2 --timeout 120
+# Use a direct command with the fixed port
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080", "--workers", "2", "--timeout", "120"]
